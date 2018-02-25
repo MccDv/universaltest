@@ -1,0 +1,943 @@
+#include "testutilities.h"
+#include <QtMath>
+#include "aisubwidget.h"
+
+QHash<long long, bool> endInScanEventList;
+QHash<long long, bool> inScanErrorEventList;
+QHash<long long, bool> outScanErrorEventList;
+QHash<long long, bool> endOutScanEventList;
+QHash<long long, bool> dataAvailableEventList;
+QHash<long long, unsigned long long> eventParamList;
+
+/*void eventCallback(DaqDeviceHandle devHandle, DaqEventType eventType, unsigned long long eventData, void* userData)
+{
+    AiSubWidget *aiChild = (AiSubWidget *)userData;
+    aiChild->callbackHandler(eventType, eventData);
+}*/
+
+void setEventsByHandle(DaqDeviceHandle devHandle, DaqEventType eventType, bool enableEvent)
+{
+    if (eventType & DE_ON_DATA_AVAILABLE) {
+        dataAvailableEventList[devHandle] = enableEvent;
+    }
+    if (eventType & DE_ON_INPUT_SCAN_ERROR) {
+        inScanErrorEventList[devHandle] = enableEvent;
+    }
+    if (eventType & DE_ON_END_OF_INPUT_SCAN) {
+        endInScanEventList[devHandle] = enableEvent;
+    }
+    if (eventType & DE_ON_OUTPUT_SCAN_ERROR) {
+        outScanErrorEventList[devHandle] = enableEvent;
+    }
+    if (eventType & DE_ON_END_OF_OUTPUT_SCAN) {
+        endOutScanEventList[devHandle] = enableEvent;
+    }
+}
+
+void removeEventsByHandle(DaqDeviceHandle devHandle, DaqEventType eventType)
+{
+    if (eventType & DE_ON_DATA_AVAILABLE) {
+        dataAvailableEventList.remove(devHandle);
+    }
+    if (eventType & DE_ON_INPUT_SCAN_ERROR) {
+        inScanErrorEventList.remove(devHandle);
+    }
+    if (eventType & DE_ON_END_OF_INPUT_SCAN) {
+        endInScanEventList.remove(devHandle);
+    }
+    if (eventType & DE_ON_OUTPUT_SCAN_ERROR) {
+        dataAvailableEventList.remove(devHandle);
+    }
+    if (eventType & DE_ON_END_OF_OUTPUT_SCAN) {
+        endOutScanEventList.remove(devHandle);
+    }
+}
+
+void setEventParameterByHandle(DaqDeviceHandle devHandle, unsigned long long eventParameter)
+{
+    eventParamList[devHandle] = eventParameter;
+}
+
+void removeEndInScanEvent(DaqDeviceHandle devHandle)
+{
+    endInScanEventList.remove(devHandle);
+}
+
+void removeEndOutScanEvent(DaqDeviceHandle devHandle)
+{
+    endOutScanEventList.remove(devHandle);
+}
+
+void removeInScanErrorEvent(DaqDeviceHandle devHandle)
+{
+    inScanErrorEventList.remove(devHandle);
+}
+
+void removeOutScanErrorEvent(DaqDeviceHandle devHandle)
+{
+    outScanErrorEventList.remove(devHandle);
+}
+
+void removeDataAvailableEvent(DaqDeviceHandle devHandle)
+{
+    dataAvailableEventList.remove(devHandle);
+}
+
+void removeAllEventsByHandle(DaqDeviceHandle devHandle)
+{
+    endInScanEventList.remove(devHandle);
+    inScanErrorEventList.remove(devHandle);
+    outScanErrorEventList.remove(devHandle);
+    endOutScanEventList.remove(devHandle);
+    dataAvailableEventList.remove(devHandle);
+    eventParamList.remove(devHandle);
+}
+
+bool getEndInScanEvent(DaqDeviceHandle devHandle, bool &eventValue)
+{
+    eventValue = endInScanEventList.value(devHandle);
+    return endInScanEventList.contains(devHandle);
+}
+
+bool getEndOutScanEvent(DaqDeviceHandle devHandle, bool &eventValue)
+{
+    eventValue = endOutScanEventList.value(devHandle);
+    return endOutScanEventList.contains(devHandle);
+}
+
+bool getInScanErrorEvent(DaqDeviceHandle devHandle, bool &eventValue)
+{
+    eventValue = inScanErrorEventList.value(devHandle);
+    return inScanErrorEventList.contains(devHandle);
+}
+
+bool getOutScanErrorEvent(DaqDeviceHandle devHandle, bool &eventValue)
+{
+    eventValue = outScanErrorEventList.value(devHandle);
+    return outScanErrorEventList.contains(devHandle);
+}
+
+bool getDataAvailableEvent(DaqDeviceHandle devHandle, bool &eventValue)
+{
+    eventValue = dataAvailableEventList.value(devHandle);
+    return dataAvailableEventList.contains(devHandle);
+}
+
+bool getEventParameter(DaqDeviceHandle devHandle, unsigned long long &paramValue)
+{
+    paramValue = eventParamList.value(devHandle);
+    return eventParamList.contains(devHandle);
+}
+
+QString getOptionNames(ScanOption curOptions)
+{
+    QString optString;
+
+    if (curOptions == 0)
+        optString = "Default";
+    else {
+        if (curOptions & SO_SINGLEIO)
+            optString = "SingleIO, ";
+        if (curOptions & SO_BLOCKIO)
+            optString += "BlockIO, ";
+        if (curOptions & SO_BURSTIO)
+            optString += "BurstIO, ";
+        if (curOptions & SO_CONTINUOUS)
+            optString += "Continuous, ";
+        if (curOptions & SO_EXTCLOCK)
+            optString += "ExtClock, ";
+        if (curOptions & SO_EXTTRIGGER)
+            optString += "ExtTrigger, ";
+        if (curOptions & SO_RETRIGGER)
+            optString += "ReTrigger, ";
+        if (curOptions & SO_BURSTMODE)
+            optString += "BurstMode, ";
+        if (curOptions & SO_PACEROUT)
+            optString += "PacerOut, ";
+        optString = optString.left(optString.length() - 2);
+    }
+
+    return optString;
+}
+
+double getRangeVolts(Range rangeVal)
+{
+    double rangeVolts;
+
+    //rangeInt = static_cast<Range>(rangeVal);
+    switch (rangeVal) {
+    case BIP60VOLTS:
+        rangeVolts = 120;
+        break;
+    case BIP30VOLTS:
+        rangeVolts = 60;
+        break;
+    case BIP15VOLTS:
+        rangeVolts = 30;
+        break;
+    case BIP20VOLTS:
+        rangeVolts = 40;
+        break;
+    case BIP10VOLTS:
+        rangeVolts = 20;
+        break;
+    case BIP5VOLTS:
+        rangeVolts = 10;
+        break;
+    case BIP4VOLTS:
+        rangeVolts = 8;
+        break;
+    case BIP2PT5VOLTS:
+        rangeVolts = 5;
+        break;
+    case BIP2VOLTS:
+        rangeVolts = 4;
+        break;
+    case BIP1PT25VOLTS:
+        rangeVolts = 2.5;
+        break;
+    case BIP1VOLTS:
+        rangeVolts = 2;
+        break;
+    case BIPPT625VOLTS:
+        rangeVolts = 1.25;
+        break;
+    case BIPPT5VOLTS:
+        rangeVolts = 1;
+        break;
+    case BIPPT25VOLTS:
+        rangeVolts = 0.5;
+        break;
+    case BIPPT125VOLTS:
+        rangeVolts = 0.25;
+        break;
+    case BIPPT2VOLTS:
+        rangeVolts = 0.4;
+        break;
+    case BIPPT1VOLTS:
+        rangeVolts = 0.2;
+        break;
+    case BIPPT078VOLTS:
+        rangeVolts = 0.156;
+        break;
+    case BIPPT05VOLTS:
+        rangeVolts = 0.1;
+        break;
+    case BIPPT01VOLTS:
+        rangeVolts = 0.02;
+        break;
+    case BIPPT005VOLTS:
+        rangeVolts = 0.01;
+        break;
+    case UNI60VOLTS:
+        rangeVolts = 60;
+        break;
+    case UNI30VOLTS:
+        rangeVolts = 30;
+        break;
+    case UNI15VOLTS:
+        rangeVolts = 15;
+        break;
+    case UNI20VOLTS:
+        rangeVolts = 20;
+        break;
+    case UNI10VOLTS:
+        rangeVolts = 10;
+        break;
+    case UNI5VOLTS:
+        rangeVolts = 5;
+        break;
+    default:
+        rangeVolts = 0;
+        break;
+    }
+
+    return rangeVolts;
+
+}
+
+double getVoltsFromCounts(long long Resolution, Range curRange, int counts)
+{
+    double LSB, bipOffset, calcVolts;
+
+    double FSR = getRangeVolts(curRange);
+    bipOffset = 0;
+    LSB = FSR / qPow(2, Resolution);
+    if (curRange < 100)
+        bipOffset = FSR / 2;
+    calcVolts = counts * LSB;
+    return calcVolts - bipOffset;
+}
+
+QString getInfoDescription(int infoType, int infoItem, long long infoValue)
+{
+
+    switch (infoType) {
+    case TYPE_DEV_INFO:
+        if (infoItem == DEV_INFO_DAQ_EVENT_TYPES)
+            return getEventNames(infoValue);
+        break;
+    case TYPE_AI_INFO:
+        if (infoItem == AI_INFO_CHAN_TYPES)
+            return getChanTypeNames((AiChanType)infoValue);
+        if (infoItem == AI_INFO_SCAN_OPTIONS)
+            return getOptionNames((ScanOption)infoValue);
+        if ((infoItem == AI_INFO_DIFF_RANGE) | (infoItem == AI_INFO_SE_RANGE))
+            return getRangeName((Range)infoValue);
+        if (infoItem == AI_INFO_TRIG_TYPES)
+            return getTrigTypeNames((TriggerType)infoValue);
+        if (infoItem == AI_INFO_QUEUE_TYPES)
+            return getQueueTypeNames((AiQueueType)infoValue);
+        if (infoItem == AI_INFO_QUEUE_LIMITS)
+            return getQueueLimitNames((AiChanQueueLimitation)infoValue);
+        break;
+    case TYPE_AO_INFO:
+        if (infoItem == AO_INFO_SCAN_OPTIONS)
+            return getOptionNames((ScanOption)infoValue);
+        if (infoItem == AO_INFO_RANGE)
+            return getRangeName((Range)infoValue);
+        if (infoItem == AO_INFO_TRIG_TYPES)
+            return getTrigTypeNames((TriggerType)infoValue);
+        break;
+    case TYPE_DIO_INFO:
+        if (infoItem == DIO_INFO_PORT_TYPE)
+            return getDioPortTypeName((DigitalPortType)infoValue);
+        if (infoItem == DIO_INFO_PORT_IO_TYPE)
+            return getDPortIoTypeName((DigitalPortIoType)infoValue);
+        if (infoItem == DIO_INFO_TRIG_TYPES)
+            return getTrigTypeNames((TriggerType)infoValue);
+        if (infoItem == DIO_INFO_SCAN_OPTIONS)
+            return getOptionNames((ScanOption)infoValue);
+        break;
+    case TYPE_CTR_INFO:
+        if (infoItem == CTR_INFO_MEASUREMENT_TYPES)
+            return getCtrMeasTypeNames((CounterMeasurementType)infoValue);
+        if (infoItem == CTR_INFO_SCAN_OPTIONS)
+            return getOptionNames((ScanOption)infoValue);
+        break;
+    case TYPE_TMR_INFO:
+        if (infoItem == TMR_INFO_TYPE)
+            return getTmrTypeName((TimerType)infoValue);
+        break;
+    case TYPE_DAQI_INFO:
+        if (infoItem == DAQI_INFO_CHAN_TYPES)
+            return getChanTypeNames((DaqInChanType)infoValue);
+        if (infoItem == DAQI_INFO_TRIG_TYPES)
+            return getTrigTypeNames((TriggerType)infoValue);
+        if (infoItem == DAQI_INFO_SCAN_OPTIONS)
+            return getOptionNames((ScanOption)infoValue);
+        break;
+    case TYPE_DAQO_INFO:
+        if (infoItem == DAQO_INFO_CHAN_TYPES)
+            return getChanOTypeNames((DaqOutChanType)infoValue);
+        if (infoItem == DAQO_INFO_TRIG_TYPES)
+            return getTrigTypeNames((TriggerType)infoValue);
+        if (infoItem == DAQO_INFO_SCAN_OPTIONS)
+            return getOptionNames((ScanOption)infoValue);
+        break;
+    case TYPE_MEM_INFO:
+        return getAccessTypes((MemAccessType)infoValue);
+        break;
+    default:
+        break;
+    }
+    return "";
+}
+
+QString getQueueTypeNames(AiQueueType typeNum)
+{
+    int mask;
+    AiQueueType maskedVal;
+    QString chanName;
+
+    maskedVal = (AiQueueType)0;
+    for (int i = 0; i < 3; i++) {
+        mask = pow(2, i);
+        maskedVal = (AiQueueType)(typeNum & (AiQueueType)mask);
+        switch (maskedVal) {
+        case CHAN_QUEUE:
+            chanName += "ChanQueue, ";
+            break;
+        case GAIN_QUEUE:
+            chanName += "GainQueue, ";
+            break;
+        case MODE_QUEUE:
+            chanName += "ModeQueue, ";
+            break;
+        default:
+            //chanName += "Invalid QType, ";
+            break;
+        }
+    }
+    int loc = chanName.lastIndexOf(",");
+    return chanName.left(loc);
+}
+
+QString getQueueLimitNames(AiChanQueueLimitation typeNum)
+{
+    int mask;
+    AiChanQueueLimitation maskedVal;
+    QString chanName;
+
+    maskedVal = (AiChanQueueLimitation)0;
+    for (int i = 0; i < 2; i++) {
+        mask = pow(2, i);
+        maskedVal = (AiChanQueueLimitation)(typeNum & (AiChanQueueLimitation)mask);
+        switch (maskedVal) {
+        case UNIQUE_CHAN:
+            chanName += "Unique, ";
+            break;
+        case ASCENDING_CHAN:
+            chanName += "Ascending, ";
+            break;
+        default:
+            //chanName += "Invalid QLim, ";
+            break;
+        }
+    }
+    int loc = chanName.lastIndexOf(",");
+    return chanName.left(loc);
+}
+
+QString getTrigTypeNames(TriggerType typeNum)
+{
+    int mask;
+    TriggerType maskedVal;
+    QString chanName;
+
+    maskedVal = (TriggerType)0;
+    for (int i = 0; i < 19; i++) {
+        mask = pow(2, i);
+        maskedVal = (TriggerType)(typeNum & (TriggerType)mask);
+        switch (maskedVal) {
+        case TRIG_POS_EDGE:
+            chanName += "Positive Edge, ";
+            break;
+        case TRIG_NEG_EDGE:
+            chanName += "Negative Edge, ";
+            break;
+        case TRIG_HIGH:
+            chanName += "TrigHigh, ";
+            break;
+        case TRIG_LOW:
+            chanName += "TrigLow, ";
+            break;
+        case GATE_HIGH:
+            chanName += "GateHigh, ";
+            break;
+        case GATE_LOW:
+            chanName += "GateLow, ";
+            break;
+        case TRIG_RISING:
+            chanName += "TrigRising, ";
+            break;
+        case TRIG_FALLING:
+            chanName += "TrigFalling, ";
+            break;
+        case TRIG_ABOVE:
+            chanName += "TrigAbove, ";
+            break;
+        case TRIG_BELOW:
+            chanName += "TrigBelow, ";
+            break;
+        case GATE_ABOVE:
+            chanName += "GateAbove, ";
+            break;
+        case GATE_BELOW:
+            chanName += "GateBelow, ";
+            break;
+        case GATE_IN_WINDOW:
+            chanName += "GateInWindow, ";
+            break;
+        case GATE_OUT_WINDOW:
+            chanName += "GateOutWindow, ";
+            break;
+        case TRIG_PATTERN_EQ:
+            chanName += "TrigPatternEq, ";
+            break;
+        case TRIG_PATTERN_NE:
+            chanName += "TrigPatternNE, ";
+            break;
+        case TRIG_PATTERN_ABOVE:
+            chanName += "TrigPatternAbove, ";
+            break;
+        case TRIG_PATTERN_BELOW:
+            chanName += "TrigPatternBelow, ";
+            break;
+        default:
+            break;
+        }
+    }
+    int loc = chanName.lastIndexOf(",");
+    return chanName.left(loc);
+}
+
+QString getEventNames(long long eventMask)
+{
+    QString eventString;
+
+    if (eventMask == 0)
+        return "No Events";
+    else {
+        if (eventMask & DE_ON_DATA_AVAILABLE)
+            eventString = "OnDataAvailable, ";
+        if (eventMask & DE_ON_INPUT_SCAN_ERROR)
+            eventString += "OnInScanError, ";
+        if (eventMask & DE_ON_END_OF_INPUT_SCAN)
+            eventString += "OnEndOfInScan, ";
+        if (eventMask & DE_ON_OUTPUT_SCAN_ERROR)
+            eventString += "OnOutScanError, ";
+        if (eventMask & DE_ON_END_OF_OUTPUT_SCAN)
+            eventString += "OnEndOfOutScan, ";
+        if (eventString.length())
+            return eventString.left(eventString.length() - 2);
+        return "Invalid EventType";
+    }
+}
+
+QString getAiInputModeName(AiInputMode inMode)
+{
+    //itemInt = static_cast<AiInputMode>(inMode);
+    switch (inMode) {
+    case AI_DIFFERENTIAL:
+        return "Diff";
+    case AI_SINGLE_ENDED:
+        return "SE";
+    case AI_PSEUDO_DIFFERENTIAL:
+        return "Pseudo Diff";
+    default:
+        return "Invalid mode";
+    }
+}
+
+QString getAiChanTypeName(AiChanType chanType)
+{
+    QString chanTypeString;
+
+    if (chanType == 0)
+        return "Invalid Type";
+    else {
+        if (chanType & AI_VOLTAGE)
+            chanTypeString = "Volts, ";
+        if (chanType & AI_TC)
+            chanTypeString += "TC, ";
+        if (chanType & AI_RTD)
+            chanTypeString += "RTD, ";
+        if (chanType & AI_THERMISTOR)
+            chanTypeString += "Tmstr, ";
+        if (chanType & AI_SEMICONDUCTOR)
+            chanTypeString += "SemiCdr, ";
+        if (chanType & AI_DISABLED)
+            chanTypeString += "Disabled, ";
+        if (chanTypeString.length())
+            return chanTypeString.left(chanTypeString.length() - 2);
+        return "Invalid Type";
+    }
+}
+
+QString getChanTypeNames(AiChanType typeNum)
+{
+    int mask;
+    AiChanType maskedVal;
+    QString chanName;
+
+    maskedVal = (AiChanType)0;
+    for (int i = 0; i < 6; i++) {
+        mask = pow(2, i);
+        maskedVal = (AiChanType)(typeNum & (AiChanType)mask);
+        switch (maskedVal) {
+        case AI_VOLTAGE:
+            chanName += "Ai Voltage, ";
+            break;
+        case AI_TC:
+            chanName += "Ai TC, ";
+            break;
+        case AI_RTD:
+            chanName += "Ai RTD, ";
+            break;
+        case AI_THERMISTOR:
+            chanName += "Ai Thermistor, ";
+            break;
+        case AI_SEMICONDUCTOR:
+            chanName += "Ai Semiconductor, ";
+            break;
+        case AI_DISABLED:
+            chanName += "Ai Disabled, ";
+            break;
+        default:
+            //chanName += "Invalid Type";
+            break;
+        }
+    }
+    int loc = chanName.lastIndexOf(",");
+    return chanName.left(loc);
+}
+
+QString getDioPortTypeName(DigitalPortType typeNum)
+{
+    switch (typeNum) {
+    case AUXPORT0:
+        return "Auxport0";
+    case AUXPORT1:
+        return "Auxport1";
+    case AUXPORT2:
+        return "Auxport2";
+    case FIRSTPORTA:
+        return "FirstPortA";
+    case FIRSTPORTB:
+        return "FirstPortB";
+    case FIRSTPORTCL:
+        return "FirstPortCL";
+    case FIRSTPORTCH:
+        return "FirstPortCH";
+    case SECONDPORTA:
+        return "SecondPortA";
+    case SECONDPORTB:
+        return "SecondPortB";
+    case SECONDPORTCL:
+        return "SecondPortCL";
+    case SECONDPORTCH:
+        return "SecondPortCH";
+    case THIRDPORTA:
+        return "ThirdPortA";
+    case THIRDPORTB:
+        return "ThirdPortB";
+    case THIRDPORTCL:
+        return "ThirdPortCL";
+    case THIRDPORTCH:
+        return "ThirdPortCH";
+    case FOURTHPORTA:
+        return "FourthPortA";
+    case FOURTHPORTB:
+        return "FourthPortB";
+    case FOURTHPORTCL:
+        return "FourthPortCL";
+    case FOURTHPORTCH:
+        return "FourthPortCH";
+    case FIFTHPORTA:
+        return "FifthPortA";
+    case FIFTHPORTB:
+        return "FifthPortB";
+    case FIFTHPORTCL:
+        return "FifthPortCL";
+    case FIFTHPORTCH:
+        return "FifthPortCH";
+    case SIXTHPORTA:
+        return "SixthPortA";
+    case SIXTHPORTB:
+        return "SixthPortB";
+    case SIXTHPORTCL:
+        return "SixthPortCL";
+    case SIXTHPORTCH:
+        return "SixthPortCH";
+    case SEVENTHPORTA:
+        return "SeventhPortA";
+    case SEVENTHPORTB:
+        return "SeventhPortB";
+    case SEVENTHPORTCL:
+        return "SeventhPortCL";
+    case SEVENTHPORTCH:
+        return "SeventhPortCH";
+    case EIGHTHPORTA:
+        return "EighthPortA";
+    case EIGHTHPORTB:
+        return "EighthPortB";
+    case EIGHTHPORTCL:
+        return "EighthPortCL";
+    case EIGHTHPORTCH:
+        return "EighthPortCH";
+    default:
+        return "Invalid Type";
+        break;
+    }
+}
+
+QString getDPortIoTypeName(DigitalPortIoType ioType)
+{
+    switch (ioType) {
+    case DPIOT_IN:
+        return "Fixed input";
+        break;
+    case DPIOT_OUT:
+        return "Fixed input";
+        break;
+    case DPIOT_IO:
+        return "PortProgIO";
+        break;
+    case DPIOT_BITIO:
+        return "BitProgIO";
+        break;
+    case DPIOT_NONCONFIG:
+        return "NonProgIO";
+        break;
+    default:
+        return "InvalidType";
+        break;
+    }
+}
+
+QString getCtrMeasTypeNames(CounterMeasurementType typeNum)
+{
+    int mask;
+    AiChanType maskedVal;
+    QString chanName;
+
+    maskedVal = (AiChanType)0;
+    for (int i = 0; i < 6; i++) {
+        mask = pow(2, i);
+        maskedVal = (AiChanType)(typeNum & (AiChanType)mask);
+        switch (maskedVal) {
+        case CMT_COUNT:
+            chanName += "Count, ";
+            break;
+        case CMT_PERIOD:
+            chanName += "Period, ";
+            break;
+        case CMT_PULSE_WIDTH:
+            chanName += "PulseWidth, ";
+            break;
+        case CMT_TIMING:
+            chanName += "Timing, ";
+            break;
+        case CMT_ENCODER:
+            chanName += "Encoder, ";
+            break;
+        default:
+            //chanName += "Invalid CtrType, ";
+            break;
+        }
+    }
+    int loc = chanName.lastIndexOf(",");
+    return chanName.left(loc);
+}
+
+QString getTmrTypeName(TimerType tmrType)
+{
+    switch (tmrType) {
+    case TMR_STANDARD:
+        return "Standard";
+        break;
+    case TMR_ADVANCED:
+        return "Advanced";
+        break;
+    default:
+        return "Invalid Type";
+        break;
+    }
+}
+
+QString getChanTypeNames(DaqInChanType typeNum)
+{
+    int mask;
+    DaqInChanType maskedVal;
+    QString chanName;
+
+    maskedVal = (DaqInChanType)0;
+    for (int i = 0; i < 6; i++) {
+        mask = pow(2, i);
+        maskedVal = (DaqInChanType)(typeNum & (DaqInChanType)mask);
+        switch (maskedVal) {
+        case DAQI_ANALOG_DIFF:
+            chanName += "AnalogDiff, ";
+            break;
+        case DAQI_ANALOG_SE:
+            chanName += "AnalogSE, ";
+            break;
+        case DAQI_DIGITAL:
+            chanName += "Digital, ";
+            break;
+        case DAQI_CTR16:
+            chanName += "Counter16, ";
+            break;
+        case DAQI_CTR32:
+            chanName += "Counter32, ";
+            break;
+        case DAQI_CTR48:
+            chanName += "Counter48, ";
+            break;
+        default:
+            //chanName += "Invalid ChanType, ";
+            break;
+        }
+    }
+    int loc = chanName.lastIndexOf(",");
+    return chanName.left(loc);
+}
+
+QString getChanOTypeNames(DaqOutChanType typeNum)
+{
+    int mask;
+    DaqOutChanType maskedVal;
+    QString chanName;
+
+    maskedVal = (DaqOutChanType)0;
+    for (int i = 0; i < 2; i++) {
+        mask = pow(2, i);
+        maskedVal = (DaqOutChanType)(typeNum & (DaqOutChanType)mask);
+        switch (maskedVal) {
+        case DAQO_ANALOG:
+            chanName += "AnalogOut, ";
+            break;
+        case DAQO_DIGITAL:
+            chanName += "DigitalOut, ";
+            break;
+        default:
+            //chanName += "Invalid ChanType, ";
+            break;
+        }
+    }
+    int loc = chanName.lastIndexOf(",");
+    return chanName.left(loc);
+}
+
+QString getRangeName(Range rangeVal)
+{
+    //rangeInt = static_cast<Range>(rangeVal);
+    switch (rangeVal) {
+    case BIP60VOLTS:
+        return "Bip60Volts";
+    case BIP30VOLTS:
+        return "Bip30Volts";
+    case BIP15VOLTS:
+        return "Bip15Volts";
+    case BIP20VOLTS:
+        return "Bip20Volts";
+    case BIP10VOLTS:
+        return "Bip10Volts";
+    case BIP5VOLTS:
+        return "Bip5Volts";
+    case BIP4VOLTS:
+        return "Bip4Volts";
+    case BIP2PT5VOLTS:
+        return "Bip2Pt5Volts";
+    case BIP2VOLTS:
+        return "Bip2Volts";
+    case BIP1PT25VOLTS:
+        return "Bip1Pt25Volts";
+    case BIP1VOLTS:
+        return "Bip1Volts";
+    case BIPPT625VOLTS:
+        return "BipPt625Volts";
+    case BIPPT5VOLTS:
+        return "BipPt5Volts";
+    case BIPPT25VOLTS:
+        return "BipPt25Volts";
+    case BIPPT125VOLTS:
+        return "BipPt125Volts";
+    case BIPPT2VOLTS:
+        return "BipPt2Volts";
+    case BIPPT1VOLTS:
+        return "BipPt1Volts";
+    case BIPPT078VOLTS:
+        return "BipPt05Volts";
+    case BIPPT05VOLTS:
+        return "BipPt01Volts";
+    case BIPPT01VOLTS:
+        return "BipPt005Volts";
+    case BIPPT005VOLTS:
+        return "Bip1Pt67Volts";
+    case UNI60VOLTS:
+        return "Uni60Volts";
+    case UNI30VOLTS:
+        return "Uni30Volts";
+    case UNI15VOLTS:
+        return "Uni15Volts";
+    case UNI20VOLTS:
+        return "Uni20Volts";
+    case UNI10VOLTS:
+        return "Uni10Volts";
+    case UNI5VOLTS:
+        return "Uni5Volts";
+    case UNI4VOLTS:
+        return "Uni4Volts";
+    case UNI2PT5VOLTS:
+        return "Uni2Pt5Volts";
+    case UNI2VOLTS:
+        return "Uni2Volts";
+    case UNI1PT25VOLTS:
+        return "Uni1Pt25Volts";
+    case UNI1VOLTS:
+        return "Uni1Volts";
+    default:
+        return "Invalid Range";
+    }
+}
+
+QString getAccessTypes(MemAccessType memAccess)
+{
+    QString accessDesc;
+
+    if (memAccess == 0)
+        return "None";
+    else {
+        if (memAccess & MA_READ)
+            accessDesc = "Read, ";
+        if (memAccess & MA_WRITE)
+            accessDesc += "Write, ";
+        if (accessDesc.length())
+            return accessDesc.left(accessDesc.length() - 2);
+        return "Invalid Access Type";
+    }
+}
+
+CounterMeasurementMode getMeasModeFromListIndex(int listIndex)
+{
+    switch (listIndex) {
+    case 0:
+        return CMM_DEFAULT;
+    case 1:
+        return CMM_CLEAR_ON_READ;
+    case 2:
+        return CMM_COUNT_DOWN;
+    case 3:
+        return CMM_GATE_CONTROLS_DIR;
+    case 4:
+        return CMM_GATE_CLEARS_CTR;
+    case 5:
+        return CMM_GATE_TRIG_SRC;
+    case 6:
+        return CMM_OUTPUT_ON;
+    case 7:
+        return CMM_OUTPUT_INITIAL_STATE_HIGH;
+    case 8:
+        return CMM_NO_RECYCLE;
+    case 9:
+        return CMM_RANGE_LIMIT_ON;
+    case 10:
+        return CMM_GATING_ON;
+    case 11:
+        return CMM_INVERT_GATE;
+    case 12:
+        return CMM_PERIOD_X10;
+    case 13:
+        return CMM_PERIOD_X100;
+    case 14:
+        return CMM_PERIOD_X1000;
+    case 15:
+        return CMM_PERIOD_GATING_ON;
+    case 16:
+        return CMM_PERIOD_INVERT_GATE;
+    case 17:
+        return CMM_PULSE_WIDTH_GATING_ON;
+    case 18:
+        return CMM_PULSE_WIDTH_INVERT_GATE;
+    case 19:
+        return CMM_TIMING_MODE_INVERT_GATE;
+    case 20:
+        return CMM_ENCODER_X2;
+    case 21:
+        return CMM_ENCODER_X4;
+    case 22:
+        return CMM_ENCODER_LATCH_ON_Z;
+    case 23:
+        return CMM_ENCODER_CLEAR_ON_Z;
+    case 24:
+        return CMM_ENCODER_NO_RECYCLE;
+    case 25:
+        return CMM_ENCODER_RANGE_LIMIT_ON;
+    case 26:
+        return CMM_ENCODER_Z_ACTIVE_EDGE;
+    default:
+        return CMM_DEFAULT;
+    }
+}

@@ -1,0 +1,755 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1091</width>
+    <height>525</height>
+   </rect>
+  </property>
+  <property name="font">
+   <font>
+    <pointsize>10</pointsize>
+   </font>
+  </property>
+  <property name="windowTitle">
+   <string>Universal Test for Linux</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QMdiArea" name="mdiArea"/>
+    </item>
+    <item>
+     <widget class="QLabel" name="lblAppStatus">
+      <property name="font">
+       <font>
+        <pointsize>9</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="wordWrap">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item alignment="Qt::AlignBottom">
+     <widget class="QFrame" name="frame">
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <property name="topMargin">
+        <number>2</number>
+       </property>
+       <property name="bottomMargin">
+        <number>2</number>
+       </property>
+       <item>
+        <widget class="QPushButton" name="cmdDiscover">
+         <property name="text">
+          <string>Discover</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="cmdAIn">
+         <property name="text">
+          <string>Analog In</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="cmdAOut">
+         <property name="text">
+          <string>Analog Out</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="cmdDIn">
+         <property name="text">
+          <string>Digital In</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="cmdDOut">
+         <property name="text">
+          <string>Digital Out</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="cmdCtr">
+         <property name="text">
+          <string>Counters</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="cmdMisc">
+         <property name="text">
+          <string>Misc</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="cmdConfig">
+         <property name="text">
+          <string>Info/Conf</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="cmdHistory">
+         <property name="text">
+          <string>History</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1091</width>
+     <height>19</height>
+    </rect>
+   </property>
+   <property name="nativeMenuBar">
+    <bool>false</bool>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="separator"/>
+    <addaction name="actionTmrLoop"/>
+   </widget>
+   <widget class="QMenu" name="menuRange">
+    <property name="title">
+     <string>Range</string>
+    </property>
+    <addaction name="actionBIP20VOLTS"/>
+    <addaction name="actionBIP10VOLTS"/>
+    <addaction name="actionBIP5VOLTS"/>
+    <addaction name="actionBIP4VOLTS"/>
+    <addaction name="actionBIP2PT5VOLTS"/>
+    <addaction name="actionBIP2VOLTS"/>
+    <addaction name="actionBIP1PT25VOLTS"/>
+    <addaction name="actionBIP1VOLTS"/>
+    <addaction name="separator"/>
+    <addaction name="actionUNI10VOLTS"/>
+    <addaction name="actionUNI5VOLTS"/>
+    <addaction name="separator"/>
+    <addaction name="actionLoad_Queue"/>
+   </widget>
+   <widget class="QMenu" name="menuBoards">
+    <property name="title">
+     <string>Boards</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuOptions">
+    <property name="title">
+     <string>Options</string>
+    </property>
+    <addaction name="actionSO_DEFAULTIO"/>
+    <addaction name="actionSO_SINGLEIO"/>
+    <addaction name="actionSO_BLOCKIO"/>
+    <addaction name="actionSO_BURSTIO"/>
+    <addaction name="actionSO_CONTINUOUS"/>
+    <addaction name="actionSO_EXTCLOCK"/>
+    <addaction name="actionSO_EXTTRIGGER"/>
+    <addaction name="actionSO_RETRIGGER"/>
+    <addaction name="actionSO_BURSTMODE"/>
+    <addaction name="actionSO_PACEROUT"/>
+    <addaction name="actionSO_NOCLEAR"/>
+    <addaction name="separator"/>
+    <addaction name="actionFF_DEFAULT"/>
+    <addaction name="actionFF_NOSCALEDATA"/>
+    <addaction name="actionFF_NOCALIBRATEDATA"/>
+    <addaction name="actionFF_CTR64_BIT"/>
+    <addaction name="actionFF_NOCLEAR"/>
+    <addaction name="separator"/>
+    <addaction name="actionAI_DIFFERENTIAL"/>
+    <addaction name="actionAI_SINGLE_ENDED"/>
+    <addaction name="actionAI_PSEUDO_DIFFERENTIAL"/>
+   </widget>
+   <widget class="QMenu" name="menuFunction">
+    <property name="title">
+     <string>Function</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuPlot">
+    <property name="title">
+     <string>Plot</string>
+    </property>
+    <addaction name="actionVolts_vs_Time"/>
+   </widget>
+   <widget class="QMenu" name="menuTriggering">
+    <property name="title">
+     <string>Triggering</string>
+    </property>
+    <addaction name="actionTRIG_NONE"/>
+    <addaction name="actionTRIG_POS_EDGE"/>
+    <addaction name="actionTRIG_NEG_EDGE"/>
+    <addaction name="actionTRIG_HIGH"/>
+    <addaction name="actionTRIG_LOW"/>
+    <addaction name="actionGATE_HIGH"/>
+    <addaction name="actionGATE_LOW"/>
+    <addaction name="actionTRIG_RISING"/>
+    <addaction name="actionTRIG_FALLING"/>
+    <addaction name="separator"/>
+    <addaction name="actionTRIG_ABOVE"/>
+    <addaction name="actionTRIG_BELOW"/>
+    <addaction name="actionGATE_ABOVE"/>
+    <addaction name="actionGATE_BELOW"/>
+    <addaction name="actionGATE_IN_WINDOW"/>
+    <addaction name="actionGATE_OUT_WINDOW"/>
+    <addaction name="separator"/>
+    <addaction name="actionTRIG_PATTERN_EQ"/>
+    <addaction name="actionTRIG_PATTERN_NE"/>
+    <addaction name="actionTRIG_PATTERN_ABOVE"/>
+    <addaction name="actionTRIG_PATTERN_BELOW"/>
+    <addaction name="separator"/>
+    <addaction name="actionSet_Trigger"/>
+   </widget>
+   <widget class="QMenu" name="menuData_Generator">
+    <property name="title">
+     <string>Data</string>
+    </property>
+    <addaction name="actionConfigure_Data"/>
+   </widget>
+   <widget class="QMenu" name="menuEvents">
+    <property name="title">
+     <string>Events</string>
+    </property>
+    <addaction name="actionEventSetup"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuBoards"/>
+   <addaction name="menuFunction"/>
+   <addaction name="menuOptions"/>
+   <addaction name="menuRange"/>
+   <addaction name="menuEvents"/>
+   <addaction name="menuTriggering"/>
+   <addaction name="menuData_Generator"/>
+   <addaction name="menuPlot"/>
+  </widget>
+  <action name="actionTmrLoop">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Timer Loop</string>
+   </property>
+  </action>
+  <action name="actionBIP10VOLTS">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>BIP10VOLTS</string>
+   </property>
+   <property name="shortcut">
+    <string>F1</string>
+   </property>
+  </action>
+  <action name="actionBIP5VOLTS">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>BIP5VOLTS</string>
+   </property>
+   <property name="shortcut">
+    <string>F2</string>
+   </property>
+  </action>
+  <action name="actionSO_DEFAULTIO">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>SO_DEFAULTIO</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="actionSO_SINGLEIO">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>SO_SINGLEIO</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actionSO_BLOCKIO">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>SO_BLOCKIO</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L</string>
+   </property>
+  </action>
+  <action name="actionSO_BURSTIO">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>SO_BURSTIO</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+I</string>
+   </property>
+  </action>
+  <action name="actionSO_CONTINUOUS">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>SO_CONTINUOUS</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+T</string>
+   </property>
+  </action>
+  <action name="actionSO_EXTCLOCK">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>SO_EXTCLOCK</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+C</string>
+   </property>
+  </action>
+  <action name="actionSO_EXTTRIGGER">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>SO_EXTTRIGGER</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+G</string>
+   </property>
+  </action>
+  <action name="actionSO_RETRIGGER">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>SO_RETRIGGER</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Y</string>
+   </property>
+  </action>
+  <action name="actionSO_BURSTMODE">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>SO_BURSTMODE</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+U</string>
+   </property>
+  </action>
+  <action name="actionSO_NOCLEAR">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>SO_NOCLEAR</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+J</string>
+   </property>
+  </action>
+  <action name="actionFF_DEFAULT">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>FF_DEFAULT</string>
+   </property>
+  </action>
+  <action name="actionFF_NOSCALEDATA">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>FF_NOSCALEDATA</string>
+   </property>
+  </action>
+  <action name="actionFF_NOCALIBRATEDATA">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>FF_NOCALIBRATEDATA</string>
+   </property>
+  </action>
+  <action name="actionAI_DIFFERENTIAL">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>AI_DIFFERENTIAL</string>
+   </property>
+  </action>
+  <action name="actionAI_SINGLE_ENDED">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>AI_SINGLE_ENDED</string>
+   </property>
+  </action>
+  <action name="actionAI_PSEUDO_DIFFERENTIAL">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>AI_PSEUDO_DIFFERENTIAL</string>
+   </property>
+  </action>
+  <action name="actionBIP20VOLTS">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>BIP20VOLTS</string>
+   </property>
+  </action>
+  <action name="actionBIP4VOLTS">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>BIP4VOLTS</string>
+   </property>
+  </action>
+  <action name="actionBIP2PT5VOLTS">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>BIP2PT5VOLTS</string>
+   </property>
+  </action>
+  <action name="actionBIP2VOLTS">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>BIP2VOLTS</string>
+   </property>
+  </action>
+  <action name="actionBIP1PT25VOLTS">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>BIP1PT25VOLTS</string>
+   </property>
+  </action>
+  <action name="actionBIP1VOLTS">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>BIP1VOLTS</string>
+   </property>
+  </action>
+  <action name="actionUNI10VOLTS">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>UNI10VOLTS</string>
+   </property>
+  </action>
+  <action name="actionUNI5VOLTS">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>UNI5VOLTS</string>
+   </property>
+  </action>
+  <action name="actionRefresh_Devices">
+   <property name="text">
+    <string>Refresh Devices</string>
+   </property>
+   <property name="shortcut">
+    <string>F5</string>
+   </property>
+  </action>
+  <action name="actionVolts_vs_Time">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Volts vs Time</string>
+   </property>
+  </action>
+  <action name="actionTRIG_NONE">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>TRIG_NONE</string>
+   </property>
+  </action>
+  <action name="actionTRIG_POS_EDGE">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>TRIG_POS_EDGE</string>
+   </property>
+  </action>
+  <action name="actionTRIG_NEG_EDGE">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>TRIG_NEG_EDGE</string>
+   </property>
+  </action>
+  <action name="actionTRIG_HIGH">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>TRIG_HIGH</string>
+   </property>
+  </action>
+  <action name="actionTRIG_LOW">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>TRIG_LOW</string>
+   </property>
+  </action>
+  <action name="actionGATE_HIGH">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>GATE_HIGH</string>
+   </property>
+  </action>
+  <action name="actionGATE_LOW">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>GATE_LOW</string>
+   </property>
+  </action>
+  <action name="actionTRIG_RISING">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>TRIG_RISING</string>
+   </property>
+  </action>
+  <action name="actionTRIG_FALLING">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>TRIG_FALLING</string>
+   </property>
+  </action>
+  <action name="actionTRIG_ABOVE">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>TRIG_ABOVE</string>
+   </property>
+  </action>
+  <action name="actionTRIG_BELOW">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>TRIG_BELOW</string>
+   </property>
+  </action>
+  <action name="actionGATE_ABOVE">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>GATE_ABOVE</string>
+   </property>
+  </action>
+  <action name="actionGATE_BELOW">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>GATE_BELOW</string>
+   </property>
+  </action>
+  <action name="actionGATE_IN_WINDOW">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>GATE_IN_WINDOW</string>
+   </property>
+  </action>
+  <action name="actionGATE_OUT_WINDOW">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>GATE_OUT_WINDOW</string>
+   </property>
+  </action>
+  <action name="actionTRIG_PATTERN_EQ">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>TRIG_PATTERN_EQ</string>
+   </property>
+  </action>
+  <action name="actionTRIG_PATTERN_NE">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>TRIG_PATTERN_NE</string>
+   </property>
+  </action>
+  <action name="actionTRIG_PATTERN_ABOVE">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>TRIG_PATTERN_ABOVE</string>
+   </property>
+  </action>
+  <action name="actionTRIG_PATTERN_BELOW">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>TRIG_PATTERN_BELOW</string>
+   </property>
+  </action>
+  <action name="actionConfigure_Data">
+   <property name="text">
+    <string>Configure Data</string>
+   </property>
+  </action>
+  <action name="actionLoad_Queue">
+   <property name="text">
+    <string>Load Queue</string>
+   </property>
+  </action>
+  <action name="actionFF_CTR64_BIT">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>FF_CTR64_BIT</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
+   </property>
+  </action>
+  <action name="actionFF_NOCLEAR">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>FF_NOCLEAR</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
+   </property>
+  </action>
+  <action name="actionEventSetup">
+   <property name="text">
+    <string>Configure Events</string>
+   </property>
+  </action>
+  <action name="actionSO_PACEROUT">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>SO_PACEROUT</string>
+   </property>
+  </action>
+  <action name="actionSet_Trigger">
+   <property name="text">
+    <string>Set Trigger...</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections/>
+</ui>
