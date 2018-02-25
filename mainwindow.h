@@ -4,12 +4,13 @@
 #include <QMainWindow>
 #include <QMenu>
 #include <QKeyEvent>
+#include <QMessageBox>
 #include "childwindow.h"
 #include "unitest.h"
 #include <QHash>
 #include "ul.h"
 #include "../Test/errordialog.h"
-#include "plotwindow.h"
+//#include "plotwindow.h"
 #include "trigdialog.h"
 #include "eventsdialog.h"
 
@@ -90,7 +91,7 @@ private:
 
     ScanOption mScanOptions;
 
-    PlotWindow *plotWindow;
+    //PlotWindow *plotWindow;
     TrigDialog *trigDialog;
     EventsDialog *eventSetup;
     int mHistListSize;

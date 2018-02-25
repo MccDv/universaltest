@@ -8,7 +8,7 @@
 #include "tmrdialog.h"
 #include "subwidget.h"
 #include "unitest.h"
-#include "plotwindow.h"
+//#include "plotwindow.h"
 //#include "aisubwidget.h"
 #include "ul.h"
 
