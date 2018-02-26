@@ -1113,7 +1113,7 @@ void AiSubWidget::checkStatus()
                 printData(mPlotCount, mPlotIndex, mBlockSize + blockAppend);
             }
 
-            mPlotIndex = currentIndex;
+            mPlotIndex = currentIndex + mChanCount;
             mPlotCount = currentTotalCount;
         }
     } else {

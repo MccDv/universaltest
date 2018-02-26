@@ -1,8 +1,7 @@
 /*
- * ul.h
+ * uldaq.h
  *
- *  Created on: Jul 25, 2015
- *      Author: mcc
+ *     Author: Measurement Computing Corporation
  */
 
 #ifndef UL_H_
@@ -14,7 +13,7 @@ extern "C"
 #endif
 
 /** \mainpage
-\htmlinclude about-UlforLinux.html
+\htmlinclude UlLinux-intro.html
  */
 
 /** \brief The connection interface used to communicate with a DAQ device. */
@@ -32,7 +31,6 @@ typedef enum
 }DaqDeviceInterface;
 
 /** \brief A structure representing the DAQ device.
- * A structure representing the DAQ device.
  *
 */
 struct DaqDeviceDescriptor
@@ -52,7 +50,7 @@ struct DaqDeviceDescriptor
 	DaqDeviceInterface devInterface;
 
 	/**
-	 * A unique (fully-qualified) name that identifies a specific DAQ device.<br>
+	 * A unique (fully-qualified) name that identifies a specific DAQ device.
 	 * For a Bluetooth device, this value is the product name with a partial serial number
 	 * appended. <br>For a USB device, this value is a bus location. <br>For an Ethernet device,
 	 * this value represents a NetBIOS name. <br> For a virtual device, an empty string is returned.<br>
@@ -72,8 +70,6 @@ struct DaqDeviceDescriptor
 };
 
 /** \brief A structure representing the DAQ device descriptor.
- *
- * A structure representing the DAQ device descriptor.
  *
 */
 typedef struct 	DaqDeviceDescriptor DaqDeviceDescriptor;
@@ -100,6 +96,9 @@ struct TransferStatus
 	char reserved[64];
 };
 
+/** \brief A structure representing the status of the data transfer.
+ *
+ */
 typedef struct 	TransferStatus TransferStatus;
 
 ///@cond
@@ -110,167 +109,167 @@ typedef struct 	TransferStatus TransferStatus;
 typedef enum
 {
 	/** No error has occurred */
-	ERR_NO_ERROR 					= 0,             //!< ERR_NO_ERROR
+	ERR_NO_ERROR 					= 0,
 	/** Unhandled internal exception */
-	ERR_UNHANDLED_EXCEPTION 		= 1,     //!< ERR_UNHANDLED_EXCEPTION
+	ERR_UNHANDLED_EXCEPTION 		= 1,
 	/** Invalid device handle */
-	ERR_BAD_DEV_HANDLE 				= 2,        //!< ERR_BAD_DEV_HANDLE
+	ERR_BAD_DEV_HANDLE 				= 2,
 	/** This function cannot be used with this device */
-	ERR_BAD_DEV_TYPE 				= 3,          //!< ERR_BAD_DEV_TYPE
+	ERR_BAD_DEV_TYPE 				= 3,
 	/** Insufficient permission to access this device */
-	ERR_USB_DEV_NO_PERMISSION		= 4,    //!< ERR_USB_DEV_NO_PERMISSION
+	ERR_USB_DEV_NO_PERMISSION		= 4,
 	/** USB interface is already claimed */
-	ERR_USB_INTERFACE_CLAIMED 		= 5,   //!< ERR_USB_INTERFACE_CLAIMED
+	ERR_USB_INTERFACE_CLAIMED 		= 5,
 	/** Device not found */
-	ERR_DEV_NOT_FOUND 				= 6,         //!< ERR_DEV_NOT_FOUND
+	ERR_DEV_NOT_FOUND 				= 6,
 	/** Device not connected or connection lost */
-	ERR_DEV_NOT_CONNECTED 			= 7,      //!< ERR_DEV_NOT_CONNECTED
+	ERR_DEV_NOT_CONNECTED 			= 7,
 	/** Device no longer responding */
-	ERR_DEAD_DEV 					= 8,             //!< ERR_DEAD_DEV
+	ERR_DEAD_DEV 					= 8,
 	/** Buffer too small for operation */
-	ERR_BAD_BUFFER_SIZE 			= 9,        //!< ERR_BAD_BUFFER_SIZE
+	ERR_BAD_BUFFER_SIZE 			= 9,
 	/** Invalid buffer */
-	ERR_BAD_BUFFER 					= 10,          //!< ERR_BAD_BUFFER
+	ERR_BAD_BUFFER 					= 10,
 	/** Invalid memory type */
-	ERR_BAD_MEM_TYPE 				= 11,         //!< ERR_BAD_MEM_TYPE
+	ERR_BAD_MEM_TYPE 				= 11,
 	/** Invalid memory region */
-	ERR_BAD_MEM_REGION 				= 12,       //!< ERR_BAD_MEM_REGION
+	ERR_BAD_MEM_REGION 				= 12,
 	/** Invalid range */
-	ERR_BAD_RANGE					= 13,            //!< ERR_BAD_RANGE
+	ERR_BAD_RANGE					= 13,
 	/** Invalid analog input channel specified */
-	ERR_BAD_AI_CHAN					= 14,          //!< ERR_BAD_AI_CHAN
+	ERR_BAD_AI_CHAN					= 14,
 	/** Invalid input mode specified */
-	ERR_BAD_INPUT_MODE				= 15,        //!< ERR_BAD_INPUT_MODE
+	ERR_BAD_INPUT_MODE				= 15,
 	/** A background process is already in progress */
-	ERR_ALREADY_ACTIVE				= 16,        //!< ERR_ALREADY_ACTIVE
+	ERR_ALREADY_ACTIVE				= 16,
 	/** Invalid trigger type specified */
-	ERR_BAD_TRIG_TYPE				= 17,         //!< ERR_BAD_TRIG_TYPE
+	ERR_BAD_TRIG_TYPE				= 17,
 	/** FIFO overrun, data was not transferred from device fast enough */
-	ERR_OVERRUN						= 18,             //!< ERR_OVERRUN
+	ERR_OVERRUN						= 18,
 	/** FIFO underrun, data was not transferred to device fast enough */
-	ERR_UNDERRUN					= 19,             //!< ERR_UNDERRUN
+	ERR_UNDERRUN					= 19,
 	/** Operation timed out */
-	ERR_TIMEDOUT					= 20,             //!< ERR_TIMEDOUT
+	ERR_TIMEDOUT					= 20,
 	/** Invalid option specified */
-	ERR_BAD_OPTION					= 21,           //!< ERR_BAD_OPTION
+	ERR_BAD_OPTION					= 21,
 	/** Invalid sampling rate specified */
-	ERR_BAD_RATE					= 22,             //!< ERR_BAD_RATE
+	ERR_BAD_RATE					= 22,
 	/** Sample count cannot be greater than FIFO size for BURSTIO scans */
-	ERR_BAD_BURSTIO_COUNT			= 23,      //!< ERR_BAD_BURSTIO_COUNT
+	ERR_BAD_BURSTIO_COUNT			= 23,
 	/** Configuration not supported */
-	ERR_CONFIG_NOT_SUPPORTED		= 24,    //!< ERR_CONFIG_NOT_SUPPORTED
+	ERR_CONFIG_NOT_SUPPORTED		= 24,
 	/** Invalid configuration value */
-	ERR_BAD_CONFIG_VAL				= 25,        //!< ERR_BAD_CONFIG_VAL
+	ERR_BAD_CONFIG_VAL				= 25,
 	/** Invalid analog input channel type specified */
-	ERR_BAD_AI_CHAN_TYPE			= 26,       //!< ERR_BAD_AI_CHAN_TYPE
+	ERR_BAD_AI_CHAN_TYPE			= 26,
 	/** ADC overrun occurred */
-	ERR_ADC_OVERRUN					= 27,          //!< ERR_ADC_OVERRUN
+	ERR_ADC_OVERRUN					= 27,
 	/** Invalid thermocouple type specified */
-	ERR_BAD_TC_TYPE					= 28,          //!< ERR_BAD_TC_TYPE
+	ERR_BAD_TC_TYPE					= 28,
 	/** Invalid unit specified */
-	ERR_BAD_UNIT					= 29,             //!< ERR_BAD_UNIT
+	ERR_BAD_UNIT					= 29,
 	/** Invalid queue size */
-	ERR_BAD_QUEUE_SIZE				= 30,        //!< ERR_BAD_QUEUE_SIZE
+	ERR_BAD_QUEUE_SIZE				= 30,
 	/** Invalid config item specified */
-	ERR_BAD_CONFIG_ITEM				= 31,       //!< ERR_BAD_CONFIG_ITEM
+	ERR_BAD_CONFIG_ITEM				= 31,
 	/** Invalid info item specified */
-	ERR_BAD_INFO_ITEM				= 32,         //!< ERR_BAD_INFO_ITEM
+	ERR_BAD_INFO_ITEM				= 32,
 	/** Invalid flag specified */
-	ERR_BAD_FLAG					= 33,             //!< ERR_BAD_FLAG
+	ERR_BAD_FLAG					= 33,
 	/** Invalid sample count specified */
-	ERR_BAD_SAMPLE_COUNT			= 34,       //!< ERR_BAD_SAMPLE_COUNT
+	ERR_BAD_SAMPLE_COUNT			= 34,
 	/** Internal error */
-	ERR_INTERNAL					= 35,             //!< ERR_INTERNAL
+	ERR_INTERNAL					= 35,
 	/** Invalid coupling mode */
-	ERR_BAD_COUPLING_MODE			= 36,      //!< ERR_BAD_COUPLING_MODE
+	ERR_BAD_COUPLING_MODE			= 36,
 	/** Invalid sensor sensitivity */
-	ERR_BAD_SENSOR_SENSITIVITY		= 37,  //!< ERR_BAD_SENSOR_SENSITIVITY
+	ERR_BAD_SENSOR_SENSITIVITY		= 37,
 	/** Invalid IEPE mode */
-	ERR_BAD_IEPE_MODE				= 38,         //!< ERR_BAD_IEPE_MODE
+	ERR_BAD_IEPE_MODE				= 38,
 	/** Invalid channel queue specified */
-	ERR_BAD_AI_CHAN_QUEUE			= 39,      //!< ERR_BAD_AI_CHAN_QUEUE
+	ERR_BAD_AI_CHAN_QUEUE			= 39,
 	/** Invalid gain queue specified */
-	ERR_BAD_AI_GAIN_QUEUE			= 40,      //!< ERR_BAD_AI_GAIN_QUEUE
+	ERR_BAD_AI_GAIN_QUEUE			= 40,
 	/** Invalid mode queue specified */
-	ERR_BAD_AI_MODE_QUEUE			= 41,      //!< ERR_BAD_AI_MODE_QUEUE
+	ERR_BAD_AI_MODE_QUEUE			= 41,
 	/** FPGA file not found */
-	ERR_FPGA_FILE_NOT_FOUND			= 42,    //!< ERR_FPGA_FILE_NOT_FOUND
+	ERR_FPGA_FILE_NOT_FOUND			= 42,
 	/** Unable to read FPGA file */
-	ERR_UNABLE_TO_READ_FPGA_FILE	= 43, //!< ERR_UNABLE_TO_READ_FPGA_FILE
+	ERR_UNABLE_TO_READ_FPGA_FILE	= 43,
 	/** FPGA not loaded */
-	ERR_NO_FPGA						= 44,             //!< ERR_NO_FPGA
+	ERR_NO_FPGA						= 44,
 	/** Invalid argument */
-	ERR_BAD_ARG						= 45,             //!< ERR_BAD_ARG
+	ERR_BAD_ARG						= 45,
 	/** Minimum slope value reached */
-	ERR_MIN_SLOPE_VAL_REACHED		= 46,   //!< ERR_MIN_SLOPE_VAL_REACHED
+	ERR_MIN_SLOPE_VAL_REACHED		= 46,
 	/** Maximum slope value reached */
-	ERR_MAX_SLOPE_VAL_REACHED		= 47,   //!< ERR_MAX_SLOPE_VAL_REACHED
+	ERR_MAX_SLOPE_VAL_REACHED		= 47,
 	/** Minimum offset value reached */
-	ERR_MIN_OFFSET_VAL_REACHED		= 48,  //!< ERR_MIN_OFFSET_VAL_REACHED
+	ERR_MIN_OFFSET_VAL_REACHED		= 48,
 	/** Maximum offset value reached */
-	ERR_MAX_OFFSET_VAL_REACHED		= 49,  //!< ERR_MAX_OFFSET_VAL_REACHED
+	ERR_MAX_OFFSET_VAL_REACHED		= 49,
 	/** Invalid port type specified */
-	ERR_BAD_PORT_TYPE				= 50,         //!< ERR_BAD_PORT_TYPE
+	ERR_BAD_PORT_TYPE				= 50,
 	/** Digital I/O is configured incorrectly */
-	ERR_WRONG_DIG_CONFIG			= 51,       //!< ERR_WRONG_DIG_CONFIG
+	ERR_WRONG_DIG_CONFIG			= 51,
 	/** Invalid bit number */
-	ERR_BAD_BIT_NUM					= 52,          //!< ERR_BAD_BIT_NUM
+	ERR_BAD_BIT_NUM					= 52,
 	/** Invalid port value specified */
-	ERR_BAD_PORT_VAL				= 53,          //!< ERR_BAD_PORT_VAL
+	ERR_BAD_PORT_VAL				= 53,
 	/** Invalid re-trigger count */
-	ERR_BAD_RETRIG_COUNT			= 54,       //!< ERR_BAD_RETRIG_COUNT
+	ERR_BAD_RETRIG_COUNT			= 54,
 	/** Invalid analog output channel specified */
-	ERR_BAD_AO_CHAN					= 55,          //!< ERR_BAD_AO_CHAN
+	ERR_BAD_AO_CHAN					= 55,
 	/** Invalid D/A output value specified */
-	ERR_BAD_DA_VAL					= 56,           //!< ERR_BAD_DA_VAL
+	ERR_BAD_DA_VAL					= 56,
 	/** Invalid timer specified */
-	ERR_BAD_TMR						= 57,             //!< ERR_BAD_TMR
+	ERR_BAD_TMR						= 57,
 	/** Invalid frequency specified */
-	ERR_BAD_FREQUENCY				= 58,         //!< ERR_BAD_FREQUENCY
+	ERR_BAD_FREQUENCY				= 58,
 	/** Invalid duty cycle specified */
-	ERR_BAD_DUTY_CYCLE				= 59,        //!< ERR_BAD_DUTY_CYCLE
+	ERR_BAD_DUTY_CYCLE				= 59,
 	/** Invalid initial delay specified */
-	ERR_BAD_INITIAL_DELAY			= 60,      //!< ERR_BAD_INITIAL_DELAY
+	ERR_BAD_INITIAL_DELAY			= 60,
 	/** Invalid counter specified */
-	ERR_BAD_CTR						= 61,             //!< ERR_BAD_CTR
+	ERR_BAD_CTR						= 61,
 	/** Invalid counter value specified */
-	ERR_BAD_CTR_VAL					= 62,          //!< ERR_BAD_CTR_VAL
+	ERR_BAD_CTR_VAL					= 62,
 	/** Invalid DAQ input channel type specified */
-	ERR_BAD_DAQI_CHAN_TYPE			= 63,     //!< ERR_BAD_DAQI_CHAN_TYPE
+	ERR_BAD_DAQI_CHAN_TYPE			= 63,
 	/** Invalid number of channels specified */
-	ERR_BAD_NUM_CHANS				= 64,         //!< ERR_BAD_NUM_CHANS
+	ERR_BAD_NUM_CHANS				= 64,
 	/** Invalid counter register specified */
-	ERR_BAD_CTR_REG					= 65,          //!< ERR_BAD_CTR_REG
+	ERR_BAD_CTR_REG					= 65,
 	/** Invalid counter measurement type specified */
-	ERR_BAD_CTR_MEASURE_TYPE		= 66,    //!< ERR_BAD_CTR_MEASURE_TYPE
+	ERR_BAD_CTR_MEASURE_TYPE		= 66,
 	/** Invalid counter measurement mode specified */
-	ERR_BAD_CTR_MEASURE_MODE		= 67,    //!< ERR_BAD_CTR_MEASURE_MODE
+	ERR_BAD_CTR_MEASURE_MODE		= 67,
 	/** Invalid debounce time specified */
-	ERR_BAD_DEBOUNCE_TIME			= 68,      //!< ERR_BAD_DEBOUNCE_TIME
+	ERR_BAD_DEBOUNCE_TIME			= 68,
 	/** Invalid debounce mode specified */
-	ERR_BAD_DEBOUNCE_MODE			= 69,      //!< ERR_BAD_DEBOUNCE_MODE
+	ERR_BAD_DEBOUNCE_MODE			= 69,
 	/** Invalid edge detection mode specified */
-	ERR_BAD_EDGE_DETECTION			= 70,     //!< ERR_BAD_EDGE_DETECTION
+	ERR_BAD_EDGE_DETECTION			= 70,
 	/** Invalid tick size specified */
-	ERR_BAD_TICK_SIZE				= 71,         //!< ERR_BAD_TICK_SIZE
+	ERR_BAD_TICK_SIZE				= 71,
 	/** Invalid DAQ output channel type specified */
-	ERR_BAD_DAQO_CHAN_TYPE			= 72,     //!< ERR_BAD_DAQO_CHAN_TYPE
+	ERR_BAD_DAQO_CHAN_TYPE			= 72,
 	/** No connection established */
-	ERR_NO_CONNECTION_ESTABLISHED	= 73,//!< ERR_NO_CONNECTION_ESTABLISHED
+	ERR_NO_CONNECTION_ESTABLISHED	= 73,
 	/** Invalid event type specified */
-	ERR_BAD_EVENT_TYPE				= 74,        //!< ERR_BAD_EVENT_TYPE
+	ERR_BAD_EVENT_TYPE				= 74,
 	/** An event handler has already been enabled for this event type */
-	ERR_EVENT_ALREADY_ENABLED		= 75,   //!< ERR_EVENT_ALREADY_ENABLED
-	/** Invalid event count specified */
-	ERR_BAD_EVENT_SIZE				= 76,        //!< ERR_BAD_EVENT_SIZE
+	ERR_EVENT_ALREADY_ENABLED		= 75,
+	/** Invalid event parameter specified */
+	ERR_BAD_EVENT_PARAMETER			= 76,
 	/** Invalid callback function specified */
-	ERR_BAD_CALLBACK_FUCNTION		= 77,   //!< ERR_BAD_CALLBACK_FUCNTION
+	ERR_BAD_CALLBACK_FUCNTION		= 77,
 	/** Invalid memory address */
-	ERR_BAD_MEM_ADDRESS				= 78,       //!< ERR_BAD_MEM_ADDRESS
+	ERR_BAD_MEM_ADDRESS				= 78,
 	/** Memory access denied */
-	ERR_MEM_ACCESS_DENIED			= 79,      //!< ERR_MEM_ACCESS_DENIED
+	ERR_MEM_ACCESS_DENIED			= 79,
 	/** Device is not available at time of request */
-	ERR_DEV_UNAVAILABLE				= 80        //!< ERR_DEV_UNAVAILABLE
+	ERR_DEV_UNAVAILABLE				= 80
 
 } UlError;
 
@@ -444,29 +443,29 @@ typedef enum
 {
 	/** Disabled */
 	AZM_NONE = 1,
-	/** Perform auto zero on every thermocouple reading */
+	/** Perform auto zero on every thermocouple reading. */
 	AZM_EVERY_SAMPLE = 2,
-	/** Perform auto zero before every scan */
+	/** Perform auto zero before every scan. */
 	AZM_ONCE = 3
 }AutoZeroMode;
 
 /** ADC timing modes */
 typedef enum
 {
-	/** The timing mode is set automatically based on TBD */
+	/** The timing mode is set automatically. */
 	ADC_TM_AUTO 		= 1,
-	/** High resolution timing mode */
+	/** Acquires data in samples per 1000 seconds per channel. */
 	ADC_TM_HIGH_RES 	= 2,
-	/** High speed timing mode */
+	/** High speed timing mode. */
 	ADC_TM_HIGH_SPEED 	= 3
 }AdcTimingMode;
 
 /** IEPE modes */
 typedef enum
 {
-	/** IEPE excitation current is disabled */
+	/** IEPE excitation current is disabled. */
 	IEPE_DISABLED = 1,
-	/** IEPE excitation current is enabled */
+	/** IEPE excitation current is enabled. */
 	IEPE_ENABLED = 2
 }IepeMode;
 
@@ -496,7 +495,9 @@ typedef enum
 	/** A particular channel number cannot appear more than once in the queue. */
 	UNIQUE_CHAN = 1 << 0,
 	/** Channel numbers must be listed in ascending order within the queue. */
-	ASCENDING_CHAN = 1 << 1
+	ASCENDING_CHAN = 1 << 1,
+	/** Channel numbers must be listed in contiguous order within the queue. */
+	CONSECUTIVE_CHAN = 1 << 2
 } AiChanQueueLimitation;
 
 /** Digital port type */
@@ -607,7 +608,7 @@ typedef enum
 {
 	/** Programmable frequency timer */
 	TMR_STANDARD = 1,
-	/** Programmable frequency timer, plus other attributes such as pulse width */
+	/** Programmable frequency timer, plus other attributes such as pulse width. */
 	TMR_ADVANCED = 2
 }TimerType;
 
@@ -635,14 +636,14 @@ typedef enum
 	/** No trigger */
 	TRIG_NONE = 0,	// read-only, intended for info
 	/** Scanning begins when the external digital trigger transitions
-	 * from 0V to 5V (logic LOW to HIGH) */
+	 * from 0V to 5V (logic LOW to HIGH). */
 	TRIG_POS_EDGE =  1 << 0,
 	/** Scanning begins when the external digital trigger transitions
-	 * from 5V to 0V (logic HIGH to LOW) */
+	 * from 5V to 0V (logic HIGH to LOW). */
 	TRIG_NEG_EDGE = 1 << 1,
-	/**  Scanning begins when the external digital trigger is 5V (logic HIGH or '1') */
+	/**  Scanning begins when the external digital trigger is 5V (logic HIGH or '1'). */
 	TRIG_HIGH = 1 << 2,
-	/**  Scanning begins when the external digital trigger is 0V (logic LOW or '0') */
+	/**  Scanning begins when the external digital trigger is 0V (logic LOW or '0'). */
 	TRIG_LOW = 1 << 3,
 	/**  Scanning is enabled as long as the external digital trigger
 	 * input is 5V (logic HIGH or '1'). */
@@ -707,15 +708,17 @@ struct AiQueueElement
 	char reserved[64];
 };
 
-
+/** \brief A structure representing the queue element
+ *
+ */
 typedef struct 	AiQueueElement AiQueueElement;
 
 /** Scan status */
 typedef enum
 {
-	/** scan is idle */
+	/** Scan is idle */
 	SS_IDLE = 0,
-	/** scan is running */
+	/** Scan is running */
 	SS_RUNNING = 1
 }ScanStatus;
 
@@ -730,26 +733,26 @@ typedef enum
 typedef enum
 {
 	/** Transfers A/D data based on the board type and sampling speed. */
-	SO_DEFAULTIO	= 0,       //!< SO_DEFAULTIO
+	SO_DEFAULTIO	= 0,
 	/** Transfers one packet of data at a time. */
-	SO_SINGLEIO		= 1 << 0,  //!< SO_SINGLEIO
+	SO_SINGLEIO		= 1 << 0,
 	/** Transfers A/D data in blocks. */
-	SO_BLOCKIO		= 1 << 1,   //!< SO_BLOCKIO
-	/** Transfers A/D data from the FIFO after the scan completes. Allows maximum rates for
-	 * finite scans up to the full capacity of the FIFO. Not recommended for slow acquisition rates. */
-	SO_BURSTIO		= 1 << 2,   //!< SO_BURSTIO
+	SO_BLOCKIO		= 1 << 1,
+	/** Transfers A/D data from the FIFO after the scan completes.
+	 * Allows maximum rates for finite scans up to the full capacity of the FIFO. Not recommended for slow acquisition rates. */
+	SO_BURSTIO		= 1 << 2,
 	/** Scans data in an endless loop. The only way to stop the operation is with ulAInScanStop(). */
-	SO_CONTINUOUS 	= 1 << 3,//!< SO_CONTINUOUS
+	SO_CONTINUOUS 	= 1 << 3,
 	/** Data conversions are controlled by an external clock signal. */
-	SO_EXTCLOCK		= 1 << 4,  //!< SO_EXTCLOCK
+	SO_EXTCLOCK		= 1 << 4,
 	/** Sampling begins when a trigger condition is met. */
-	SO_EXTTRIGGER 	= 1 << 5,//!< SO_EXTTRIGGER
+	SO_EXTTRIGGER 	= 1 << 5,
 	/** Re-arms the trigger after a trigger event is performed. */
-	SO_RETRIGGER 	= 1 << 6, //!< SO_RETRIGGER
+	SO_RETRIGGER 	= 1 << 6,
 	/** Enables burst mode sampling, minimizing the channel skew. */
-	SO_BURSTMODE 	= 1 << 7, //!< SO_BURSTMODE
+	SO_BURSTMODE 	= 1 << 7,
 	/** Enables or disables the internal pacer output on a DAQ device. */
-	SO_PACEROUT		= 1 << 8   //!< SO_PACEROUT
+	SO_PACEROUT		= 1 << 8
 }ScanOption;
 
 /** Scan options for scaling and calibrating A/D scan data */
@@ -1091,8 +1094,6 @@ typedef enum
 
 /** \brief A structure representing the input channel descriptor.
  *
- * A structure representing the input channel descriptor.
- *
 */
 struct DaqInChanDescriptor
 {
@@ -1106,7 +1107,7 @@ struct DaqInChanDescriptor
 	char reserved[64];
 };
 
-/** TBD */
+/** \brief A structure representing the input channel descriptor */
 typedef struct 	DaqInChanDescriptor DaqInChanDescriptor;
 
 /** The output channel type */
@@ -1120,8 +1121,6 @@ typedef enum
 
 
 /** \brief A structure representing the output channel descriptor.
- *
- * A structure representing the output channel descriptor.
  *
 */
 struct DaqOutChanDescriptor
@@ -1138,8 +1137,6 @@ struct DaqOutChanDescriptor
 
 /** \brief A structure representing the output channel descriptor.
  *
- * A structure representing the output channel descriptor.
- *
 */
 typedef struct 	DaqOutChanDescriptor DaqOutChanDescriptor;
 
@@ -1148,13 +1145,14 @@ typedef enum
 {
 	/** No PulseOut options are applied. */
 	PO_DEFAULT = 0,
-	/** Output pulses are generated when a trigger condition is met.<br>Set the trigger condition with ulTmrSetTrigger(). */
+	/** Output pulses are generated when a trigger condition is met.
+	* Set the trigger condition with ulTmrSetTrigger(). */
 	PO_EXTTRIGGER = 1 << 5,
 	/** Output pulses are automatically retriggered. **/
 	PO_RETRIGGER = 1 << 6
 } PulseOutOption;
 
-/** Conditions that trigger an event. */
+/** Conditions that trigger an event */
 typedef enum
 {
 	/** No trigger */
@@ -1172,7 +1170,7 @@ typedef enum
 
 }DaqEventType;
 
-/** Reserved areas of memory. */
+/** Reserved areas of memory */
 typedef enum
 {
 	/** Calibration region */
@@ -1192,10 +1190,10 @@ typedef enum
 	MA_WRITE = 		1 << 1
 }MemAccessType;
 
-
+/** The callback function called in response to an event condition. */
 typedef void (*DaqEventCallback)(DaqDeviceHandle, DaqEventType, unsigned long long, void*);
 
-/** Data transfer options */
+/** Wait types  */
 typedef enum
 {
 	/** Data is transferred when the operation completes */
@@ -1212,14 +1210,17 @@ typedef enum
 	UL_INFO_VER_STR = 2000
 }UlInfoItemStr;
 
+//do not expose
+///@cond
+/** Priority of data transfers */
 typedef enum
 {
 	/** USB transfer priority */
 	UL_CFG_USB_XFER_PRIORITY = 1
-
 }UlConfigItem;
+///@endcond
 
-/** Returns device information */
+/** Returns device subsystem support */
 typedef enum
 {
 	/** The DAQ device has an analog input subsystem. */
@@ -1306,22 +1307,22 @@ typedef enum
 	AI_INFO_MAX_SCAN_RATE = 1001,
 	/** The maximum throughput in samples per second of the specified device. */
 	AI_INFO_MAX_THROUGHPUT = 1002,
-	/** The maximum scan rate in samples per second when using \link ScanOption::SO_BURSTIO SO_BURSTIO mode. \endlink */
+	/** The maximum scan rate in samples per second when using ::SO_BURSTIO mode. */
 	AI_INFO_MAX_BURST_RATE = 1003,
-	/** The maximum throughput in samples per second when using \link ScanOption::SO_BURSTIO SO_BURSTIO mode. \endlink */
+	/** The maximum throughput in samples per second when using ::SO_BURSTIO mode. */
 	AI_INFO_MAX_BURST_THROUGHPUT = 1004
 }AiInfoItemDbl;
 
-/** Use with ulSetConfig() and ulGetConfig() to perform configuration operations on the AI subsystem. */
+/** Use with ulAISetConfig() and ulAIGetConfig() to configure the AI subsystem. */
 typedef enum
 {
 	/** The channel type of the specified  channel. Set with #AiChanType. */
 	AI_CFG_CHAN_TYPE = 1,
-	/** he thermocouple type of the specified channel. Set with #TcType. */
+	/** The thermocouple type of the specified channel. Set with #TcType. */
 	AI_CFG_CHAN_TC_TYPE = 2,
 	/** The temperature unit of the specified channel. Set with #TempUnit. */
 	AI_CFG_CHAN_TEMP_UNIT = 3,
-	/** The temperature unit for the specified device. Set with #AiChanType. */
+	/** The temperature unit. Set with #TempUnit. */
 	AI_CFG_TEMP_UNIT = 4,
 	/** The timing mode. Set with #AdcTimingMode. */
 	AI_CFG_ADC_TIMING_MODE = 5,
@@ -1335,7 +1336,7 @@ typedef enum
 	AI_CFG_CHAN_COUPLING_MODE = 9
 }AiConfigItem;
 
-/** Use with ulSetConfigDbl() and ulGetConfigDbl() to perform configuration operations on the AI subsystem. */
+/** Use with ulAISetConfigDbl() and ulAIGetConfigDbl() to configure the AI subsystem. */
 typedef enum
 {
 	/** The slope of the specified channel. */
@@ -1363,7 +1364,7 @@ typedef enum
 	AO_INFO_NUM_CHANS = 2,
 	/** A bit mask of supported #ScanOption values. */
 	AO_INFO_SCAN_OPTIONS = 3,
-	/** paced operations are supported. */
+	/** Paced operations are supported. */
 	AO_INFO_HAS_PACER = 4,
 	/** The number of supported #Range values for D/A operations. */
 	AO_INFO_NUM_RANGES = 5,
@@ -1418,7 +1419,7 @@ typedef enum
 	DIO_INFO_MAX_THROUGHPUT = 1002
 }DioInfoItemDbl;
 
-/** Use with ulDIOGetConfig() to obtain information about the DIO subsystem configuration. */
+/** Use with ulDIOGetConfig() to configure the DIO subsystem. */
 typedef enum
 {
 	/** The port direction. Set with #DigitalDirection. */
@@ -1527,8 +1528,6 @@ typedef enum
 
 /** \brief A structure representing the memory descriptor.
  *
- * A structure representing the memory descriptor.
- *
 */
 struct MemDescriptor
 {
@@ -1542,15 +1541,15 @@ struct MemDescriptor
 	char reserved[64];
 };
 
-
 /** A structure representing the memory descriptor. */
 typedef struct 	MemDescriptor MemDescriptor;
 
+
 /**
- * \defgroup DeviceDiscovery Device Discovery - manage devices connected to the system.
+ * \defgroup DeviceDiscovery Device Discovery
+ * Manage devices connected to the system.
  * @{
  */
-
 /**
  * Get the list of connected devices.
  * @param interfaceTypes the interface types to discover
@@ -1607,12 +1606,8 @@ UlError ulReleaseDaqDevice(DaqDeviceHandle daqDeviceHandle);
 UlError ulIsDaqDeviceConnected(DaqDeviceHandle daqDeviceHandle, int* connected);
 /** @}*/ //end of group
 
-// start of Misc group
 /**
- * \defgroup Miscellaneous Miscellaneous
- * @{
- */
-/**
+ * \ingroup Misc
  * Causes the LED on a DAQ device to flash.
  * @param daqDeviceHandle the handle to the DAQ device
  * @param flashCount The number of flashes; this parameter is ignored on some devices.
@@ -1620,11 +1615,10 @@ UlError ulIsDaqDeviceConnected(DaqDeviceHandle daqDeviceHandle, int* connected);
  */
 UlError ulFlashLed(DaqDeviceHandle daqDeviceHandle, int flashCount);
 
-/** @}*/ //end of Misc group
-
 // start of AIn group
 /**
- * \defgroup AnalogInput Analog Input - configure and acquire data for the analog input subsystem.
+ * \defgroup AnalogInput Analog Input
+ * Configure the analog input subsystem and acquire data.
  * @{
  */
 
@@ -1672,11 +1666,11 @@ UlError ulAInScanStatus(DaqDeviceHandle daqDeviceHandle, ScanStatus* status, Tra
 UlError ulAInScanStop(DaqDeviceHandle daqDeviceHandle);
 
 /**
- * Stops a background input operation for a specified time.
+ * Returns when the scan operation completes or the specified timeout elapses.
  * @param daqDeviceHandle the handle to the DAQ device
  * @param waitType the wait type
  * @param waitParam Reserved for future use
- * @param timeout the timeout value in milliseconds (ms)
+ * @param timeout the timeout value in seconds (s)
  * @return The UL error code.
  */
 UlError ulAInScanWait(DaqDeviceHandle daqDeviceHandle, WaitType waitType, long long waitParam, double timeout);
@@ -1705,7 +1699,8 @@ UlError ulAInSetTrigger(DaqDeviceHandle daqDeviceHandle, TriggerType type, int t
 
 // start of AOut group
 /**
- * \defgroup AnalogOutput Analog Output - configure and acquire data for the analog output subsystem.
+ * \defgroup AnalogOutput Analog Output
+ * Configure the analog output subsystem and acquire data.
  * @{
  */
 /**
@@ -1735,7 +1730,7 @@ UlError ulAOut(DaqDeviceHandle daqDeviceHandle, int channel, Range range, AOutFl
 UlError ulAOutScan(DaqDeviceHandle daqDeviceHandle, int lowChan, int highChan, Range range, int samplesPerChan, double* rate, ScanOption options, AOutScanFlag flags, double data[]);
 
 /**
- * Stops a background output operation for a specified time.
+ * Returns when the scan operation completes or the specified timeout elapses.
  * @param daqDeviceHandle the handle to the DAQ device
  * @param waitType the wait type
  * @param waitParam Reserved for future use
@@ -1775,7 +1770,8 @@ UlError ulAOutSetTrigger(DaqDeviceHandle daqDeviceHandle, TriggerType type, int 
 
 //start of DIO group
 /**
- * \defgroup DigitalIO Digital I/O - configure and acquire data for the digital input and output subsystems.
+ * \defgroup DigitalIO Digital I/O
+ * Configure the digital I/O subsystems and acquire data.
  * @{
  */
 
@@ -1830,7 +1826,7 @@ UlError ulDBitIn(DaqDeviceHandle daqDeviceHandle, DigitalPortType portType, int 
  * Writes a value to a digital bit.
  * @param daqDeviceHandle the handle to the DAQ device
  * @param portType the digital port type
- * @param bitNum the bit number
+ * @param bitNum the bit number of the specified digital port
  * @param bitValue the bit value
  * @return The UL error code.
  */
@@ -1867,7 +1863,7 @@ UlError ulDInScanStatus(DaqDeviceHandle daqDeviceHandle, ScanStatus* status, Tra
 UlError ulDInScanStop(DaqDeviceHandle daqDeviceHandle);
 
 /**
- * Stops a background digital input operation for a specified time.
+ * Returns when the scan operation completes or the specified timeout elapses.
  * @param daqDeviceHandle the handle to the DAQ device
  * @param waitType the wait type
  * @param waitParam Reserved for future use
@@ -1883,7 +1879,7 @@ UlError ulDInScanWait(DaqDeviceHandle daqDeviceHandle, WaitType waitType, long l
  * @param trigChan the trigger channel
  * @param level the level at or around which the trigger event should be detected
  * @param variance the degree to which the input signal can vary relative to the level parameter
- * @param retriggerCount the number of samples to acquire with each trigger event.
+ * @param retriggerCount the number of samples to acquire with each trigger event
  * @return The UL error code.
  */
 UlError ulDInSetTrigger(DaqDeviceHandle daqDeviceHandle, TriggerType type, int trigChan, double level, double variance, unsigned int retriggerCount);
@@ -1920,7 +1916,7 @@ UlError ulDOutScanStatus(DaqDeviceHandle daqDeviceHandle, ScanStatus* status, Tr
 UlError ulDOutScanStop(DaqDeviceHandle daqDeviceHandle);
 
 /**
- * Stops a background digital output operation for a specified time.
+ * Returns when the scan operation completes or the specified timeout elapses.
  * @param daqDeviceHandle the handle to the DAQ device
  * @param waitType the wait type
  * @param waitParam Reserved for future use
@@ -1936,7 +1932,7 @@ UlError ulDOutScanWait(DaqDeviceHandle daqDeviceHandle, WaitType waitType, long 
  * @param trigChan the trigger channel
  * @param level the level at or around which the trigger event should be detected
  * @param variance the degree to which the output signal can vary relative to the level parameter
- * @param retriggerCount the number of samples to acquire with each trigger event.
+ * @param retriggerCount the number of samples to acquire with each trigger event
  * @return The UL error code.
  */
 UlError ulDOutSetTrigger(DaqDeviceHandle daqDeviceHandle, TriggerType type, int trigChan, double level, double variance, unsigned int retriggerCount);
@@ -1944,7 +1940,8 @@ UlError ulDOutSetTrigger(DaqDeviceHandle daqDeviceHandle, TriggerType type, int 
 
 // start of CIn group
 /**
- * \defgroup CounterInput Counter Input - configure and acquire data for the counter input subsystem.
+ * \defgroup CounterInput Counter Input
+ * Configure the counter input subsystem and acquire data.
  * @{
  */
 /**
@@ -2014,7 +2011,7 @@ UlError ulCInScan(DaqDeviceHandle daqDeviceHandle, int lowCounterNum, int highCo
  * @param trigChan the trigger channel
  * @param level the level at or around which the trigger event should be detected
  * @param variance the degree to which the input signal can vary relative to the level parameter
- * @param retriggerCount the number of samples to acquire with each trigger event.
+ * @param retriggerCount the number of samples to acquire with each trigger event
  * @return The UL error code.
  */
 UlError ulCInSetTrigger(DaqDeviceHandle daqDeviceHandle, TriggerType type, int trigChan, double level, double variance, unsigned int retriggerCount);
@@ -2036,7 +2033,7 @@ UlError ulCInScanStatus(DaqDeviceHandle daqDeviceHandle, ScanStatus* status, Tra
 UlError ulCInScanStop(DaqDeviceHandle daqDeviceHandle);
 
 /**
- * Stops a background counter input operation for a specified time.
+ * Returns when the scan operation completes or the specified timeout elapses.
  * @param daqDeviceHandle the handle to the DAQ device
  * @param waitType the wait type
  * @param waitParam Reserved for future use
@@ -2048,7 +2045,8 @@ UlError ulCInScanWait(DaqDeviceHandle daqDeviceHandle, WaitType waitType, long l
 
 // start of TmrOut group
 /**
- * \defgroup TimerOutput Timer Output - configure and acquire data for the timer output subsystem.
+ * \defgroup TimerOutput Timer Output
+ * Configure the timer output subsystem and acquire data.
  * @{
  */
 
@@ -2090,7 +2088,7 @@ UlError ulTmrPulseOutStatus(DaqDeviceHandle daqDeviceHandle, int timerNum, TmrSt
  * @param trigChan the trigger channel
  * @param level the level at or around which the trigger event should be detected
  * @param variance the degree to which the input signal can vary relative to the level parameter
- * @param retriggerCount the number of samples to acquire with each trigger event.
+ * @param retriggerCount the number of samples to acquire with each trigger event
  * @return The UL error code.
  */
 UlError ulTmrSetTrigger(DaqDeviceHandle daqDeviceHandle, TriggerType type, int trigChan, double level, double variance, unsigned int retriggerCount);
@@ -2098,7 +2096,8 @@ UlError ulTmrSetTrigger(DaqDeviceHandle daqDeviceHandle, TriggerType type, int t
 
 // start of syncio group
 /**
- * \defgroup SyncIo Synchronous device I/O - configure and acquire data for the DAQ I/O subsystem.
+ * \defgroup SyncIo Synchronous device I/O
+ * Configure the DAQ I/O subsystems and acquire data.
  * @{
  */
 
@@ -2135,7 +2134,7 @@ UlError ulDaqInScanStatus(DaqDeviceHandle daqDeviceHandle, ScanStatus* status, T
 UlError ulDaqInScanStop(DaqDeviceHandle daqDeviceHandle);
 
 /**
- * Stops a background synchronous input operation for a specified time.
+ * Returns when the scan operation completes or the specified timeout elapses.
  * @param daqDeviceHandle the handle to the DAQ device
  * @param waitType the wait type
  * @param waitParam reserved for future use
@@ -2210,14 +2209,14 @@ UlError ulDaqOutScanWait(DaqDeviceHandle daqDeviceHandle, WaitType waitType, lon
 UlError ulDaqOutSetTrigger(DaqDeviceHandle daqDeviceHandle, TriggerType type, DaqInChanDescriptor trigChanDescriptor, double level, double variance, unsigned int retriggerCount);
 /** @}*/ //end of SyncIo group
 
-// start of misc group
+// start of Misc group
 /**
- * \defgroup Miscellaneous Miscellaneous
+ * \defgroup Misc Miscellaneous
+ * Miscellaneous functions
  * @{
  */
-
 /**
- * Binds one or more event conditions to a DaqEventCallback function.<br>
+ * Binds one or more event conditions to a DaqEventCallback function.
  * Upon detection of an event condition, DaqEventCallback is invoked.
  * @param daqDeviceHandle the handle to the DAQ device
  * @param eventTypes event conditions
@@ -2267,10 +2266,10 @@ UlError ulMemWrite(DaqDeviceHandle daqDeviceHandle, MemRegion memRegion, unsigne
 UlError ulGetErrMsg(UlError errCode, char errMsg[ERR_MSG_LEN]);
 /** @}*/ //end of Misc group
 
-
-// start of DeviceInfoConfig group
+// start of DeviceInfo group
 /**
- * \defgroup DeviceInfoConfig Device Information and Configuration - retrieve information and configure device options.
+ * \defgroup DeviceInfo Device Information
+ * Retrieve device information.
  * @{
  */
 
@@ -2280,10 +2279,12 @@ UlError ulGetErrMsg(UlError errCode, char errMsg[ERR_MSG_LEN]);
  * @param index either ignored or an index into the infoStr
  * @param infoStr pointer to the buffer where the information string is copied
  * @param maxConfigLen pointer to the value holding the maximum number of bytes to be read from the device into configStr
- * @return The string read from the device, and the number of bytes read from the device into configStr.
+ * @return The UL error code.
  */
 UlError ulGetInfoStr(UlInfoItemStr infoItem, unsigned int index, char* infoStr, unsigned int* maxConfigLen);
 
+//do not expose
+///@cond
 /**
  * Use with #UlConfigItem to change device configuration options at runtime.
  * @param configItem the type of information to write to the device
@@ -2297,10 +2298,11 @@ UlError ulSetConfig(UlConfigItem configItem, unsigned int index, long long confi
  * Returns a configuration option set for the device.<br>Use ulSetConfig() to change configuration options.
  * @param configItem the configuration item to retrieve
  * @param index the index into the configItem
- * @param configValue the configuration item is returned to this variable
- * @return The value of the specified configuration item.
+ * @param configValue the configuration item
+ * @return The UL error code.
  */
 UlError ulGetConfig(UlConfigItem configItem, unsigned int index, long long* configValue);
+///@endcond
 
 /**
  * Use with #DevInfoItem to retrieve information about the device subsystem.
@@ -2308,7 +2310,7 @@ UlError ulGetConfig(UlConfigItem configItem, unsigned int index, long long* conf
  * @param infoItem the subsystem information to retrieve
  * @param index either ignored or an index into the infoValue
  * @param infoValue the subsystem information is returned to this variable
- * @return The value of the specified information item.
+ * @return The UL error code.
  */
 UlError ulDevGetInfo(DaqDeviceHandle daqDeviceHandle, DevInfoItem infoItem, unsigned int index, long long* infoValue);
 
@@ -2319,10 +2321,10 @@ UlError ulDevGetInfo(DaqDeviceHandle daqDeviceHandle, DevInfoItem infoItem, unsi
  * @param index either ignored or an index into the configStr
  * @param configStr pointer to the buffer where the configuration string is copied
  * @param maxConfigLen pointer to the value holding the maximum number of bytes to be read from the device into configStr
- * @return The string read from the device, and the number of bytes read from the device into configStr.
+ * @return The UL error code.
  */
 UlError ulDevGetConfigStr(DaqDeviceHandle daqDeviceHandle, DevConfigItemStr configItem, unsigned int index, char* configStr, unsigned int* maxConfigLen);
-/** @}*/ //end of DeviceInfoConfig group
+/** @}*/ //end of DeviceInfo group
 
 /**
  * \ingroup AnalogInput
@@ -2331,7 +2333,7 @@ UlError ulDevGetConfigStr(DaqDeviceHandle daqDeviceHandle, DevConfigItemStr conf
  * @param infoItem the analog input information to retrieve
  * @param index either ignored or an index into the infoValue
  * @param infoValue the AI information is returned to this variable
- * @return The value of the specified information item.
+ * @return The UL error code.
  */
 UlError ulAIGetInfo(DaqDeviceHandle daqDeviceHandle, AiInfoItem infoItem, unsigned int index, long long* infoValue);
 
@@ -2342,7 +2344,7 @@ UlError ulAIGetInfo(DaqDeviceHandle daqDeviceHandle, AiInfoItem infoItem, unsign
  * @param infoItem the analog input information to retrieve
  * @param index either ignored or an index into the infoValue
  * @param infoValue the AI information is returned to this variable
- * @return The value of the specified information item.
+ * @return The UL error code.
  */
 UlError ulAIGetInfoDbl(DaqDeviceHandle daqDeviceHandle, AiInfoItemDbl infoItem, unsigned int index, double* infoValue);
 
@@ -2364,7 +2366,7 @@ UlError ulAISetConfig(DaqDeviceHandle daqDeviceHandle, AiConfigItem configItem, 
  * @param configItem the configuration item to retrieve
  * @param index either ignored or an index into the configValue
  * @param configValue the specified AI configuration value is returned to this variable
- * @return The value of the specified configuration item.
+ * @return The UL error code.
  */
 UlError ulAIGetConfig(DaqDeviceHandle daqDeviceHandle, AiConfigItem configItem, unsigned int index, long long* configValue);
 
@@ -2386,7 +2388,7 @@ UlError ulAISetConfigDbl(DaqDeviceHandle daqDeviceHandle, AiConfigItemDbl config
  * @param configItem the configuration item to retrieve
  * @param index either ignored or an index into the configValue
  * @param configValue the specified AI configuration value is returned to this variable
- * @return The value of the specified configuration item.
+ * @return The UL error code.
  */
 UlError ulAIGetConfigDbl(DaqDeviceHandle daqDeviceHandle, AiConfigItemDbl configItem, unsigned int index, double* configValue);
 
@@ -2398,7 +2400,7 @@ UlError ulAIGetConfigDbl(DaqDeviceHandle daqDeviceHandle, AiConfigItemDbl config
  * @param index either ignored or an index into the configStr
  * @param configStr pointer to the buffer where the configuration string is copied
  * @param maxConfigLen pointer to the value holding the maximum number of bytes to be read from the device into configStr
- * @return The string read from the device, and the number of bytes read from the device into configStr.
+ * @return The UL error code.
  */
 UlError ulAIGetConfigStr(DaqDeviceHandle daqDeviceHandle, AiConfigItemStr configItem, unsigned int index, char* configStr, unsigned int* maxConfigLen);
 
@@ -2410,7 +2412,7 @@ UlError ulAIGetConfigStr(DaqDeviceHandle daqDeviceHandle, AiConfigItemStr config
  * @param infoItem the analog output information to retrieve
  * @param index either ignored or an index into the infoValue
  * @param infoValue the AO information is returned to this variable
- * @return The value of the specified information item.
+ * @return The UL error code.
  */
 UlError ulAOGetInfo(DaqDeviceHandle daqDeviceHandle, AoInfoItem infoItem, unsigned int index, long long* infoValue);
 
@@ -2421,7 +2423,7 @@ UlError ulAOGetInfo(DaqDeviceHandle daqDeviceHandle, AoInfoItem infoItem, unsign
  * @param infoItem the analog output information to retrieve
  * @param index either ignored or an index into the infoValue
  * @param infoValue the AO information is returned to this variable
- * @return The value of the specified information item.
+ * @return The UL error code.
  */
 UlError ulAOGetInfoDbl(DaqDeviceHandle daqDeviceHandle, AoInfoItemDbl infoItem, unsigned int index, double* infoValue);
 
@@ -2433,7 +2435,7 @@ UlError ulAOGetInfoDbl(DaqDeviceHandle daqDeviceHandle, AoInfoItemDbl infoItem, 
  * @param infoItem the digital I/O information to retrieve
  * @param index either ignored or an index into the infoValue
  * @param infoValue the DIO information is returned to this variable
- * @return The value of the specified information item.
+ * @return The UL error code.
  */
 UlError ulDIOGetInfo(DaqDeviceHandle daqDeviceHandle, DioInfoItem infoItem, unsigned int index, long long* infoValue);
 
@@ -2444,7 +2446,7 @@ UlError ulDIOGetInfo(DaqDeviceHandle daqDeviceHandle, DioInfoItem infoItem, unsi
  * @param infoItem the digital I/O information to retrieve
  * @param index either ignored or an index into the infoValue
  * @param infoValue the DIO information is returned to this variable
- * @return The value of the specified information item.
+ * @return The UL error code.
  */
 UlError ulDIOGetInfoDbl(DaqDeviceHandle daqDeviceHandle, DioInfoItemDbl infoItem, unsigned int index, double* infoValue);
 
@@ -2455,7 +2457,7 @@ UlError ulDIOGetInfoDbl(DaqDeviceHandle daqDeviceHandle, DioInfoItemDbl infoItem
  * @param configItem the configuration item to retrieve
  * @param index either ignored or an index into the configValue
  * @param configValue the specified DIO configuration value is returned to this variable
- * @return The value of the specified configuration item.
+ * @return The UL error code.
  */
 UlError ulDIOGetConfig(DaqDeviceHandle daqDeviceHandle, DioConfigItem configItem, unsigned int index, long long* configValue);
 
@@ -2466,7 +2468,7 @@ UlError ulDIOGetConfig(DaqDeviceHandle daqDeviceHandle, DioConfigItem configItem
  * @param infoItem the counter information to retrieve
  * @param index either ignored or an index into the infoValue
  * @param infoValue the counter information is returned to this variable
- * @return The value of the specified information item.
+ * @return The UL error code.
  */
 UlError ulCtrGetInfo(DaqDeviceHandle daqDeviceHandle, CtrInfoItem infoItem, unsigned int index, long long* infoValue);
 
@@ -2477,7 +2479,7 @@ UlError ulCtrGetInfo(DaqDeviceHandle daqDeviceHandle, CtrInfoItem infoItem, unsi
  * @param infoItem the counter information to retrieve
  * @param index either ignored or an index into the infoValue
  * @param infoValue the counter information is returned to this variable
- * @return The value of the specified information item.
+ * @return The UL error code.
  */
 UlError ulCtrGetInfoDbl(DaqDeviceHandle daqDeviceHandle, CtrInfoItemDbl infoItem, unsigned int index, double* infoValue);
 
@@ -2488,7 +2490,7 @@ UlError ulCtrGetInfoDbl(DaqDeviceHandle daqDeviceHandle, CtrInfoItemDbl infoItem
  * @param infoItem the timer information to retrieve
  * @param index either ignored or an index into the infoValue
  * @param infoValue the timer information is returned to this variable
- * @return The value of the specified information item.
+ * @return The UL error code.
  */
 UlError ulTmrGetInfo(DaqDeviceHandle daqDeviceHandle, TmrInfoItem infoItem, unsigned int index, long long* infoValue);
 
@@ -2499,7 +2501,7 @@ UlError ulTmrGetInfo(DaqDeviceHandle daqDeviceHandle, TmrInfoItem infoItem, unsi
  * @param infoItem the timer information to retrieve
  * @param index either ignored or an index into the infoValue
  * @param infoValue the timer information is returned to this variable
- * @return The value of the specified information item.
+ * @return The UL error code.
  */
 UlError ulTmrGetInfoDbl(DaqDeviceHandle daqDeviceHandle, TmrInfoItemDbl infoItem, unsigned int index, double* infoValue);
 
@@ -2510,7 +2512,7 @@ UlError ulTmrGetInfoDbl(DaqDeviceHandle daqDeviceHandle, TmrInfoItemDbl infoItem
  * @param infoItem the synchronous input information to retrieve
  * @param index either ignored or an index into the infoValue
  * @param infoValue the synchronous input information is returned to this variable
- * @return The value of the specified information item.
+ * @return The UL error code.
  */
 UlError ulDaqIGetInfo(DaqDeviceHandle daqDeviceHandle, DaqIInfoItem infoItem, unsigned int index, long long* infoValue);
 
@@ -2521,7 +2523,7 @@ UlError ulDaqIGetInfo(DaqDeviceHandle daqDeviceHandle, DaqIInfoItem infoItem, un
  * @param infoItem the synchronous input information to retrieve
  * @param index either ignored or an index into the infoValue
  * @param infoValue the synchronous input information is returned to this variable
- * @return The value of the specified information item.
+ * @return The UL error code.
  */
 UlError ulDaqIGetInfoDbl(DaqDeviceHandle daqDeviceHandle, DaqIInfoItemDbl infoItem, unsigned int index, double* infoValue);
 
@@ -2532,7 +2534,7 @@ UlError ulDaqIGetInfoDbl(DaqDeviceHandle daqDeviceHandle, DaqIInfoItemDbl infoIt
  * @param infoItem the synchronous output information to retrieve
  * @param index either ignored or an index into the infoValue
  * @param infoValue the synchronous output information is returned to this variable
- * @return The value of the specified information item.
+ * @return The UL error code.
  */
 UlError ulDaqOGetInfo(DaqDeviceHandle daqDeviceHandle, DaqOInfoItem infoItem, unsigned int index, long long* infoValue);
 
@@ -2543,27 +2545,34 @@ UlError ulDaqOGetInfo(DaqDeviceHandle daqDeviceHandle, DaqOInfoItem infoItem, un
  * @param infoItem the synchronous output information to retrieve
  * @param index either ignored or an index into the infoValue
  * @param infoValue the synchronous output information is returned to this variable
- * @return The value of the specified information item.
+ * @return The UL error code.
  */
 UlError ulDaqOGetInfoDbl(DaqDeviceHandle daqDeviceHandle, DaqOInfoItemDbl infoItem, unsigned int index, double* infoValue);
 
 /**
- * \ingroup Misc
- * Use with MemDescriptor to retrieve information about the synchronous output subsystem.
+ * \ingroup DeviceInfo
+ * Use with MemDescriptor to retrieve information about the memory region on a DAQ device.
  * @param daqDeviceHandle the handle to the DAQ device
  * @param memRegion the memory region
  * @param memDescriptor the MemDescriptor memory descriptor
- * @return The value of the specified information item.
+ * @return The UL error code.
  */
 
 UlError ulMemGetInfo(DaqDeviceHandle daqDeviceHandle, MemRegion memRegion, MemDescriptor* memDescriptor);
-/** @}*/ //end of InfoConfig group
 
+
+///@cond do not expose
 //########### temp for labview
 DaqDeviceHandle lvCreateDaqDevice(DaqDeviceDescriptor daqDevDescriptor[]);
-
+///@endcond
+///
 #ifdef __cplusplus
 }
 #endif
 
 #endif /* UL_H_ */
+
+
+
+
+

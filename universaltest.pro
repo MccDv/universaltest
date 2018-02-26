@@ -34,7 +34,6 @@ SOURCES += main.cpp\
 HEADERS  += mainwindow.h \
     subwidget.h \
     childwindow.h \
-    ul.h \
     ../Test/errordialog.h \
     unitest.h \
     aisubwidget.h \
@@ -49,7 +48,8 @@ HEADERS  += mainwindow.h \
     trigdialog.h \
     dataselectdialog.h \
     queuedialog.h \
-    eventsdialog.h
+    eventsdialog.h \
+    uldaq.h
 
 FORMS    += mainwindow.ui \
     subwidget.ui \

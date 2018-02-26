@@ -191,6 +191,8 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
             funcAction->setChecked(true);
             funcAction->triggered(true);
         }
+        if (keyCode == Qt::Key_F5)
+            curChild->refreshSelectedFunc();
     }
 }
 
@@ -913,7 +915,7 @@ void MainWindow::setSelectedDevice()
         ui->lblAppStatus->setText(curFunctionGroupName + ": " + curBoardName + displayIDString);
 
         mdiChild->refreshBoardParams();
-        mdiChild->refreshSelectedFunc();
+        //mdiChild->refreshSelectedFunc();
     }
 }
 
