@@ -6,7 +6,7 @@
 #include <QMdiSubWindow>
 #include <QDateTime>
 #include "testutilities.h"
-#include "ul.h"
+#include "uldaq.h"
 
 namespace Ui {
 class subWidget;

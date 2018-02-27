@@ -8,7 +8,7 @@
 #include "childwindow.h"
 #include "unitest.h"
 #include <QHash>
-#include "ul.h"
+#include "uldaq.h"
 #include "../Test/errordialog.h"
 //#include "plotwindow.h"
 #include "trigdialog.h"

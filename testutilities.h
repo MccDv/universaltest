@@ -3,7 +3,7 @@
 
 #include <QtCore>
 #include "unitest.h"
-#include "ul.h"
+#include "uldaq.h"
 //#include "aisubwidget.h"
 
 //void eventCallback(DaqDeviceHandle, DaqEventType, unsigned long long, void*);

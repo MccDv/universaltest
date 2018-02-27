@@ -4,7 +4,7 @@
 #include "childwindow.h"
 #include "testutilities.h"
 #include "unitest.h"
-#include "ul.h"
+#include "uldaq.h"
 #include "../Test/errordialog.h"
 
 

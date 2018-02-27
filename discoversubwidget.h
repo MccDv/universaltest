@@ -5,7 +5,7 @@
 #include <QWidget>
 #include <QHash>
 #include "mainwindow.h"
-#include "ul.h"
+#include "uldaq.h"
 #include "unitest.h"
 
 namespace Ui {

@@ -3,7 +3,7 @@
 #include <qfont.h>
 #include "childwindow.h"
 #include "unitest.h"
-#include "ul.h"
+#include "uldaq.h"
 #include "testutilities.h"
 #include "../Test/errordialog.h"
 
