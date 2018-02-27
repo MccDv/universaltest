@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "unitest.h"
-#include "ul.h"
+#include "uldaq.h"
 #include "../Test/errordialog.h"
 #define MAX_DEV_COUNT  100
 

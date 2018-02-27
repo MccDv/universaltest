@@ -8,7 +8,7 @@
 #include <QTimer>
 #include <QTime>
 #include "mainwindow.h"
-#include "ul.h"
+#include "uldaq.h"
 #include "qcustomplot.h"
 #include "qmath.h"
 #include "testutilities.h"

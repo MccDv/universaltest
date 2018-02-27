@@ -10,7 +10,7 @@
 #include "mainwindow.h"
 #include <QCheckBox>
 #include "qcustomplot.h"
-#include "ul.h"
+#include "uldaq.h"
 #include "testutilities.h"
 #include "queuedialog.h"
 

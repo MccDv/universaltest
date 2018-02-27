@@ -2,7 +2,7 @@
 #define QUEUEDIALOG_H
 
 #include <QDialog>
-#include "ul.h"
+#include "uldaq.h"
 #include "testutilities.h"
 
 namespace Ui {
