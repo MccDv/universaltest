@@ -1201,7 +1201,7 @@ void AiSubWidget::printData(unsigned long long currentCount, long long currentIn
 
     ui->teShowValues->clear();
     dataText = "<style> th, td { padding-right: 10px;}</style><tr>";
-    sampleLimit = mRunning? 100 : 5000;
+    sampleLimit = mRunning? 100 : 1000 / mChanCount;
     samplesToPrint = blockSize < sampleLimit? blockSize : sampleLimit;
     for (int y = 0; y < samplesToPrint; y++) {
         curScan = currentIndex + increment;
@@ -1240,6 +1240,7 @@ void AiSubWidget::plotScan(unsigned long long currentCount, long long currentInd
         yChans[chan].resize(blockSize);
 
     int curScan, plotData, curChanCount;
+    int listIndex;
     int sampleNum = 0;
     int increment = 0;
     long long totalSamples;
@@ -1279,10 +1280,11 @@ void AiSubWidget::plotScan(unsigned long long currentCount, long long currentInd
 
     for (int plotNum=0; plotNum<curChanCount; plotNum++) {
         plotData = mPlotChan;
+        listIndex = plotNum % 8;
         if (mPlotChan == -1)
             plotData = plotNum;
 
-        if (mPlotList[plotNum])
+        if (mPlotList[listIndex])
             ui->AiPlot->graph(plotNum)->setData(xValues, yChans[plotData]);
     }
     updatePlot();

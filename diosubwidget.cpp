@@ -2072,7 +2072,7 @@ void DioSubWidget::setDefaultBits(DigitalPortType portType)
             (mUtFunction == UL_D_BIT_OUT)) {
             triState = false;
             if (mUtFunction == UL_D_CONFIG_BIT)
-                checkTrue = ((int)pow(2, portBit) & (int)configMask);
+                checkTrue = ((int)pow(2, i) & (int)configMask);
         }
         chkBit[portBit]->setTristate(triState);
         chkBit[portBit]->setChecked(checkTrue);
@@ -2140,7 +2140,12 @@ void DioSubWidget::mapGridToPortBit(int gridIndex, DigitalPortType &portType, in
         portType = FIRSTPORTCL;
         bitInPort = gridIndex - 48;
     } else if (gridIndex < 56) {
-        portType = AUXPORT1;
-        bitInPort = gridIndex - 52;
+        portType = FIRSTPORTC;
+        if (validPorts.contains(FIRSTPORTCH)) {
+            portType = FIRSTPORTCH;
+            bitInPort = gridIndex - 52;
+        } else {
+            bitInPort = gridIndex - 48;
+        }
     }
 }
