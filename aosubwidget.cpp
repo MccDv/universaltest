@@ -1087,7 +1087,7 @@ void AoSubWidget::callbackHandler(DaqEventType eventType, unsigned long long eve
 
 void AoSubWidget::runAOutFunc()
 {
-    int aOutChan;    //, aOutLastChan, numAoutChans;
+    int aOutLowChan, aOutHighChan, chanCount;    //, aOutLastChan, numAoutChans;
     double data; //, curSample
     QString nameOfFunc, funcArgs, argVals, funcStr;
     QTime t;
@@ -1098,30 +1098,34 @@ void AoSubWidget::runAOutFunc()
         return;
     }
 
-    aOutChan = ui->spnLowChan->value();
+    aOutLowChan = ui->spnLowChan->value();
+    aOutHighChan = ui->spnHighChan->value();
+    chanCount = (aOutHighChan - aOutLowChan) + 1;
 
     nameOfFunc = "ulAOut";
     funcArgs = "(mDaqDeviceHandle, aOutChan, range, flags, &data)\n";
     data = ui->leAoutVal->text().toDouble();
 
-    sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
-    err = ulAOut(mDaqDeviceHandle, aOutChan, mRange, mAoFlags, data);
-    argVals = QStringLiteral("(%1, %2, %3, %4, %5)")
-            .arg(mDaqDeviceHandle)
-            .arg(aOutChan)
-            .arg(mRange)
-            .arg(mAoFlags)
-            .arg(data);
-    ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
+    for (int chan = aOutLowChan; chan <= aOutHighChan; chan++) {
+        sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
+        err = ulAOut(mDaqDeviceHandle, chan, mRange, mAoFlags, data);
+        argVals = QStringLiteral("(%1, %2, %3, %4, %5)")
+                .arg(mDaqDeviceHandle)
+                .arg(chan)
+                .arg(mRange)
+                .arg(mAoFlags)
+                .arg(data);
+        ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
 
-    funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-    if (!err==ERR_NO_ERROR) {
-        mMainWindow->setError(err, sStartTime + funcStr);
-        mCancelAOut = true;
-        ui->cmdStop->setVisible(true);
-        return;
-    } else {
-        mMainWindow->addFunction(sStartTime + funcStr);
+        funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
+        if (!err==ERR_NO_ERROR) {
+            mMainWindow->setError(err, sStartTime + funcStr);
+            mCancelAOut = true;
+            ui->cmdStop->setVisible(true);
+            return;
+        } else {
+            mMainWindow->addFunction(sStartTime + funcStr);
+        }
     }
 }
 
