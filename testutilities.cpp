@@ -314,6 +314,8 @@ QString getInfoDescription(int infoType, int infoItem, long long infoValue)
             return getCtrMeasTypeNames((CounterMeasurementType)infoValue);
         if (infoItem == CTR_INFO_SCAN_OPTIONS)
             return getOptionNames((ScanOption)infoValue);
+        if (infoItem == CTR_INFO_TRIG_TYPES)
+            return getTrigTypeNames((TriggerType)infoValue);
         break;
     case TYPE_TMR_INFO:
         if (infoItem == TMR_INFO_TYPE)

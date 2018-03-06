@@ -382,9 +382,9 @@ void AiSubWidget::setUiForFunction()
     this->setWindowTitle(mFuncName + ": " + mDevName + QString(" [%1]").arg(mDaqDeviceHandle));
 }
 
-void AiSubWidget::updateText()
+void AiSubWidget::updateText(QString infoText)
 {
-    return;
+    ui->lblInfo->setText(infoText);
 }
 
 void AiSubWidget::onClickCmdGo()
@@ -421,8 +421,15 @@ void AiSubWidget::runSelectedFunc()
         runAInFunc();
         break;
     case UL_AINSCAN:
-        if (!mTriggerType == TRIG_NONE)
+        if (!mTriggerType == TRIG_NONE) {
+            mTriggerType = parentWindow->triggerType();
+            mTrigChannel = parentWindow->trigChannel();
+            mTrigLevel = parentWindow->trigLevel();
+            mTrigVariance = parentWindow->trigVariance();
+            mRetrigCount = parentWindow->retrigCount();
+            qApp->processEvents();
             runSetTriggerFunc();
+        }
         runAInScanFunc();
         break;
     case UL_DAQ_INSCAN:
@@ -434,8 +441,16 @@ void AiSubWidget::runSelectedFunc()
                 chanDescriptors[i].type = mChanTypeList.value(i);
             }
         }
-        if (!mTriggerType == TRIG_NONE)
+        if (!mTriggerType == TRIG_NONE) {
+            mTriggerType = parentWindow->triggerType();
+            mTrigChannel = parentWindow->trigChannel();
+            mTrigChanType = (DaqInChanType)parentWindow->trigChanType();
+            mTrigLevel = parentWindow->trigLevel();
+            mTrigVariance = parentWindow->trigVariance();
+            mRetrigCount = parentWindow->retrigCount();
+            qApp->processEvents();
             runSetTriggerFunc();
+        }
         runDaqInScanFunc();
         break;
     default:
@@ -478,27 +493,33 @@ void AiSubWidget::runSetTriggerFunc()
 {
     QString nameOfFunc, funcArgs, argVals, funcStr;
     QTime t;
-    QString sStartTime;
+    QString sStartTime, chanDescString, str;
 
-    funcArgs = "(mDaqDeviceHandle, trigType, trigChan, level, variance, trigCount)\n";
     if (mUtFunction == UL_DAQ_INSCAN) {
         DaqInChanDescriptor trigChanDescriptor;
-        int trigKey = mChanList.key(mTrigChannel, 0);
-        trigChanDescriptor.channel = mChanList.value(trigKey);
-        trigChanDescriptor.range = mRangeList.value(trigKey);
-        trigChanDescriptor.type = mChanTypeList.value(trigKey);
+        //int trigKey = mChanList.key(mTrigChannel, 0);
+        trigChanDescriptor.channel = mTrigChannel;
+        trigChanDescriptor.range = mTrigRange;
+        trigChanDescriptor.type = mTrigChanType;
         nameOfFunc = "ulDaqInSetTrigger";
+        funcArgs = "(mDaqDeviceHandle, trigType, {trigChan, trigRange, trigChanType}, level, variance, trigCount)\n";
         sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
         err = ulDaqInSetTrigger(mDaqDeviceHandle, mTriggerType, trigChanDescriptor, mTrigLevel, mTrigVariance, mRetrigCount);
+        chanDescString = QString("{%1, %2, %3}")
+                .arg(mTrigChannel)
+                .arg(mTrigRange)
+                .arg(mTrigChanType);
     } else {
         nameOfFunc = "ulAInSetTrigger";
+        funcArgs = "(mDaqDeviceHandle, trigType, trigChan, level, variance, trigCount)\n";
         sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
         err = ulAInSetTrigger(mDaqDeviceHandle, mTriggerType, mTrigChannel, mTrigLevel, mTrigVariance, mRetrigCount);
+        chanDescString = str.setNum(mTrigChannel);
     }
     argVals = QStringLiteral("(%1, %2, %3, %4, %5, %6)")
             .arg(mDaqDeviceHandle)
             .arg(mTriggerType)
-            .arg(mTrigChannel)
+            .arg(chanDescString)
             .arg(mTrigLevel)
             .arg(mTrigVariance)
             .arg(mRetrigCount);
@@ -1293,7 +1314,7 @@ void AiSubWidget::plotScan(unsigned long long currentCount, long long currentInd
 void AiSubWidget::updatePlot()
 {
     bool setTCRange = false;
-    bool autoScale;
+    bool autoScale, bipolar;
     double rangeBuf;
     double rangeUpper, rangeLower;
     int ctlIndex;
@@ -1330,10 +1351,11 @@ void AiSubWidget::updatePlot()
                 rangeUpper = fsCount;
                 rangeLower = 0;
             } else {
+                bipolar = mRange < 100;
                 double rangeVolts = getRangeVolts(mRange);
                 rangeBuf = rangeVolts / 10;
-                rangeUpper = rangeVolts / 2;
-                rangeLower = rangeUpper * -1;
+                rangeUpper = bipolar? rangeVolts / 2 : rangeVolts;
+                rangeLower = bipolar? rangeUpper * -1 : 0;
             }
         }
         ui->AiPlot->xAxis->rescale();

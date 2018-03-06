@@ -8,6 +8,7 @@
 #include "tmrdialog.h"
 #include "subwidget.h"
 #include "unitest.h"
+#include "testutilities.h"
 //#include "plotwindow.h"
 //#include "aisubwidget.h"
 #include "uldaq.h"
@@ -30,11 +31,14 @@ class ChildWindow : public QMdiSubWindow
     Q_PROPERTY(DaqInScanFlag daqiFlags READ daqiFlags WRITE setDaqiFlags NOTIFY daqiFlagsChanged)
     Q_PROPERTY(CInScanFlag ciFlags READ ciFlags WRITE setCiFlags NOTIFY ciFlagsChanged)
     Q_PROPERTY(ScanOption scanOptions READ scanOptions WRITE setScanOptions NOTIFY scanOptionsChanged)
+
     Q_PROPERTY(TriggerType triggerType READ triggerType WRITE setTriggerType NOTIFY triggerTypeChanged)
     Q_PROPERTY(int trigChannel READ trigChannel WRITE setTrigChannel NOTIFY trigChannelChanged)
+    Q_PROPERTY(int trigChanType READ trigChanType WRITE setTrigChanType NOTIFY trigChanTypeChanged)
     Q_PROPERTY(unsigned int retrigCount READ retrigCount WRITE setRetrigCount NOTIFY retrigCountChanged)
     Q_PROPERTY(double trigLevel READ trigLevel WRITE setTrigLevel NOTIFY trigLevelChanged)
     Q_PROPERTY(double trigVariance READ trigVariance WRITE setTrigVariance NOTIFY trigVarianceChanged)
+    Q_PROPERTY(Range trigRange READ trigRange WRITE setTrigRange NOTIFY trigRangeChanged)
 
     Q_PROPERTY(bool tmrEnabled READ tmrEnabled WRITE setTmrEnabled NOTIFY tmrEnabledChanged)
     Q_PROPERTY(int tmrInterval READ tmrInterval WRITE setTmrInterval NOTIFY tmrIntervalChanged)
@@ -171,14 +175,48 @@ public:
 
     void setTriggerType(TriggerType trigType)
     {
+        QString info, argVals, chanDescString, str;
+        QString trigName;
+
         mTriggerType = trigType;
-        emit triggerTypeChanged(trigType);
+        trigName = getTrigTypeNames(mTriggerType);
+
+        if (mTrigChanType == 0) {
+            info = "ulAInSetTrigger";
+            chanDescString = str.setNum(mTrigChannel);
+        } else {
+            info = "ulDaqInSetTrigger";
+            chanDescString = QString("{%1, %2, %3}")
+                    .arg(mTrigChannel)
+                    .arg(mTrigRange)
+                    .arg(mTrigChanType);
+        }
+        argVals = QStringLiteral("(%1, %2, %3, %4, %5, %6)")
+                .arg(mDevHandle)
+                .arg(trigName)
+                .arg(chanDescString)
+                .arg(mTrigLevel)
+                .arg(mTrigVariance)
+                .arg(mRetrigCount);
+        emit triggerTypeChanged(info + argVals);
     }
 
     void setTrigChannel(int trigChan)
     {
         mTrigChannel = trigChan;
         emit trigChannelChanged(trigChan);
+    }
+
+    void setTrigRange(Range trigRange)
+    {
+        mTrigRange = trigRange;
+        emit trigRangeChanged(trigRange);
+    }
+
+    void setTrigChanType(int trigChanType)
+    {
+        mTrigChanType = trigChanType;
+        emit trigChanTypeChanged(trigChanType);
     }
 
     void setTrigVariance(double trigVariance)
@@ -236,11 +274,14 @@ public:
     DaqInScanFlag daqiFlags() { return mDaqiFlags; }
     CInScanFlag ciFlags() { return mCiFlags; }
     ScanOption scanOptions() { return mScanOptions; }
+
     TriggerType triggerType() { return mTriggerType; }
     int trigChannel() { return mTrigChannel; }
+    int trigChanType() { return mTrigChanType; }
     unsigned int retrigCount() { return mRetrigCount; }
     double trigLevel() { return mTrigLevel; }
     double trigVariance() { return mTrigVariance; }
+    Range trigRange() { return mTrigRange; }
 
     void refreshBoardParams() { emit refreshBoads(); }
     void refreshSelectedFunc() { emit refreshData(); }
@@ -279,6 +320,8 @@ private:
     ScanOption mScanOptions;
     TriggerType mTriggerType;
     int mTrigChannel;
+    int mTrigChanType;
+    Range mTrigRange;
     unsigned int mRetrigCount;
     double mTrigVariance;
     double mTrigLevel;
@@ -327,11 +370,15 @@ signals:
     void daqOutFlagChanged(DaqOutScanFlag);
     void ciFlagsChanged(CInScanFlag);
     void scanOptionsChanged(ScanOption);
-    void triggerTypeChanged(TriggerType);
+
+    void triggerTypeChanged(QString);
     void trigChannelChanged(int);
+    void trigChanTypeChanged(int);
     void trigVarianceChanged(double);
     void trigLevelChanged(double);
     void retrigCountChanged(unsigned int);
+    void trigRangeChanged(Range);
+
     void stopScanRequest();
     void configData();
     void configQueue();

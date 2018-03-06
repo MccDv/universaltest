@@ -32,7 +32,7 @@ public:
 private slots:
     void initDeviceParams();
     void updateParameters();
-    void updateText();
+    void updateText(QString infoText);
     void functionChanged(int utFunction);
     void groupChanged(int newGroup);
 
@@ -82,6 +82,8 @@ private:
     Range mRange;
 
     TriggerType mTriggerType;
+    DaqInChanType mTrigChanType;
+    Range mTrigRange;
     int mTrigChannel;
     unsigned int mRetrigCount;
     double mTrigLevel;

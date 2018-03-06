@@ -392,7 +392,9 @@ void AoSubWidget::initDeviceParams()
         mAoResolution = infoValue;
         ui->hSldAoutVal->setMaximum(pow(2, mAoResolution));
     } else {
-        mMainWindow->setError(err, sStartTime + funcStr);
+        //mMainWindow->setError(err, sStartTime + funcStr);
+        mAoResolution = 1;
+        ui->hSldAoutVal->setMaximum(pow(2, mAoResolution));
         return;
     }
 

@@ -456,6 +456,9 @@ void subWidget::readInfo()
         infoItem = CTR_INFO_SCAN_OPTIONS;
         devInfo = showInfo(infoType, infoItem, "Scan Options");
         infoText.append(devInfo  + "</tr><tr>");
+        infoItem = CTR_INFO_TRIG_TYPES;
+        devInfo = showInfo(infoType, infoItem, "Trig Types");
+        infoText.append(devInfo  + "</tr><tr>");
         infoItem = CTR_INFO_FIFO_SIZE;
         devInfo = showInfo(infoType, infoItem, "Fifo Size");
         infoText.append(devInfo  + "</tr><tr>");

@@ -1234,6 +1234,7 @@ void DioSubWidget::runDInFunc()
         while (i.hasNext()) {
             data = dataArray[0][curIndex];
             portValues.append(QString("%1, ").arg(data));
+            i.next();
             curIndex++;
         }
         int loc = portValues.lastIndexOf(",");
