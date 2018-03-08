@@ -394,11 +394,13 @@ void subWidget::readInfo()
         devInfo = showInfoDbl(infoType, infoItem, "DioScan min");
         infoText.append(devInfo  + "</tr><tr>");
         infoItem = DIO_INFO_MAX_SCAN_RATE;
+        showIndex = true;
         devInfo = showInfoDbl(infoType, infoItem, "DioScan max");
         infoText.append(devInfo  + "</tr><tr>");
         infoItem = DIO_INFO_MAX_THROUGHPUT;
         devInfo = showInfoDbl(infoType, infoItem, "DioScan throughput");
         infoText.append(devInfo  + "</tr><tr>");
+        showIndex = false;
 
         infoItem = DIO_INFO_NUM_PORTS;
         devInfo = showInfo(infoType, infoItem, "Num Ports");
@@ -968,6 +970,12 @@ QString subWidget::showInfo(int infoType, int infoItem, QString showItem)
         dioInfoItem = (DioInfoItem)infoItem;
         nameOfFunc = "ulDIOGetInfo";
         err = ulDIOGetInfo(mDaqDeviceHandle, dioInfoItem, index, &infoValue);
+        if ((dioInfoItem == DIO_INFO_SCAN_OPTIONS)
+                | (dioInfoItem == DIO_INFO_FIFO_SIZE)
+                | (dioInfoItem == DIO_INFO_TRIG_TYPES)) {
+            indexName = getDigitalDirection((DigitalDirection)index);
+            indexInfo = true;
+        }
         break;
     case TYPE_CTR_INFO:
         ctrInfoItem = (CtrInfoItem)infoItem;
@@ -1073,9 +1081,11 @@ QString subWidget::showInfoDbl(int infoType, int infoItem, QString showItem)
     DaqIInfoItemDbl daqIInfoItem;
     DaqOInfoItemDbl daqOInfoItem;
     QString nameOfFunc, textToAdd;
-    QString str, infoDesc;
+    QString str, infoDesc, indexName;
     unsigned int index;
+    bool indexInfo;
 
+    indexInfo = false;
     index = ui->spnIndex->value();
 
     switch (infoType){
@@ -1100,6 +1110,11 @@ QString subWidget::showInfoDbl(int infoType, int infoItem, QString showItem)
         dioInfoItem = (DioInfoItemDbl)infoItem;
         nameOfFunc = "ulDIOGetInfoDbl";
         err = ulDIOGetInfoDbl(mDaqDeviceHandle, dioInfoItem, index, &infoValueDbl);
+        if ((dioInfoItem == DIO_INFO_MAX_SCAN_RATE)
+                | (dioInfoItem == DIO_INFO_MAX_THROUGHPUT)) {
+            indexName = getDigitalDirection((DigitalDirection)index);
+            indexInfo = true;
+        }
         break;
     case TYPE_CTR_INFO:
         ctrInfoItem = (CtrInfoItemDbl)infoItem;
@@ -1126,6 +1141,7 @@ QString subWidget::showInfoDbl(int infoType, int infoItem, QString showItem)
     }
 
     QString errDesc = "";
+    infoDesc = getInfoDescription(infoType, infoItem, infoValue);
     if(!err==ERR_NO_ERROR) {
         switch (err) {
         case ERR_BAD_DEV_TYPE:
@@ -1179,13 +1195,10 @@ QString subWidget::showInfoDbl(int infoType, int infoItem, QString showItem)
             errDlg.exec();
         }
     } else {
-        //textToAdd = QString("%1 = %2")
-        //        .arg(showItem)
-        //        .arg(infoValueDbl);
-        //if(showIndex) textToAdd += QString(" (%1)").arg(index);
-        //ui->teShowValues->append(textToAdd);
         QString strIndex = "<td></td>";
-        if (showIndex)
+        if (indexInfo)
+            strIndex = "<td>(" + indexName + ")</td>";
+        else if (showIndex)
             strIndex = "<td>(" + str.setNum(index) + ")</td>";
         textToAdd = "<td>" + showItem + "</td>";
         textToAdd.append(strIndex);

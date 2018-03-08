@@ -421,8 +421,8 @@ void AiSubWidget::runSelectedFunc()
         runAInFunc();
         break;
     case UL_AINSCAN:
+        mTriggerType = parentWindow->triggerType();
         if (!mTriggerType == TRIG_NONE) {
-            mTriggerType = parentWindow->triggerType();
             mTrigChannel = parentWindow->trigChannel();
             mTrigLevel = parentWindow->trigLevel();
             mTrigVariance = parentWindow->trigVariance();
@@ -441,8 +441,8 @@ void AiSubWidget::runSelectedFunc()
                 chanDescriptors[i].type = mChanTypeList.value(i);
             }
         }
+        mTriggerType = parentWindow->triggerType();
         if (!mTriggerType == TRIG_NONE) {
-            mTriggerType = parentWindow->triggerType();
             mTrigChannel = parentWindow->trigChannel();
             mTrigChanType = (DaqInChanType)parentWindow->trigChanType();
             mTrigLevel = parentWindow->trigLevel();

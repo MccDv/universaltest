@@ -129,37 +129,6 @@ bool getEventParameter(DaqDeviceHandle devHandle, unsigned long long &paramValue
     return eventParamList.contains(devHandle);
 }
 
-QString getOptionNames(ScanOption curOptions)
-{
-    QString optString;
-
-    if (curOptions == 0)
-        optString = "Default";
-    else {
-        if (curOptions & SO_SINGLEIO)
-            optString = "SingleIO, ";
-        if (curOptions & SO_BLOCKIO)
-            optString += "BlockIO, ";
-        if (curOptions & SO_BURSTIO)
-            optString += "BurstIO, ";
-        if (curOptions & SO_CONTINUOUS)
-            optString += "Continuous, ";
-        if (curOptions & SO_EXTCLOCK)
-            optString += "ExtClock, ";
-        if (curOptions & SO_EXTTRIGGER)
-            optString += "ExtTrigger, ";
-        if (curOptions & SO_RETRIGGER)
-            optString += "ReTrigger, ";
-        if (curOptions & SO_BURSTMODE)
-            optString += "BurstMode, ";
-        if (curOptions & SO_PACEROUT)
-            optString += "PacerOut, ";
-        optString = optString.left(optString.length() - 2);
-    }
-
-    return optString;
-}
-
 double getRangeVolts(Range rangeVal)
 {
     double rangeVolts;
@@ -267,6 +236,61 @@ double getVoltsFromCounts(long long Resolution, Range curRange, int counts)
         bipOffset = FSR / 2;
     calcVolts = counts * LSB;
     return calcVolts - bipOffset;
+}
+
+double getTickValue(CounterTickSize tickSize)
+{
+    switch (tickSize) {
+    case CTS_TICK_20PT83ns:
+        return .00000002083;
+    case CTS_TICK_208PT3ns:
+        return .0000002083;
+    case CTS_TICK_2083PT3ns:
+        return .000002083;
+    case CTS_TICK_20833PT3ns:
+        return .00002083;
+    case CTS_TICK_20ns:
+        return .000000020;
+    case CTS_TICK_200ns:
+        return .00000020;
+    case CTS_TICK_2000ns:
+        return .0000020;
+    case CTS_TICK_20000ns:
+        return .000020;
+    default:
+        return 1;
+    }
+}
+
+QString getOptionNames(ScanOption curOptions)
+{
+    QString optString;
+
+    if (curOptions == 0)
+        optString = "Default";
+    else {
+        if (curOptions & SO_SINGLEIO)
+            optString = "SingleIO, ";
+        if (curOptions & SO_BLOCKIO)
+            optString += "BlockIO, ";
+        if (curOptions & SO_BURSTIO)
+            optString += "BurstIO, ";
+        if (curOptions & SO_CONTINUOUS)
+            optString += "Continuous, ";
+        if (curOptions & SO_EXTCLOCK)
+            optString += "ExtClock, ";
+        if (curOptions & SO_EXTTRIGGER)
+            optString += "ExtTrigger, ";
+        if (curOptions & SO_RETRIGGER)
+            optString += "ReTrigger, ";
+        if (curOptions & SO_BURSTMODE)
+            optString += "BurstMode, ";
+        if (curOptions & SO_PACEROUT)
+            optString += "PacerOut, ";
+        optString = optString.left(optString.length() - 2);
+    }
+
+    return optString;
 }
 
 QString getInfoDescription(int infoType, int infoItem, long long infoValue)
@@ -573,6 +597,21 @@ QString getChanTypeNames(AiChanType typeNum)
     }
     int loc = chanName.lastIndexOf(",");
     return chanName.left(loc);
+}
+
+QString getDigitalDirection(DigitalDirection digDir)
+{
+    switch (digDir) {
+    case DD_INPUT:
+        return "Input";
+        break;
+    case DD_OUTPUT:
+        return "Output";
+        break;
+    default:
+        return "InvalidDir";
+        break;
+    }
 }
 
 QString getDioPortTypeName(DigitalPortType typeNum)

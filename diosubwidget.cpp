@@ -67,6 +67,8 @@ DioSubWidget::DioSubWidget(QWidget *parent) :
     portCheckBoxes = ui->fraPorts->findChildren<QCheckBox*>();
     createBitBoxes();
     mMainWindow = getMainWindow();
+    for (int i = 0; i < 8; i++)
+        mPlotList[i] = true;
 }
 
 DioSubWidget::~DioSubWidget()
@@ -276,6 +278,11 @@ void DioSubWidget::setUiForFunction()
     updateControlDefaults();
     ui->cmdGo->setFocus();
     this->setWindowTitle(mFuncName + ": " + mDevName + QString(" [%1]").arg(mDaqDeviceHandle));
+}
+
+void DioSubWidget::updateText(QString infoText)
+{
+    ui->lblInfo->setText(infoText);
 }
 
 void DioSubWidget::setupPlot(QCustomPlot *dataPlot, int chanCount)
@@ -683,14 +690,14 @@ void DioSubWidget::getDataValues()
     }
 
     if (mPlot) {
-        //int increment = 0;
+        int increment = 0;
         setupPlot(ui->plotDigitalData, mChanCount);
         for (int y = 0; y < mTotalSamples; y++) {
             xValues[y] = y;
-            //for (int chan = 0; chan < mChanCount; chan++) {
-            //    yChans[chan][y] = buffer[chan + increment];
-           //}
-            //increment += mChanCount;
+            for (int chan = 0; chan < mChanCount; chan++) {
+                yChans[chan][y] = buffer[chan + increment];
+           }
+           increment += mChanCount;
         }
 
         int curChanCount = 1;

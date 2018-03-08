@@ -176,20 +176,22 @@ public:
     void setTriggerType(TriggerType trigType)
     {
         QString info, argVals, chanDescString, str;
-        QString trigName;
+        QString trigName, chTypeName, trRange;
 
         mTriggerType = trigType;
         trigName = getTrigTypeNames(mTriggerType);
 
         if (mTrigChanType == 0) {
-            info = "ulAInSetTrigger";
+            info = "ulxxSetTrigger";
             chanDescString = str.setNum(mTrigChannel);
         } else {
-            info = "ulDaqInSetTrigger";
+            info = "ulDaqxSetTrigger";
+            chTypeName = getChanTypeNames((DaqInChanType)mTrigChanType);
+            trRange = getRangeName(mTrigRange);
             chanDescString = QString("{%1, %2, %3}")
                     .arg(mTrigChannel)
-                    .arg(mTrigRange)
-                    .arg(mTrigChanType);
+                    .arg(trRange)
+                    .arg(chTypeName);
         }
         argVals = QStringLiteral("(%1, %2, %3, %4, %5, %6)")
                 .arg(mDevHandle)

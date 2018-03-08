@@ -195,6 +195,11 @@ void AoSubWidget::setUiForFunction()
     this->setWindowTitle(mFuncName + ": " + mDevName + QString(" [%1]").arg(mDaqDeviceHandle));
 }
 
+void AoSubWidget::updateText(QString infoText)
+{
+    ui->lblInfo->setText(infoText);
+}
+
 void AoSubWidget::setupPlot(QCustomPlot *dataPlot, int chanCount)
 {
     QColor penColor;
@@ -818,14 +823,28 @@ void AoSubWidget::runSelectedFunc()
         break;
     case UL_AOUT_SCAN:
         getDataValues();
-        if (!mTriggerType == TRIG_NONE)
+        mTriggerType = parentWindow->triggerType();
+        if (!mTriggerType == TRIG_NONE) {
+            mTrigChannel = parentWindow->trigChannel();
+            mTrigLevel = parentWindow->trigLevel();
+            mTrigVariance = parentWindow->trigVariance();
+            mRetrigCount = parentWindow->retrigCount();
+            qApp->processEvents();
             runSetTriggerFunc();
+        }
         runAOutScanFunc();
         break;
     case UL_DAQ_OUTSCAN:
         getDataValues();
-        if (!mTriggerType == TRIG_NONE)
+        mTriggerType = parentWindow->triggerType();
+        if (!mTriggerType == TRIG_NONE) {
+            mTrigChannel = parentWindow->trigChannel();
+            mTrigLevel = parentWindow->trigLevel();
+            mTrigVariance = parentWindow->trigVariance();
+            mRetrigCount = parentWindow->retrigCount();
+            qApp->processEvents();
             runSetTriggerFunc();
+        }
         runDaqOutScanFunc();
         break;
     default:
