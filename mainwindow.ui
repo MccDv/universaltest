@@ -140,7 +140,7 @@
      <x>0</x>
      <y>0</y>
      <width>1091</width>
-     <height>19</height>
+     <height>22</height>
     </rect>
    </property>
    <property name="nativeMenuBar">
@@ -435,6 +435,9 @@
    <property name="text">
     <string>FF_NOCALIBRATEDATA</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
   </action>
   <action name="actionAI_DIFFERENTIAL">
    <property name="checkable">
@@ -453,6 +456,9 @@
    </property>
    <property name="text">
     <string>AI_SINGLE_ENDED</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+E</string>
    </property>
   </action>
   <action name="actionAI_PSEUDO_DIFFERENTIAL">
