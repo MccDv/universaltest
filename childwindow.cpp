@@ -64,6 +64,8 @@ ChildWindow::ChildWindow(QWidget *parent, UtFunctionGroup funcGroup) : QMdiSubWi
     mTriggerType = TRIG_NONE;
     mRetrigCount = 0;
     mTrigChannel = 0;
+    mTrigChanType = 0;
+    mTrigRange = BIP10VOLTS;
     mTrigLevel = 1.00;
     mTrigVariance = 0.002;
     mScanOptions = SO_DEFAULTIO;
@@ -95,11 +97,11 @@ ChildWindow::ChildWindow(QWidget *parent, UtFunctionGroup funcGroup) : QMdiSubWi
     connect(this, SIGNAL(daqOutFlagChanged(DaqOutScanFlag)), subwidget, SLOT(updateParameters()));
     connect(this, SIGNAL(ciFlagsChanged(CInScanFlag)), subwidget, SLOT(updateParameters()));
     connect(this, SIGNAL(scanOptionsChanged(ScanOption)), subwidget, SLOT(updateParameters()));
-    connect(this, SIGNAL(triggerTypeChanged(TriggerType)), subwidget, SLOT(updateParameters()));
-    connect(this, SIGNAL(trigChannelChanged(int)), subwidget, SLOT(updateParameters()));
+    connect(this, SIGNAL(triggerTypeChanged(QString)), subwidget, SLOT(updateText(QString)));
+    /*connect(this, SIGNAL(trigChannelChanged(int)), subwidget, SLOT(updateParameters()));
     connect(this, SIGNAL(trigLevelChanged(double)), subwidget, SLOT(updateParameters()));
     connect(this, SIGNAL(trigVarianceChanged(double)), subwidget, SLOT(updateParameters()));
-    connect(this, SIGNAL(retrigCountChanged(uint)), subwidget, SLOT(updateParameters()));
+    connect(this, SIGNAL(retrigCountChanged(uint)), subwidget, SLOT(updateParameters()));*/
     connect(this, SIGNAL(configData()), subwidget, SLOT(showDataGen()));
     connect(this, SIGNAL(configQueue()), subwidget, SLOT(showQueueConfig()));
 

@@ -148,6 +148,8 @@ MainWindow::MainWindow(QWidget *parent) :
     this->createFuncMenus();
 
     mTrigChannel = 0;
+    mTrigChanType = 0;
+    mTrigRange = BIP10VOLTS;
     mTrigLevel = 1.0;
     mTrigVariance = 0.002;
     mRetrigCount = 0;
@@ -1061,13 +1063,15 @@ void MainWindow::changeTrigType()
     TriggerType trigType = (TriggerType)trigSetVal.toLongLong();
 
     if (curChild) {
-        if (trigType > TRIG_FALLING) {
-            setTriggerParameters();
-        }
+       // if (trigType > TRIG_FALLING) {
+       //     setTriggerParameters();
+       //}
         curChild->setTrigChannel(mTrigChannel);
+        curChild->setTrigChanType(mTrigChanType);
         curChild->setTrigLevel(mTrigLevel);
         curChild->setTrigVariance(mTrigVariance);
         curChild->setRetrigCount(mRetrigCount);
+        curChild->setTrigRange(mTrigRange);
         curChild->setTriggerType(trigType);
     }
 }
@@ -1145,21 +1149,25 @@ void MainWindow::setTriggerParameters()
     trigDialog = new TrigDialog(this);
     connect(trigDialog, SIGNAL(accepted()), this, SLOT(trigDialogResponse()));
     trigDialog->setTrigChannel(mTrigChannel);
+    trigDialog->setTrigChanType(mTrigChanType);
     trigDialog->setTrigLevel(mTrigLevel);
     trigDialog->setTrigVariance(mTrigVariance);
     trigDialog->setRetrigCount(mRetrigCount);
+    trigDialog->setTrigRange(mTrigRange);
     trigDialog->exec();
-    changeTrigType();
 }
 
 void MainWindow::trigDialogResponse()
 {
     mTrigChannel = trigDialog->trigChannel();
+    mTrigChanType = trigDialog->trigChanType();
     mTrigLevel = trigDialog->trigLevel();
     mTrigVariance = trigDialog->trigVariance();
     mRetrigCount = trigDialog->retrigCount();
+    mTrigRange = trigDialog->trigRange();
     disconnect(trigDialog);
     delete trigDialog;
+    changeTrigType();
 }
 
 void MainWindow::curOptionChanged()

@@ -96,6 +96,8 @@ private:
     EventsDialog *eventSetup;
     int mHistListSize;
     int mTrigChannel;
+    int mTrigChanType;
+    Range mTrigRange;
     double mTrigLevel;
     double mTrigVariance;
     unsigned int mRetrigCount;

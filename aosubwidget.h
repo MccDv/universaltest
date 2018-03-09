@@ -34,6 +34,7 @@ public:
 private slots:
     void initDeviceParams();
     void updateParameters();
+    void updateText(QString infoText);
 
     void functionChanged(int utFunction);
     void groupChanged(int newGroup);

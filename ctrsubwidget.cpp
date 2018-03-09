@@ -427,6 +427,11 @@ void CtrSubWidget::setUiForFunction()
     parentWindow->adjustSize();
 }
 
+void CtrSubWidget::updateText(QString infoText)
+{
+    ui->lblInfo->setText(infoText);
+}
+
 void CtrSubWidget::parseMeasMode()
 {
     //get measurement mode for CConfigScan from list widgets
@@ -454,7 +459,7 @@ void CtrSubWidget::parseMeasMode()
                 ui->lwTypeModes->clearSelection();
     for (int i = 0; i < listTypeItems; i++) {
         if (ui->lwTypeModes->item(i)->isSelected()) {
-            selMode = getMeasModeFromListIndex(i + listModeItems);
+            selMode = getMeasModeFromListIndex(i + (listModeItems - 1));
             tempMode = static_cast<long long>(selMode);
             tempAggMode |= tempMode;
         }
@@ -499,13 +504,27 @@ void CtrSubWidget::runSelectedFunc()
         runCLoadFunc();
         break;
     case UL_TMR_OUT:
-        if (!mTriggerType == TRIG_NONE)
+        mTriggerType = parentWindow->triggerType();
+        if (!mTriggerType == TRIG_NONE) {
+            mTrigChannel = parentWindow->trigChannel();
+            mTrigLevel = parentWindow->trigLevel();
+            mTrigVariance = parentWindow->trigVariance();
+            mRetrigCount = parentWindow->retrigCount();
+            qApp->processEvents();
             runSetTriggerFunc();
+        }
         runTimerOut();
         break;
     case UL_C_INSCAN:
-        if (!mTriggerType == TRIG_NONE)
+        mTriggerType = parentWindow->triggerType();
+        if (!mTriggerType == TRIG_NONE) {
+            mTrigChannel = parentWindow->trigChannel();
+            mTrigLevel = parentWindow->trigLevel();
+            mTrigVariance = parentWindow->trigVariance();
+            mRetrigCount = parentWindow->retrigCount();
+            qApp->processEvents();
             runSetTriggerFunc();
+        }
         runCInScan();
         break;
     default:
@@ -806,7 +825,14 @@ void CtrSubWidget::runCInFunc()
     QString regName;
     QTime t;
     QString sStartTime;
+    double tickFactor;
+    double dispData;
 
+    tickFactor = 1;
+    if ((mMeasType == CMT_PERIOD)
+            | (mMeasType == CMT_PERIOD)
+            | (mMeasType == CMT_TIMING))
+        tickFactor = getTickValue(mTickSize);
     ctrsSelected.clear();
     foreach (QCheckBox *chkCtrSel, ctrCheckBoxes) {
         if (chkCtrSel->isChecked()) {
@@ -864,8 +890,8 @@ void CtrSubWidget::runCInFunc()
         curIndex = 0;
         dataText.append("<td>" + str.setNum(sampleNum * numCtrChans) + "</td>");
         foreach (int ctrNum, ctrsSelected) {
-            data = dataArray[sampleNum][curIndex];
-            dataText.append("<td>C" + str.setNum(ctrNum) + ": " + temp.setNum(data) + "</td>");
+            dispData = tickFactor * (double)dataArray[sampleNum][curIndex];
+            dataText.append("<td>C" + str.setNum(ctrNum) + ": " + temp.setNum(dispData) + "</td>");
             curIndex++;
         }
         dataText.append("</tr><tr>");

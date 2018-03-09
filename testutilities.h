@@ -26,13 +26,16 @@ bool getOutScanErrorEvent(DaqDeviceHandle devHandle, bool &eventValue);
 bool getDataAvailableEvent(DaqDeviceHandle devHandle, bool &eventValue);
 bool getEventParameter(DaqDeviceHandle devHandle, unsigned long long &paramValue);
 
-QString getOptionNames(ScanOption curOptions);
 double getRangeVolts(Range rangeVal);
 double getVoltsFromCounts(long long Resolution, Range curRange, int counts);
+double getTickValue(CounterTickSize tickSize);
+
+QString getOptionNames(ScanOption curOptions);
 QString getInfoDescription(int infoType, int infoItem, long long infoValue);
 QString getEventNames(long long eventMask);
 QString getAiInputModeName(AiInputMode inMode);
 QString getAiChanTypeName(AiChanType chanType);
+QString getDigitalDirection(DigitalDirection digDir);
 QString getDioPortTypeName(DigitalPortType typeNum);
 QString getDPortIoTypeName(DigitalPortIoType ioType);
 QString getCtrMeasTypeNames(CounterMeasurementType typeNum);

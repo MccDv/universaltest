@@ -31,6 +31,8 @@ public:
 private slots:
     void initDeviceParams();
     void updateParameters();
+    void updateText(QString infoText);
+
     void functionChanged(int utFunction);
     void groupChanged(int newGroup);
     void onClickCmdGo();
@@ -77,6 +79,8 @@ private:
     ScanOption mScanOptions;
     CInScanFlag mCInFlags;
     CounterMeasurementMode mMeasMode;
+    CounterMeasurementType mMeasType;
+    CounterTickSize mTickSize;
 
     bool mUseGetStatus;
     bool mUseWait;
