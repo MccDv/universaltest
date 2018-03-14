@@ -55,6 +55,7 @@ CtrSubWidget::CtrSubWidget(QWidget *parent) :
     connect(ui->cmdGo, SIGNAL(clicked(bool)), this, SLOT(onClickCmdGo()));
     connect(ui->cmdStop, SIGNAL(clicked(bool)), this, SLOT(stopGoTimer()));
     connect(ui->cmdLoad, SIGNAL(clicked(bool)), this, SLOT(onClickCmdGo()));
+    connect(ui->cmbSelReg, SIGNAL(currentIndexChanged(int)), this, SLOT(readRegister()));
     connect(ui->lwMeasMode, SIGNAL(itemSelectionChanged()), this, SLOT(parseMeasMode()));
     connect(ui->lwTypeModes, SIGNAL(itemSelectionChanged()), this, SLOT(parseMeasMode()));
     connect(ui->cmdApplyCCfg, SIGNAL(clicked(bool)), this, SLOT(runCConfigScan()));
@@ -158,6 +159,8 @@ CtrSubWidget::CtrSubWidget(QWidget *parent) :
     setupPlot(ui->plotCtr, 1);
     ui->plotCtr->replot();
     mMainWindow = getMainWindow();
+    for (int i = 0; i < 8; i++)
+        mPlotList[i] = true;
 }
 
 CtrSubWidget::~CtrSubWidget()
@@ -813,6 +816,51 @@ void CtrSubWidget::runCLoadFunc()
     }
 }
 
+void CtrSubWidget::readRegister()
+{
+    QList<int> ctrsSelected;
+    CounterRegisterType regType;
+    unsigned long long data;
+    int ctrNum, numCtrChans;
+    QString nameOfFunc, funcArgs, argVals;
+    QString str, funcStr, regName;
+    QTime t;
+    QString sStartTime;
+
+    ctrsSelected.clear();
+    foreach (QCheckBox *chkCtrSel, ctrCheckBoxes) {
+        if (chkCtrSel->isChecked()) {
+            ctrNum = chkCtrSel->property("counterNum").toInt();
+            ctrsSelected.append(ctrNum);
+        }
+    }
+    numCtrChans = ctrsSelected.count();
+    nameOfFunc = "ulCRead";
+    funcArgs = "(mDaqDeviceHandle, ctrNum, regType, data)\n";
+
+    regType = (CounterRegisterType)ui->cmbSelReg->currentData().toInt();
+    foreach (int ctrNum, ctrsSelected) {
+        sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
+        err = ulCRead(mDaqDeviceHandle, ctrNum, regType, &data);
+        regName = QString("%1, ").arg(regType);
+        argVals = QStringLiteral("(%1, %2, %3%4)") //intentional missing comma
+                .arg(mDaqDeviceHandle)
+                .arg(ctrNum)
+                .arg(regName)
+                .arg(data);
+        ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
+
+        funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
+        if(!err==ERR_NO_ERROR) {
+            mMainWindow->setError(err, sStartTime + funcStr);
+            return;
+        } else {
+            ui->leLoadReg->setText(str.setNum(data));
+            mMainWindow->addFunction(sStartTime + funcStr);
+        }
+    }
+}
+
 void CtrSubWidget::runCInFunc()
 {
     QString dataText, str;
@@ -935,19 +983,17 @@ void CtrSubWidget::runCConfigScan()
 {
     int ctrNum;
     QString nameOfFunc, funcArgs, argVals, funcStr;
-    CounterMeasurementType measType;
     CounterEdgeDetection edgeDetection;
-    CounterTickSize tickSize;
     CounterDebounceMode debounceMode;
     CounterDebounceTime debounceTime;
     CConfigScanFlag confFlags = CF_DEFAULT;
     QTime t;
     QString sStartTime;
 
-    measType = static_cast<CounterMeasurementType>(ui->cmbMeasType->currentData(Qt::UserRole).toLongLong());
+    mMeasType = static_cast<CounterMeasurementType>(ui->cmbMeasType->currentData(Qt::UserRole).toLongLong());
     debounceMode = static_cast<CounterDebounceMode>(ui->cmbDebounceMode->currentData(Qt::UserRole).toLongLong());
     debounceTime = static_cast<CounterDebounceTime>(ui->cmbDebounce->currentData(Qt::UserRole).toLongLong());
-    tickSize = static_cast<CounterTickSize>(ui->cmbTickSize->currentData(Qt::UserRole).toLongLong());
+    mTickSize = static_cast<CounterTickSize>(ui->cmbTickSize->currentData(Qt::UserRole).toLongLong());
     edgeDetection = CED_RISING_EDGE;
     if (ui->rdoEdgeNeg->isChecked())
         edgeDetection = CED_FALLING_EDGE;
@@ -959,15 +1005,15 @@ void CtrSubWidget::runCConfigScan()
         if (chkCtrSel->isChecked()) {
             ctrNum = chkCtrSel->property("counterNum").toInt();
             sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
-            err = ulCConfigScan(mDaqDeviceHandle, ctrNum, measType, mMeasMode,
-                                edgeDetection, tickSize, debounceMode, debounceTime, confFlags);
+            err = ulCConfigScan(mDaqDeviceHandle, ctrNum, mMeasType, mMeasMode,
+                                edgeDetection, mTickSize, debounceMode, debounceTime, confFlags);
             argVals = QStringLiteral("(%1, %2, %3, %4, %5, %6, %7, %8, %9)")
                     .arg(mDaqDeviceHandle)
                     .arg(ctrNum)
-                    .arg(measType)
+                    .arg(mMeasType)
                     .arg(mMeasMode)
                     .arg(edgeDetection)
-                    .arg(tickSize)
+                    .arg(mTickSize)
                     .arg(debounceMode)
                     .arg(debounceTime)
                     .arg(confFlags);

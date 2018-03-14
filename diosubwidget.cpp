@@ -275,7 +275,7 @@ void DioSubWidget::setUiForFunction()
     ui->cmdStop->setVisible(stopVisible);
     ui->cmdStop->setText(stopText);
     parentWindow->adjustSize();
-    updateControlDefaults();
+    updateControlDefaults(false);
     ui->cmdGo->setFocus();
     this->setWindowTitle(mFuncName + ": " + mDevName + QString(" [%1]").arg(mDaqDeviceHandle));
 }
@@ -481,42 +481,46 @@ void DioSubWidget::initDeviceParams()
             }
         }
         mDioResolution = portBits.value(portType);
-        updateControlDefaults();
+        updateControlDefaults(true);
     }
     portList = validPorts;
     ui->cmdGo->setFocus();
 }
 
-void DioSubWidget::updateControlDefaults()
+void DioSubWidget::updateControlDefaults(bool setAllValidPorts)
 {
-    foreach (DigitalPortType portType, validPorts) {
-        switch (portType) {
-        case AUXPORT0:
-            ui->chkAux0->setChecked(true);
-            break;
-        case AUXPORT1:
-            ui->chkAux1->setChecked(true);
-            break;
-        case AUXPORT2:
-            ui->chkAux2->setChecked(true);
-            break;
-        case FIRSTPORTA:
-            ui->chk1stA->setChecked(true);
-            break;
-        case FIRSTPORTB:
-            ui->chk1stB->setChecked(true);
-            break;
-        case FIRSTPORTCL:
-            ui->chk1stCL->setChecked(true);
-            break;
-        case FIRSTPORTCH:
-            ui->chk1stCH->setChecked(true);
-            break;
-        case SECONDPORTA:
-            ui->chk2ndA->setChecked(true);
-            break;
-        default:
-            break;
+    DigitalPortType portType;
+
+    foreach (portType, validPorts) {
+        if (setAllValidPorts) {
+            switch (portType) {
+            case AUXPORT0:
+                ui->chkAux0->setChecked(true);
+                break;
+            case AUXPORT1:
+                ui->chkAux1->setChecked(true);
+                break;
+            case AUXPORT2:
+                ui->chkAux2->setChecked(true);
+                break;
+            case FIRSTPORTA:
+                ui->chk1stA->setChecked(true);
+                break;
+            case FIRSTPORTB:
+                ui->chk1stB->setChecked(true);
+                break;
+            case FIRSTPORTCL:
+                ui->chk1stCL->setChecked(true);
+                break;
+            case FIRSTPORTCH:
+                ui->chk1stCH->setChecked(true);
+                break;
+            case SECONDPORTA:
+                ui->chk2ndA->setChecked(true);
+                break;
+            default:
+                break;
+            }
         }
         setDefaultBits(portType);
     }

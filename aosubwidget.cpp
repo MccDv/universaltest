@@ -39,6 +39,7 @@ AoSubWidget::AoSubWidget(QWidget *parent) :
     mPlotChan = -1;
     mEventType = DE_NONE;
     mCancelAOut = false;
+    mModeChanged = false;
     setupPlot(ui->plotOutData, 1);
     ui->plotOutData->replot();
     mMainWindow = getMainWindow();
@@ -80,7 +81,11 @@ void AoSubWidget::updateParameters()
     if (!(devID == mDevUID))
         initDeviceParams();
 
+    AOutFlag tempFlag = mAoFlags;
     mAoFlags = (AOutFlag)parentWindow->aoFlags();
+    if (!(tempFlag == mAoFlags)) {
+        mModeChanged = true;
+    }
     mDaqoFlags = (DaqOutScanFlag)parentWindow->daqOutFlag();
 
     mUseGetStatus = parentWindow->statusEnabled();
@@ -139,9 +144,12 @@ void AoSubWidget::functionChanged(int utFunction)
 
 void AoSubWidget::setUiForFunction()
 {
+    ChildWindow *parentWindow;
+    parentWindow = qobject_cast<ChildWindow *>(this->parent());
     QFrame::Shape frameShape;
     bool scanVisible, showChanSelect;
 
+    mRange = parentWindow->getCurrentRange();
     mChanList.clear();
     mRangeList.clear();
     mChanTypeList.clear();
@@ -395,128 +403,133 @@ void AoSubWidget::initDeviceParams()
     if (err == ERR_NO_ERROR) {
         mMainWindow->addFunction(sStartTime + funcStr);
         mAoResolution = infoValue;
-        ui->hSldAoutVal->setMaximum(pow(2, mAoResolution));
+        ui->hSldAoutVal->setMaximum(pow(2, mAoResolution) - 1);
     } else {
         //mMainWindow->setError(err, sStartTime + funcStr);
         mAoResolution = 1;
-        ui->hSldAoutVal->setMaximum(pow(2, mAoResolution));
+        ui->hSldAoutVal->setMaximum(pow(2, mAoResolution) - 1);
         return;
     }
 
-    nameOfFunc = "ulAOGetInfo";
-    funcArgs = "(mDaqDeviceHandle, infoItem, 0, &infoValue)\n";
+    //if (!mFixedRange) {
+        nameOfFunc = "ulAOGetInfo";
+        funcArgs = "(mDaqDeviceHandle, infoItem, 0, &infoValue)\n";
 
-    infoItem = AO_INFO_NUM_RANGES;
-    sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
-    err = ulAOGetInfo(mDaqDeviceHandle, infoItem, 0, &infoValue);
-    argVals = QString("(%1, %2, %3, %4)")
-            .arg(mDaqDeviceHandle)
-            .arg(infoItem)
-            .arg(0)
-            .arg(infoValue);
+        infoItem = AO_INFO_NUM_RANGES;
+        sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
+        err = ulAOGetInfo(mDaqDeviceHandle, infoItem, 0, &infoValue);
+        argVals = QString("(%1, %2, %3, %4)")
+                .arg(mDaqDeviceHandle)
+                .arg(infoItem)
+                .arg(0)
+                .arg(infoValue);
 
-    funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-    if (err == ERR_NO_ERROR) {
-        mMainWindow->addFunction(sStartTime + funcStr);
-        numRanges = infoValue;
-        infoItem = AO_INFO_RANGE;
-        for (int rangeItem = 0; rangeItem < numRanges; rangeItem++) {
-            //get a list of ranges
-            nameOfFunc = "ulAOGetInfo";
-            funcArgs = "(mDaqDeviceHandle, infoItem, 0, &infoValue)\n";
+        funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
+        if (err == ERR_NO_ERROR) {
+            mMainWindow->addFunction(sStartTime + funcStr);
+            numRanges = infoValue;
+            infoItem = AO_INFO_RANGE;
+            for (int rangeItem = 0; rangeItem < numRanges; rangeItem++) {
+                //get a list of ranges
+                nameOfFunc = "ulAOGetInfo";
+                funcArgs = "(mDaqDeviceHandle, infoItem, 0, &infoValue)\n";
 
-            sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
-            err = ulAOGetInfo(mDaqDeviceHandle, infoItem, 0, &infoValue);
-            argVals = QString("(%1, %2, %3, %4)")
-                    .arg(mDaqDeviceHandle)
-                    .arg(infoItem)
-                    .arg(0)
-                    .arg(infoValue);
+                sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
+                err = ulAOGetInfo(mDaqDeviceHandle, infoItem, 0, &infoValue);
+                argVals = QString("(%1, %2, %3, %4)")
+                        .arg(mDaqDeviceHandle)
+                        .arg(infoItem)
+                        .arg(0)
+                        .arg(infoValue);
 
-            funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-            if (err == ERR_NO_ERROR) {
-                mMainWindow->addFunction(sStartTime + funcStr);
-                rangeList.append((Range)infoValue);
-            } else {
-                mMainWindow->setError(err, sStartTime + funcStr);
-                return;
+                funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
+                if (err == ERR_NO_ERROR) {
+                    mMainWindow->addFunction(sStartTime + funcStr);
+                    rangeList.append((Range)infoValue);
+                } else {
+                    mMainWindow->setError(err, sStartTime + funcStr);
+                    return;
+                }
             }
+            if (rangeList.count() == 1) {
+                mFixedRange = true;
+                mRange = rangeList.value(0);
+            }
+        } else {
+            mMainWindow->setError(err, sStartTime + funcStr);
+            return;
         }
-        if (rangeList.count() == 1) {
-            mFixedRange = true;
-            mRange = rangeList.value(0);
+        //if (!(curRange == mRange)) {
+        if (mFixedRange) {
+            //report change to parent
+            parentWindow->setCurRange(mRange);
         }
-    } else {
-        mMainWindow->setError(err, sStartTime + funcStr);
-        return;
-    }
-    if (!(curRange == mRange)) {
-        //report change to parent
-        parentWindow->setCurRange(mRange);
-    }
+    //}
 
     mDefaultFSRange = getRangeVolts(mRange);
 
-    dioInfoItem = DIO_INFO_NUM_PORTS;
-    nameOfFunc = "ulDIOGetInfo";
-    funcArgs = "(mDaqDeviceHandle, dioInfoItem, 0, &infoValue)\n";
+    if (mUtFunction == UL_DAQ_OUTSCAN) {
+        dioInfoItem = DIO_INFO_NUM_PORTS;
+        nameOfFunc = "ulDIOGetInfo";
+        funcArgs = "(mDaqDeviceHandle, dioInfoItem, 0, &infoValue)\n";
 
-    sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
-    err = ulDIOGetInfo(mDaqDeviceHandle, dioInfoItem, 0, &infoValue);
-    argVals = QString("(%1, %2, %3, %4)")
-            .arg(mDaqDeviceHandle)
-            .arg(dioInfoItem)
-            .arg(0)
-            .arg(infoValue);
+        sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
+        err = ulDIOGetInfo(mDaqDeviceHandle, dioInfoItem, 0, &infoValue);
+        argVals = QString("(%1, %2, %3, %4)")
+                .arg(mDaqDeviceHandle)
+                .arg(dioInfoItem)
+                .arg(0)
+                .arg(infoValue);
 
-    funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-    if (err == ERR_NO_ERROR) {
-        mMainWindow->addFunction(sStartTime + funcStr);
-        for (int portIndex = 0; portIndex < infoValue; portIndex++) {
+        funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
+        if (err == ERR_NO_ERROR) {
+            mMainWindow->addFunction(sStartTime + funcStr);
+            for (int portIndex = 0; portIndex < infoValue; portIndex++) {
 
-            funcArgs = "(mDaqDeviceHandle, dioInfoItem, 0, &portValue)\n";
-            dioInfoItem = DIO_INFO_PORT_TYPE;
-            sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
-            err = ulDIOGetInfo(mDaqDeviceHandle, dioInfoItem, 0, &portValue);
-            argVals = QString("(%1, %2, %3, %4)")
-                    .arg(mDaqDeviceHandle)
-                    .arg(dioInfoItem)
-                    .arg(0)
-                    .arg(infoValue);
+                funcArgs = "(mDaqDeviceHandle, dioInfoItem, 0, &portValue)\n";
+                dioInfoItem = DIO_INFO_PORT_TYPE;
+                sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
+                err = ulDIOGetInfo(mDaqDeviceHandle, dioInfoItem, 0, &portValue);
+                argVals = QString("(%1, %2, %3, %4)")
+                        .arg(mDaqDeviceHandle)
+                        .arg(dioInfoItem)
+                        .arg(0)
+                        .arg(infoValue);
 
-            funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-            if (err == ERR_NO_ERROR) {
-                mMainWindow->addFunction(sStartTime + funcStr);
-                portType = (DigitalPortType)portValue;
-                validPorts.append(portType);
-            } else {
-                mMainWindow->setError(err, sStartTime + funcStr);
-                return;
+                funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
+                if (err == ERR_NO_ERROR) {
+                    mMainWindow->addFunction(sStartTime + funcStr);
+                    portType = (DigitalPortType)portValue;
+                    validPorts.append(portType);
+                } else {
+                    mMainWindow->setError(err, sStartTime + funcStr);
+                    return;
+                }
+
+                funcArgs = "(mDaqDeviceHandle, dioInfoItem, 0, &bitCount)\n";
+                dioInfoItem = DIO_INFO_NUM_BITS;
+                sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
+                err = ulDIOGetInfo(mDaqDeviceHandle, dioInfoItem, 0, &bitCount);
+                argVals = QString("(%1, %2, %3, %4)")
+                        .arg(mDaqDeviceHandle)
+                        .arg(dioInfoItem)
+                        .arg(0)
+                        .arg(infoValue);
+
+                funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
+                if (err == ERR_NO_ERROR) {
+                    mMainWindow->addFunction(sStartTime + funcStr);
+                    portBits[portType] = bitCount;
+                } else {
+                    mMainWindow->setError(err, sStartTime + funcStr);
+                    return;
+                }
             }
-
-            funcArgs = "(mDaqDeviceHandle, dioInfoItem, 0, &bitCount)\n";
-            dioInfoItem = DIO_INFO_NUM_BITS;
-            sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
-            err = ulDIOGetInfo(mDaqDeviceHandle, dioInfoItem, 0, &bitCount);
-            argVals = QString("(%1, %2, %3, %4)")
-                    .arg(mDaqDeviceHandle)
-                    .arg(dioInfoItem)
-                    .arg(0)
-                    .arg(infoValue);
-
-            funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-            if (err == ERR_NO_ERROR) {
-                mMainWindow->addFunction(sStartTime + funcStr);
-                portBits[portType] = bitCount;
-            } else {
-                mMainWindow->setError(err, sStartTime + funcStr);
-                return;
-            }
+            mDioResolution = portBits.value(portType);
+        } else {
+            mMainWindow->setError(err, sStartTime + funcStr);
+            return;
         }
-        mDioResolution = portBits.value(portType);
-    } else {
-        mMainWindow->setError(err, sStartTime + funcStr);
-        return;
     }
     ui->cmdGo->setFocus();
 }
@@ -548,6 +561,11 @@ void AoSubWidget::onClickCmdGo()
     ui->lblRateReturned->clear();
     ui->lblStatus->clear();
     ui->lblInfo->clear();
+    Range curRange = parentWindow->getCurrentRange();
+    if (curRange == 0)
+        parentWindow->setCurRange(mRange);
+    else
+        mRange = curRange;
     runSelectedFunc();
 }
 
@@ -626,8 +644,14 @@ void AoSubWidget::getDataValues()
     } else {
         double rangeVolts = getRangeVolts(mRange);
         truncate = false;
-        if (!(mRange < 100))
+        if (!(mRange < 100)) {
+            if (mModeChanged) {
+                mOffset.clear();
+                mAmplitude.clear();
+                mModeChanged = false;
+            }
             defaultOffset = rangeVolts / 2;
+        }
         defaultAmplitude = rangeVolts;
     }
 

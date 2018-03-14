@@ -65,6 +65,7 @@ private:
     int mUtFunction;
     int mCurGroup;
     bool mUseTimer;
+    bool mModeChanged;
 
     DaqDeviceHandle mDaqDeviceHandle;
     QString mDevUID;
