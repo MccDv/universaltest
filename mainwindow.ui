@@ -449,6 +449,9 @@
    <property name="text">
     <string>AI_DIFFERENTIAL</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+D</string>
+   </property>
   </action>
   <action name="actionAI_SINGLE_ENDED">
    <property name="checkable">

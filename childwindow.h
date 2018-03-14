@@ -290,7 +290,7 @@ public:
 
     int currentFunctionGroup() { return curFunctionGroup; }
     int currentFunction() { return curFunction; }
-    Range getCurrentRange()  {return mRange; }
+    Range getCurrentRange() {return mRange; }
 
     void setUpTimer();
     void updateEventSetup();

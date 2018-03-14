@@ -48,6 +48,7 @@ private slots:
     void runEventSetup();
     void replot();
     void plotSelect();
+    void readRegister();
     void showData(unsigned long long curTotalCount, unsigned long long curIndex, int blockSize);
 
 private:

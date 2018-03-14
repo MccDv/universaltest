@@ -153,7 +153,7 @@ private:
     void updatePlot();
     void disableCheckboxInput(bool disableMouse);
     void setDefaultBits(DigitalPortType portType);
-    void updateControlDefaults();
+    void updateControlDefaults(bool setAllValidPorts);
     DigitalPortType parsePortFromBitIndex(DigitalPortType tempPort, int &bitNum);
     int getGridOffsetFromPort(DigitalPortType portType);
     void mapGridToPortBit(int gridIndex, DigitalPortType &portType, int &bitInPort);

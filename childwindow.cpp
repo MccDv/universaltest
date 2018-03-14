@@ -146,7 +146,7 @@ void ChildWindow::setCurFunction(int utFunction)
 void ChildWindow::setCurRange(Range curRange)
 {
     mRange = curRange;
-    emit rangeChanged(mRange);
+    emit rangeChanged(curRange);
 }
 
 void ChildWindow::updateEventSetup()
