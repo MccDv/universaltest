@@ -405,10 +405,12 @@ void AoSubWidget::initDeviceParams()
         mAoResolution = infoValue;
         ui->hSldAoutVal->setMaximum(pow(2, mAoResolution) - 1);
     } else {
-        //mMainWindow->setError(err, sStartTime + funcStr);
-        mAoResolution = 1;
-        ui->hSldAoutVal->setMaximum(pow(2, mAoResolution) - 1);
-        return;
+        if (err == ERR_BAD_DEV_TYPE) {
+            mAoResolution = 1;
+            ui->hSldAoutVal->setMaximum(pow(2, mAoResolution) - 1);
+            return;
+        }
+        mMainWindow->setError(err, sStartTime + funcStr);
     }
 
     //if (!mFixedRange) {

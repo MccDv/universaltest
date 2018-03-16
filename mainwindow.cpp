@@ -625,6 +625,9 @@ void MainWindow::setBoardMenuSelect(QMdiSubWindow*)
     bool optionVisible, rangeVisible;
     bool plotShowing;
     int curFunc, curRange;
+    Range newRange;
+    double rangeVolts;
+    QString preFix, str;
     QString curBoard, displayIDString;
     QString curUID, actionName;
     ChildWindow *curChild;
@@ -805,6 +808,16 @@ void MainWindow::setBoardMenuSelect(QMdiSubWindow*)
                 if (rangeAction->data().toInt() == (int)curRange)
                     rangeAction->setChecked(true);
             }
+            newRange = (Range)curRange;
+            double vSpan = getRangeVolts(newRange);
+            if (newRange < 100) {
+                rangeVolts = vSpan / 2;
+                preFix = "±";
+            } else {
+                rangeVolts = vSpan;
+                preFix = "0 to ";
+            }
+            ui->menuRange->menuAction()->setText("Range (" + preFix + str.setNum(rangeVolts) +")");
         }
         if (optionVisible) {
             //set menu selections to match options for selected child window
@@ -938,9 +951,20 @@ void MainWindow::curRangeChanged()
 {
     ChildWindow *curChild = activeMdiChild();
     Range newRange;
+    double rangeVolts;
+    QString preFix, str;
 
     int rangeVar = rangeGroup->checkedAction()->data().toInt();
     newRange = (Range)rangeVar;
+    double vSpan = getRangeVolts(newRange);
+    if (newRange < 100) {
+        rangeVolts = vSpan / 2;
+        preFix = "±";
+    } else {
+        rangeVolts = vSpan;
+        preFix = "0 to ";
+    }
+    ui->menuRange->menuAction()->setText("Range (" + preFix + str.setNum(rangeVolts) +")");
     if (curChild) {
         curChild->setCurRange(newRange);
     }
@@ -1426,12 +1450,23 @@ void MainWindow::addDeviceToMenu(QString devName, QString devUiD, DaqDeviceHandl
 
 void MainWindow::syncRange(Range range)
 {
+    double rangeVolts;
+    QString preFix, str;
+
     foreach (QAction* rangeAct, ui->menuRange->actions()) {
         if (rangeAct->data() == range) {
             rangeAct->setChecked(true);
         }
     }
-
+    double vSpan = getRangeVolts(range);
+    if (range < 100) {
+        rangeVolts = vSpan / 2;
+        preFix = "±";
+    } else {
+        rangeVolts = vSpan;
+        preFix = "0 to ";
+    }
+    ui->menuRange->menuAction()->setText("Range (" + preFix + str.setNum(rangeVolts) +")");
 }
 
 QHash<QString, DaqDeviceHandle> MainWindow::getListedDevices()

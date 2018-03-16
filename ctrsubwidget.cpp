@@ -201,6 +201,8 @@ void CtrSubWidget::initDeviceParams()
         mMainWindow->addFunction(sStartTime + funcStr);
         mCtrResolution = infoValue;
     } else {
+        if (err == ERR_BAD_DEV_TYPE)
+            return;
         mMainWindow->setError(err, sStartTime + funcStr);
     }
     ui->cmdGo->setFocus();
