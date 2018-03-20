@@ -390,11 +390,11 @@ void subWidget::readInfo()
         ui->teShowValues->setHtml(infoText);
         break;
     case TYPE_DIO_INFO:
+        showIndex = true;
         infoItem = DIO_INFO_MIN_SCAN_RATE;
         devInfo = showInfoDbl(infoType, infoItem, "DioScan min");
         infoText.append(devInfo  + "</tr><tr>");
         infoItem = DIO_INFO_MAX_SCAN_RATE;
-        showIndex = true;
         devInfo = showInfoDbl(infoType, infoItem, "DioScan max");
         infoText.append(devInfo  + "</tr><tr>");
         infoItem = DIO_INFO_MAX_THROUGHPUT;
@@ -1111,6 +1111,7 @@ QString subWidget::showInfoDbl(int infoType, int infoItem, QString showItem)
         nameOfFunc = "ulDIOGetInfoDbl";
         err = ulDIOGetInfoDbl(mDaqDeviceHandle, dioInfoItem, index, &infoValueDbl);
         if ((dioInfoItem == DIO_INFO_MAX_SCAN_RATE)
+                | (dioInfoItem == DIO_INFO_MIN_SCAN_RATE)
                 | (dioInfoItem == DIO_INFO_MAX_THROUGHPUT)) {
             indexName = getDigitalDirection((DigitalDirection)index);
             indexInfo = true;

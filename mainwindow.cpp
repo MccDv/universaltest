@@ -445,6 +445,7 @@ void MainWindow::createFuncMenus()
             ui->actionFF_DEFAULT->setData(AIN_FF_DEFAULT);
             ui->actionFF_NOCALIBRATEDATA->setData(AIN_FF_NOCALIBRATEDATA);
             ui->actionFF_NOSCALEDATA->setData(AIN_FF_NOSCALEDATA);
+            ui->actionFF_NOCLEAR->setVisible(true);
             break;
         case FUNC_GROUP_AOUT:
             rangeVisible = true;

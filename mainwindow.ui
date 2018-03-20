@@ -190,7 +190,6 @@
     <addaction name="actionSO_RETRIGGER"/>
     <addaction name="actionSO_BURSTMODE"/>
     <addaction name="actionSO_PACEROUT"/>
-    <addaction name="actionSO_NOCLEAR"/>
     <addaction name="separator"/>
     <addaction name="actionFF_DEFAULT"/>
     <addaction name="actionFF_NOSCALEDATA"/>
@@ -755,6 +754,11 @@
   <action name="actionSet_Trigger">
    <property name="text">
     <string>Set Trigger...</string>
+   </property>
+  </action>
+  <action name="actionFF_NOCLEAR_2">
+   <property name="text">
+    <string>FF_NOCLEAR</string>
    </property>
   </action>
  </widget>

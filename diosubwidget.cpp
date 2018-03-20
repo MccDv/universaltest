@@ -183,10 +183,13 @@ void DioSubWidget::setUiForFunction()
     setNumberVisible = false;
     stackIndex = 0;
     stopVisible = false;
+    mPlot = false;
     QString goText = "Read";
     QString stopText = "Stop";
     QString sampToolTip = "Value read";
     QString startSample = "7";
+    QString rateVal = "1000";
+    QString blockText = "1000";
     int defPort;
     switch (mUtFunction) {
     case UL_D_CONFIG_PORT:
@@ -216,10 +219,12 @@ void DioSubWidget::setUiForFunction()
     case UL_D_IN:
         mFuncName = "ulDIn";
         asyncVisible = true;
+        startSample = "10";
         sampToolTip = "Samples per channel";
         setNumberVisible = true;
         break;
     case UL_D_OUT:
+        portsVisible = true;
         mFuncName = "ulDOut";
         goText = "Write";
         asyncVisible = true;
@@ -241,11 +246,12 @@ void DioSubWidget::setUiForFunction()
         asyncVisible = true;
         goText = "Go";
         sampToolTip = "Samples per channel";
-        startSample = "100";
+        startSample = "1000";
         scanVisible = true;
+        mPlot = true;
         setNumberVisible = true;
-        if (mPlot)
-            stackIndex = 2;
+        mPlot = true;
+        stackIndex = 2;
         break;
     case UL_D_OUTSCAN:
         mFuncName = "ulDOutScan";
@@ -254,9 +260,9 @@ void DioSubWidget::setUiForFunction()
         setNumberVisible = true;
         goText = "Go";
         sampToolTip = "Samples per channel";
-        startSample = "100";
-        if (mPlot)
-            stackIndex = 2;
+        startSample = "1000";
+        mPlot = true;
+        stackIndex = 2;
         break;
     default:
         break;
@@ -269,13 +275,17 @@ void DioSubWidget::setUiForFunction()
     ui->spnLowChan->setVisible(scanParamsVisible);
     ui->spnHighChan->setVisible(scanParamsVisible);
     ui->leNumSamples->setVisible(setNumberVisible);
+    ui->leRate->setText(rateVal);
     ui->leNumSamples->setToolTip(sampToolTip);
     ui->leNumSamples->setText(startSample);
+    ui->leBlockSize->setText(blockText);
     ui->cmdGo->setText(goText);
     ui->cmdStop->setVisible(stopVisible);
     ui->cmdStop->setText(stopText);
     parentWindow->adjustSize();
     updateControlDefaults(false);
+    if (mPlot)
+        showPlotWindow(mPlot);
     ui->cmdGo->setFocus();
     this->setWindowTitle(mFuncName + ": " + mDevName + QString(" [%1]").arg(mDaqDeviceHandle));
 }
@@ -438,6 +448,8 @@ void DioSubWidget::initDeviceParams()
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
     if (!err==ERR_NO_ERROR) {
+        if (err == ERR_BAD_DEV_TYPE)
+            return;
         mMainWindow->setError(err, sStartTime + funcStr);
     } else {
         mMainWindow->addFunction(sStartTime + funcStr);
@@ -620,10 +632,11 @@ void DioSubWidget::onClickCmdGo()
         mChanCount = 1;
     mTotalSamples = ui->leNumSamples->text().toLong();
 
-    if (mUtFunction == UL_D_OUTSCAN)
-        getDataValues();
+    //if (mUtFunction == UL_D_OUTSCAN)
+    //    getDataValues();
     tmrIsEnabled = parentWindow->tmrEnabled();
     mUseTimer = tmrIsEnabled;
+    ui->lblStatus->clear();
 
     if (mUtFunction == UL_D_CONFIG_PORT) {
         if (mCurGroup == FUNC_GROUP_DIN)
@@ -652,8 +665,8 @@ void DioSubWidget::getDataValues()
     //set default wave parameters - half scale, sine wave
     //set default wave parameters - half scale, sine wave
     //mDioResolution = 32;
-    defaultOffset = qPow(2, mDioResolution) / 2;
-    defaultAmplitude = qPow(2, mDioResolution) / 2;
+    defaultAmplitude = (qPow(2, mDioResolution) / 2) - 2;
+    defaultOffset = defaultAmplitude / 2;
 
     //setup the buffer
     if (buffer) {
@@ -801,7 +814,7 @@ void DioSubWidget::runSelectedFunc()
                 if (i > numWaves) {
                     //if data hasn't been defined set default data
                     chanScale = DMgr::counts;
-                    defaultRange = pow(2, mDioResolution);
+                    defaultRange = (pow(2, mDioResolution)) - 2;
                     offset = defaultRange / 2;
                     isBipolar = false;
                     mWaves.insert(i, DMgr::sineWave);
@@ -838,14 +851,29 @@ void DioSubWidget::runSelectedFunc()
         break;
     case UL_D_INSCAN:
         showStop = true;
-        if (!mTriggerType == TRIG_NONE)
+        mTriggerType = parentWindow->triggerType();
+        if (!mTriggerType == TRIG_NONE) {
+            mTrigChannel = parentWindow->trigChannel();
+            mTrigLevel = parentWindow->trigLevel();
+            mTrigVariance = parentWindow->trigVariance();
+            mRetrigCount = parentWindow->retrigCount();
+            qApp->processEvents();
             runSetTriggerFunc();
+        }
         runDInScanFunc();
         break;
     case UL_D_OUTSCAN:
         showStop = true;
-        if (!mTriggerType == TRIG_NONE)
+        getDataValues();
+        mTriggerType = parentWindow->triggerType();
+        if (!mTriggerType == TRIG_NONE) {
+            mTrigChannel = parentWindow->trigChannel();
+            mTrigLevel = parentWindow->trigLevel();
+            mTrigVariance = parentWindow->trigVariance();
+            mRetrigCount = parentWindow->retrigCount();
+            qApp->processEvents();
             runSetTriggerFunc();
+        }
         runDOutScanFunc();
         break;
     default:
@@ -1191,16 +1219,18 @@ void DioSubWidget::runDInFunc()
     int numDigPorts, numSamples, curIndex;
     QTime t;
     QString sStartTime;
+    QList<DigitalPortType> portsSelected;
+    DigitalPortType portType;
 
-    /*portsSelected.clear();
+    portsSelected.clear();
     foreach (QCheckBox *chkPort, portCheckBoxes) {
         if (chkPort->isChecked()) {
             int portNum = chkPort->property("portNum").toInt();
             portType = (DigitalPortType)portNum;
             portsSelected.append(portType);
         }
-    }*/
-    numDigPorts = portList.count();
+    }
+    numDigPorts = portsSelected.count();
     if (mUtFunction == UL_D_CONFIG_PORT) {
         numSamples = 1;
     } else {
@@ -1215,7 +1245,7 @@ void DioSubWidget::runDInFunc()
     funcArgs = "(mDaqDeviceHandle, portType, data)\n";
     for (int sampleNum = 0; sampleNum < numSamples; sampleNum++) {
         curIndex = 0;
-        foreach (DigitalPortType portType, portList) {
+        foreach (DigitalPortType portType, portsSelected) {
             sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
             err = ulDIn(mDaqDeviceHandle, portType, &data);
             dataVal[curIndex] = data;
@@ -1238,7 +1268,7 @@ void DioSubWidget::runDInFunc()
     }
 
     QString temp;
-    QListIterator<DigitalPortType> i(portList);
+    QListIterator<DigitalPortType> i(portsSelected);
     if (mUtFunction == UL_D_CONFIG_PORT) {
         QString portValues = "";
         curIndex = 0;

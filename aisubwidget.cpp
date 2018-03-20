@@ -155,6 +155,8 @@ void AiSubWidget::initDeviceParams()
         mMainWindow->addFunction(sStartTime + funcStr);
         mAiResolution = infoValue;
     } else {
+        if (err == ERR_BAD_DEV_TYPE)
+            return;
         mMainWindow->setError(err, sStartTime + funcStr);
     }
     ui->cmdGo->setFocus();

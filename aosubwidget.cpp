@@ -139,25 +139,33 @@ void AoSubWidget::setUiForGroup()
 void AoSubWidget::functionChanged(int utFunction)
 {
     mUtFunction = utFunction;
-    this->setUiForFunction();
+    setUiForFunction();
 }
 
 void AoSubWidget::setUiForFunction()
 {
     ChildWindow *parentWindow;
     parentWindow = qobject_cast<ChildWindow *>(this->parent());
-    QFrame::Shape frameShape;
+    //QFrame::Shape frameShape;
     bool scanVisible, showChanSelect;
 
     mRange = parentWindow->getCurrentRange();
     mChanList.clear();
     mRangeList.clear();
     mChanTypeList.clear();
-    frameShape = QFrame::NoFrame;
+    //frameShape = QFrame::NoFrame;
     showChanSelect = true;
-    scanVisible = false;
+    scanVisible = true;
+    mPlot = true;
+    ui->leRate->setText("1000");
+    ui->leNumSamples->setText("1000");
+    ui->leBlockSize->setText("1000");
     switch (mUtFunction) {
     case UL_AOUT:
+        scanVisible = false;
+        mPlot = false;
+        ui->leNumSamples->setText("1");
+        ui->leBlockSize->setText("1");
         mFuncName = "ulAOut";
         break;
     case UL_AOUT_SCAN:
@@ -167,20 +175,17 @@ void AoSubWidget::setUiForFunction()
             mFuncName = "ulDaqOutScan";
             showChanSelect = false;
         }
-        scanVisible = true;
-        ui->leRate->setText("10");
-        ui->leNumSamples->setText("100");
-        ui->leBlockSize->setText("20");
         //set default values for chanDescriptor
         mChanList.insert(0, 0);
         mRangeList.insert(0, mRange);
         mChanTypeList.insert(0, DAQO_ANALOG);
-        if (!mPlot)
-            frameShape = QFrame::Box;
         break;
     default:
         break;
     }
+    ui->fraScan->setVisible(scanVisible);
+    ui->cmdStop->setEnabled(false);
+    showPlotWindow(mPlot);
     ui->spnHighChan->setEnabled(showChanSelect);
     ui->spnLowChan->setEnabled(showChanSelect);
     ui->fraScan->setVisible(scanVisible);
@@ -199,7 +204,7 @@ void AoSubWidget::setUiForFunction()
                 txEdt->setVisible(scanVisible);
         }
     }
-    ui->stackedWidget->setFrameShape(frameShape);
+    //ui->stackedWidget->setFrameShape(frameShape);
     this->setWindowTitle(mFuncName + ": " + mDevName + QString(" [%1]").arg(mDaqDeviceHandle));
 }
 
@@ -282,13 +287,15 @@ void AoSubWidget::showPlotWindow(bool showIt)
 {
     QFrame::Shape frameShape;
 
-    if (mUtFunction == UL_AOUT_SCAN)
-        frameShape = QFrame::Box;
+    //if ((mUtFunction == UL_AOUT_SCAN) |
+    //        (mUtFunction == UL_DAQ_OUTSCAN))
+    //    frameShape = QFrame::Box;
+    frameShape = QFrame::NoFrame;
     mPlot = showIt;
     int curIndex = 0;
     if (showIt) {
         curIndex = 1;
-        frameShape = QFrame::NoFrame;
+        //frameShape = QFrame::NoFrame;
     }
     ui->stackedWidget->setFrameShape(frameShape);
     ui->stackedWidget->setCurrentIndex(curIndex);
@@ -405,10 +412,12 @@ void AoSubWidget::initDeviceParams()
         mAoResolution = infoValue;
         ui->hSldAoutVal->setMaximum(pow(2, mAoResolution) - 1);
     } else {
-        //mMainWindow->setError(err, sStartTime + funcStr);
-        mAoResolution = 1;
-        ui->hSldAoutVal->setMaximum(pow(2, mAoResolution) - 1);
-        return;
+        if (err == ERR_BAD_DEV_TYPE) {
+            mAoResolution = 1;
+            ui->hSldAoutVal->setMaximum(pow(2, mAoResolution) - 1);
+            return;
+        }
+        mMainWindow->setError(err, sStartTime + funcStr);
     }
 
     //if (!mFixedRange) {
@@ -599,7 +608,7 @@ void AoSubWidget::getDataValues()
                     mBipolar[i] = (mRangeList.value(i) < 100);
                     if (mDaqoFlags & DAQOUTSCAN_FF_NOSCALEDATA) {
                         mDataScale[i] = DMgr::counts;
-                        mFSRange[i] = qPow(2, mAoResolution);
+                        mFSRange[i] = (qPow(2, mAoResolution)) - 1;
                     } else {
                         mDataScale[i] = DMgr::volts;
                         mFSRange[i] = getRangeVolts(mRange);
@@ -608,7 +617,7 @@ void AoSubWidget::getDataValues()
                     mResolution[i] = mDioResolution;
                     mBipolar[i] = false;
                     mDataScale[i] = DMgr::counts;
-                    mFSRange[i] = pow(2, mDioResolution);
+                    mFSRange[i] = (pow(2, mDioResolution)) - 1;
                 }
                 //chanDescriptors[i].channel = mChanList.value(i);
                 //chanDescriptors[i].range = mRangeList.value(i);
@@ -797,9 +806,9 @@ void AoSubWidget::runSelectedFunc()
                     offset = 0;
                     if (noScale) {
                         chanScale = DMgr::counts;
-                        defaultRange = pow(2, mAoResolution);
+                        defaultRange = (pow(2, mAoResolution)) - 1;
                         if (mChanTypeList.value(i) == DAQO_DIGITAL)
-                            defaultRange = pow(2, mDioResolution);
+                            defaultRange = (pow(2, mDioResolution)) - 1;
                         offset = defaultRange / 2;
                         isBipolar = false;
                     }
