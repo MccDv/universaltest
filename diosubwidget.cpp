@@ -183,10 +183,13 @@ void DioSubWidget::setUiForFunction()
     setNumberVisible = false;
     stackIndex = 0;
     stopVisible = false;
+    mPlot = false;
     QString goText = "Read";
     QString stopText = "Stop";
     QString sampToolTip = "Value read";
     QString startSample = "7";
+    QString rateVal = "1000";
+    QString blockText = "1000";
     int defPort;
     switch (mUtFunction) {
     case UL_D_CONFIG_PORT:
@@ -216,6 +219,7 @@ void DioSubWidget::setUiForFunction()
     case UL_D_IN:
         mFuncName = "ulDIn";
         asyncVisible = true;
+        startSample = "10";
         sampToolTip = "Samples per channel";
         setNumberVisible = true;
         break;
@@ -242,11 +246,12 @@ void DioSubWidget::setUiForFunction()
         asyncVisible = true;
         goText = "Go";
         sampToolTip = "Samples per channel";
-        startSample = "100";
+        startSample = "1000";
         scanVisible = true;
+        mPlot = true;
         setNumberVisible = true;
-        if (mPlot)
-            stackIndex = 2;
+        mPlot = true;
+        stackIndex = 2;
         break;
     case UL_D_OUTSCAN:
         mFuncName = "ulDOutScan";
@@ -255,9 +260,9 @@ void DioSubWidget::setUiForFunction()
         setNumberVisible = true;
         goText = "Go";
         sampToolTip = "Samples per channel";
-        startSample = "100";
-        if (mPlot)
-            stackIndex = 2;
+        startSample = "1000";
+        mPlot = true;
+        stackIndex = 2;
         break;
     default:
         break;
@@ -270,13 +275,17 @@ void DioSubWidget::setUiForFunction()
     ui->spnLowChan->setVisible(scanParamsVisible);
     ui->spnHighChan->setVisible(scanParamsVisible);
     ui->leNumSamples->setVisible(setNumberVisible);
+    ui->leRate->setText(rateVal);
     ui->leNumSamples->setToolTip(sampToolTip);
     ui->leNumSamples->setText(startSample);
+    ui->leBlockSize->setText(blockText);
     ui->cmdGo->setText(goText);
     ui->cmdStop->setVisible(stopVisible);
     ui->cmdStop->setText(stopText);
     parentWindow->adjustSize();
     updateControlDefaults(false);
+    if (mPlot)
+        showPlotWindow(mPlot);
     ui->cmdGo->setFocus();
     this->setWindowTitle(mFuncName + ": " + mDevName + QString(" [%1]").arg(mDaqDeviceHandle));
 }
@@ -656,8 +665,8 @@ void DioSubWidget::getDataValues()
     //set default wave parameters - half scale, sine wave
     //set default wave parameters - half scale, sine wave
     //mDioResolution = 32;
-    defaultOffset = qPow(2, mDioResolution) / 2;
-    defaultAmplitude = (qPow(2, mDioResolution) / 2) - 1;
+    defaultAmplitude = (qPow(2, mDioResolution) / 2) - 2;
+    defaultOffset = defaultAmplitude / 2;
 
     //setup the buffer
     if (buffer) {
@@ -805,7 +814,7 @@ void DioSubWidget::runSelectedFunc()
                 if (i > numWaves) {
                     //if data hasn't been defined set default data
                     chanScale = DMgr::counts;
-                    defaultRange = (pow(2, mDioResolution)) - 1;
+                    defaultRange = (pow(2, mDioResolution)) - 2;
                     offset = defaultRange / 2;
                     isBipolar = false;
                     mWaves.insert(i, DMgr::sineWave);

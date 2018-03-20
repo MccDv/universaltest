@@ -371,6 +371,9 @@ void CtrSubWidget::setUiForFunction()
     int stackLevel = 0;
     mPlot = false;
 
+    ui->leRate->setText("1000");
+    ui->leNumSamples->setText("1000");
+    ui->leBlockSize->setText("1000");
     switch (mUtFunction) {
     case UL_C_SELECT:
         mFuncName = "Select Ctr";
@@ -380,6 +383,7 @@ void CtrSubWidget::setUiForFunction()
         textVisible = true;
         setNumberVisible = true;
         regSelectorVisible = true;
+        ui->leNumSamples->setText("10");
         scanVisible = true;
         break;
     case UL_C_CLEAR:
@@ -395,6 +399,7 @@ void CtrSubWidget::setUiForFunction()
         mFuncName = "ulCInScan";
         textVisible = true;
         mPlot = true;
+        stackLevel = 2;
         ctrSelectVisible = false;
         scanParamsVisible = true;
         setNumberVisible = true;
@@ -880,7 +885,7 @@ void CtrSubWidget::runCInFunc()
 
     tickFactor = 1;
     if ((mMeasType == CMT_PERIOD)
-            | (mMeasType == CMT_PERIOD)
+            | (mMeasType == CMT_PULSE_WIDTH)
             | (mMeasType == CMT_TIMING))
         tickFactor = getTickValue(mTickSize);
     ctrsSelected.clear();
