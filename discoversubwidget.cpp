@@ -8,11 +8,15 @@ DiscoverSubWidget::DiscoverSubWidget(QWidget *parent) :
     ui(new Ui::DiscoverSubWidget)
 {
     ui->setupUi(this);
+
+    ui->lblInfo->setStyleSheet("QLabel { color : blue; }" );
     ui->textEdit->setStyleSheet("QTextEdit { background-color : white; color : blue; }");
     connect(ui->listWidget, SIGNAL(itemSelectionChanged()),
                      this, SLOT(on_listWidget_itemSelectionChanged()));
     //connect(ui->cmdCreate, SIGNAL(clicked()), MainWindow, SLOT(());
     connect(ui->cmdDiscover, SIGNAL(clicked(bool)), this, SLOT(on_actionRefresh_Devices_triggered()));
+    connect(ui->cmdDescriptor, SIGNAL(clicked(bool)), this, SLOT(getDescriptor()));
+    connect(ui->cmdIsConnected, SIGNAL(clicked(bool)), this, SLOT(checkConnection()));
     ui->textEdit->setTabStopWidth(50);
     mMainWindow = getMainWindow();
 
@@ -112,12 +116,14 @@ void DiscoverSubWidget::updateList()
     ui->cmdRelease->setEnabled(devHandle > 0);
     ui->cmdConnect->setEnabled(devHandle);
     ui->cmdDisconnect->setEnabled(devHandle);
+    ui->cmdDescriptor->setEnabled(devHandle);
     mDaqDeviceHandle = devHandle;
     if (mDaqDeviceHandle == 0) {
         ui->cmdCreate->setEnabled(true);
         ui->cmdRelease->setEnabled(false);
         ui->cmdDisconnect->setEnabled(false);
         ui->cmdConnect->setEnabled(false);
+        ui->cmdDescriptor->setEnabled(false);
     }
     else
         updateConnectionStatus();
@@ -125,97 +131,108 @@ void DiscoverSubWidget::updateList()
 
 void DiscoverSubWidget::on_cmdCreate_clicked()
 {
+    QString nameOfFunc, funcArgs, argVals, funcStr;
+    QTime t;
+    QString sStartTime;
+
     int itemsListed = ui->listWidget->count();
-    //bool addToMenu;
 
     if (itemsListed > 0) {
         QListWidgetItem *curItem = ui->listWidget->currentItem();
         int descriptorIndex = curItem->data(Qt::UserRole).toInt();
-        //int devListed = ui->listWidget->currentRow();
         QString uidKey = devDescriptors[descriptorIndex].uniqueId;
-        //addToMenu = (devList.value(uidKey) == -1);
 
+        nameOfFunc = "ulCreateDaqDevice";
+        funcArgs = "({productName, productId, devInterface, devString, uniqueId})\n";
+        sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
         mDaqDeviceHandle = ulCreateDaqDevice(devDescriptors[descriptorIndex]);
+        argVals = QStringLiteral("(%1, {%2, %3, %4, %5})")
+                .arg(devDescriptors[descriptorIndex].productName)
+                .arg(devDescriptors[descriptorIndex].productId)
+                .arg(devDescriptors[descriptorIndex].devInterface)
+                .arg(devDescriptors[descriptorIndex].devString)
+                .arg(devDescriptors[descriptorIndex].uniqueId);
+        ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
+
+        funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
         if (!mDaqDeviceHandle == 0) {
             devList.remove(uidKey);
             devList.insert(uidKey, mDaqDeviceHandle);
-            //if (addToMenu) {
-                QString devName = devDescriptors[descriptorIndex].productName;
-                mMainWindow->addDeviceToMenu(devName, uidKey, mDaqDeviceHandle);
-            //}
+            QString devName = devDescriptors[descriptorIndex].productName;
+            mMainWindow->addDeviceToMenu(devName, uidKey, mDaqDeviceHandle);
             updateList();
         }
-
-        /*UlError err = ulConnectDaqDevice(mDaqDeviceHandle);
-        if (!err==ERR_NO_ERROR) {
-            QString funcStr = "ulConnectDaqDevice(daqDeviceHandle)\n";
-            QString errStr = QStringLiteral("%1Arg vals: (%2)")
-                    .arg(funcStr)
-                    .arg(mDaqDeviceHandle);
-            ErrorDialog errDlg;
-            errDlg.setModal(true);
-            errDlg.setError(err, errStr);
-            errDlg.exec();
-        } else {*/
         updateConnectionStatus();
     }
 }
 
 void DiscoverSubWidget::on_cmdRelease_clicked()
 {
-    UlError err = ulReleaseDaqDevice(mDaqDeviceHandle);
+    QString nameOfFunc, funcArgs, argVals, funcStr;
+    QTime t;
+    QString sStartTime;
+
+    nameOfFunc = "ulReleaseDaqDevice";
+    funcArgs = "(mDaqDeviceHandle)\n";
+    sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
+    err = ulReleaseDaqDevice(mDaqDeviceHandle);
+    argVals = QStringLiteral("(%1)")
+            .arg(mDaqDeviceHandle);
+    ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
+
+    funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
     if (!err==ERR_NO_ERROR) {
-        QString funcStr = "ulReleaseDaqDevice(daqDeviceHandle)\n";
-        QString errStr = QStringLiteral("%1Arg vals: (%2)")
-                .arg(funcStr)
-                .arg(mDaqDeviceHandle);
-        ErrorDialog errDlg;
-        errDlg.setModal(true);
-        errDlg.setError(err, errStr);
-        errDlg.exec();
+        mMainWindow->setError(err, sStartTime + funcStr);
     } else {
         mMainWindow->removeDeviceFromMenu(mUidString);
         devList.remove(mUidString);
+        mMainWindow->addFunction(sStartTime + funcStr);
         updateList();
     }
 }
 
 void DiscoverSubWidget::on_cmdDisconnect_clicked()
 {
-    UlError err;
-    QString funcStr;
+    QString nameOfFunc, funcArgs, argVals, funcStr;
+    QTime t;
+    QString sStartTime;
 
+    nameOfFunc = "ulDisconnectDaqDevice";
+    funcArgs = "(mDaqDeviceHandle)\n";
+    sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
     err = ulDisconnectDaqDevice(mDaqDeviceHandle);
-    funcStr = "ulDisconnectDaqDevice(daqDeviceHandle)\n";
+    argVals = QStringLiteral("(%1)")
+            .arg(mDaqDeviceHandle);
+    ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
+
+    funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
     if (!err==ERR_NO_ERROR) {
-        QString errStr = QStringLiteral("%1Arg vals: (%2)")
-                .arg(funcStr)
-                .arg(mDaqDeviceHandle);
-        ErrorDialog errDlg;
-        errDlg.setModal(true);
-        errDlg.setError(err, errStr);
-        errDlg.exec();
+        mMainWindow->setError(err, sStartTime + funcStr);
     } else {
+        mMainWindow->addFunction(sStartTime + funcStr);
         updateList();
     }
 }
 
 void DiscoverSubWidget::on_cmdConnect_clicked()
 {
-    UlError err;
-    QString funcStr;
+    QString nameOfFunc, funcArgs, argVals, funcStr;
+    QTime t;
+    QString sStartTime;
 
+    nameOfFunc = "ulConnectDaqDevice";
+    funcArgs = "(mDaqDeviceHandle)\n";
+    sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
     err = ulConnectDaqDevice(mDaqDeviceHandle);
-    funcStr = "ulConnectDaqDevice(daqDeviceHandle)\n";
+    argVals = QStringLiteral("(%1)")
+            .arg(mDaqDeviceHandle);
+    ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
+
+    funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
     if (!err==ERR_NO_ERROR) {
-        QString errStr = QStringLiteral("%1Arg vals: (%2)")
-                .arg(funcStr)
-                .arg(mDaqDeviceHandle);
-        ErrorDialog errDlg;
-        errDlg.setModal(true);
-        errDlg.setError(err, errStr);
-        errDlg.exec();
+        mMainWindow->setError(err, sStartTime + funcStr);
     } else {
+        mMainWindow->addFunction(sStartTime + funcStr);
         updateList();
     }
 }
@@ -258,27 +275,32 @@ void DiscoverSubWidget::updateConnectionStatus()
 
 void DiscoverSubWidget::on_actionRefresh_Devices_triggered()
 {
+    QString nameOfFunc, funcArgs, argVals, funcStr;
+    QTime t;
+    QString sStartTime;
     unsigned int numDevs = MAX_DEV_COUNT;
     QString uidKey;
     DaqDeviceHandle existingDevHandle;
 
+    //numDevs = 2;
     QHash<QString, DaqDeviceHandle> existingList = mMainWindow->getListedDevices();
-    DaqDeviceInterface infterfaceType = ANY_IFC;
-    err = ulGetDaqDeviceInventory(infterfaceType, devDescriptors, &numDevs);
+    DaqDeviceInterface interfaceType = ANY_IFC;
 
+    nameOfFunc = "ulGetDaqDeviceInventory";
+    funcArgs = "(interfaceType, devDescriptors, &numDevs)\n";
+    sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
+    err = ulGetDaqDeviceInventory(interfaceType, devDescriptors, &numDevs);
+    argVals = QStringLiteral("(%1, %2, %3)")
+            .arg(interfaceType)
+            .arg("devDescriptors")
+            .arg(numDevs);
+    ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
+
+    funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
     if (!err==ERR_NO_ERROR) {
-        QString funcStr = "ulGetDaqDeviceInventory"
-                          "(infterfaceType, devDescriptors, &numDevs)\n";
-        QString errStr = QStringLiteral("%1Arg vals: (%2, %3, %4)")
-                .arg(funcStr)
-                .arg(infterfaceType)
-                .arg("devDescriptors")
-                .arg(numDevs);
-        ErrorDialog errDlg;
-        errDlg.setModal(true);
-        errDlg.setError(err, errStr);
-        errDlg.exec();
+        mMainWindow->setError(err, sStartTime + funcStr);
     } else {
+        mMainWindow->addFunction(sStartTime + funcStr);
         ui->listWidget->clear();
         ui->textEdit->clear();
         ui->cmdCreate->setEnabled(false);
@@ -343,5 +365,57 @@ void DiscoverSubWidget::refreshSelDevice()
             }
 
         }
+    }
+}
+
+void DiscoverSubWidget::getDescriptor()
+{
+    QString nameOfFunc, funcArgs, argVals, funcStr;
+    QTime t;
+    QString sStartTime;
+    DaqDeviceDescriptor descriptor;
+
+    nameOfFunc = "ulGetDaqDeviceDescriptor";
+    funcArgs = "(mDaqDeviceHandle, {productName, productId, devInterface, devString, uniqueId})\n";
+    sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
+    err = ulGetDaqDeviceDescriptor(mDaqDeviceHandle, &descriptor);
+    argVals = QStringLiteral("(%1, {%2, %3, %4, %5, %6})")
+            .arg(mDaqDeviceHandle)
+            .arg(descriptor.productName)
+            .arg(descriptor.productId)
+            .arg(descriptor.devInterface)
+            .arg(descriptor.devString)
+            .arg(descriptor.uniqueId);
+    ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
+
+    funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
+    if (!err==ERR_NO_ERROR) {
+        mMainWindow->setError(err, sStartTime + funcStr);
+    } else {
+        mMainWindow->addFunction(sStartTime + funcStr);
+    }
+}
+
+void DiscoverSubWidget::checkConnection()
+{
+    QString nameOfFunc, funcArgs, argVals, funcStr;
+    QTime t;
+    QString sStartTime;
+    int connected;
+
+    nameOfFunc = "ulIsDaqDeviceConnected";
+    funcArgs = "(mDaqDeviceHandle, connected)\n";
+    sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
+    err = ulIsDaqDeviceConnected(mDaqDeviceHandle, &connected);
+    argVals = QStringLiteral("(%1, %2)")
+            .arg(mDaqDeviceHandle)
+            .arg(connected);
+    ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
+
+    funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
+    if (!err==ERR_NO_ERROR) {
+        mMainWindow->setError(err, sStartTime + funcStr);
+    } else {
+        mMainWindow->removeDeviceFromMenu(mUidString);
     }
 }

@@ -10,7 +10,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
 TARGET = universaltest
 TEMPLATE = app
-CONFIG += static
+#CONFIG += static
 
 SOURCES += main.cpp\
         mainwindow.cpp \

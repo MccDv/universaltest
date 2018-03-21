@@ -31,6 +31,8 @@ private slots:
     void on_cmdDisconnect_clicked();
     void on_cmdConnect_clicked();
     void on_actionRefresh_Devices_triggered();
+    void getDescriptor();
+    void checkConnection();
     //void on_listWidget_clicked(const QModelIndex &index);
 
 private:
