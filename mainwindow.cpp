@@ -1325,6 +1325,7 @@ void MainWindow::updateInventory()
             funcName = "ulConnectDaqDevice";
             argString = "(deviceHandle)\n";
             sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
+            qApp->processEvents();
             UlError err = ulConnectDaqDevice(deviceHandle);
             argVals = QStringLiteral("(%1)")
                     .arg(deviceHandle);
