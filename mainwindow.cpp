@@ -143,6 +143,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionConfigure_Data, SIGNAL(triggered(bool)), this, SLOT(configureData()));
     connect(ui->actionLoad_Queue, SIGNAL(triggered(bool)), this, SLOT(configureQueue()));
 
+    qApp->processEvents();
     this->updateInventory();
     this->createMenus();
     this->createFuncMenus();

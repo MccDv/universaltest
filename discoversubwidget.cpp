@@ -8,7 +8,9 @@ DiscoverSubWidget::DiscoverSubWidget(QWidget *parent) :
     ui(new Ui::DiscoverSubWidget)
 {
     ui->setupUi(this);
+    QString str;
 
+    ui->leNumDevs->setText(str.setNum(MAX_DEV_COUNT));
     ui->lblInfo->setStyleSheet("QLabel { color : blue; }" );
     ui->textEdit->setStyleSheet("QTextEdit { background-color : white; color : blue; }");
     connect(ui->listWidget, SIGNAL(itemSelectionChanged()),
@@ -114,8 +116,8 @@ void DiscoverSubWidget::updateList()
     ui->textEdit->append(QString("Device handle: %1").arg(devHandle));
     ui->cmdCreate->setEnabled(devHandle < 1);
     ui->cmdRelease->setEnabled(devHandle > 0);
-    ui->cmdConnect->setEnabled(devHandle);
-    ui->cmdDisconnect->setEnabled(devHandle);
+    //ui->cmdConnect->setEnabled(devHandle);
+    //ui->cmdDisconnect->setEnabled(devHandle);
     ui->cmdDescriptor->setEnabled(devHandle);
     mDaqDeviceHandle = devHandle;
     if (mDaqDeviceHandle == 0) {
@@ -124,9 +126,8 @@ void DiscoverSubWidget::updateList()
         ui->cmdDisconnect->setEnabled(false);
         ui->cmdConnect->setEnabled(false);
         ui->cmdDescriptor->setEnabled(false);
-    }
-    else
-        updateConnectionStatus();
+    } else
+        checkConnection();
 }
 
 void DiscoverSubWidget::on_cmdCreate_clicked()
@@ -161,8 +162,9 @@ void DiscoverSubWidget::on_cmdCreate_clicked()
             QString devName = devDescriptors[descriptorIndex].productName;
             mMainWindow->addDeviceToMenu(devName, uidKey, mDaqDeviceHandle);
             updateList();
+            checkConnection();
         }
-        updateConnectionStatus();
+        //updateConnectionStatus();
     }
 }
 
@@ -210,7 +212,8 @@ void DiscoverSubWidget::on_cmdDisconnect_clicked()
         mMainWindow->setError(err, sStartTime + funcStr);
     } else {
         mMainWindow->addFunction(sStartTime + funcStr);
-        updateList();
+        //updateList();
+        checkConnection();
     }
 }
 
@@ -233,7 +236,8 @@ void DiscoverSubWidget::on_cmdConnect_clicked()
         mMainWindow->setError(err, sStartTime + funcStr);
     } else {
         mMainWindow->addFunction(sStartTime + funcStr);
-        updateList();
+        //updateList();
+        checkConnection();
     }
 }
 
@@ -282,7 +286,7 @@ void DiscoverSubWidget::on_actionRefresh_Devices_triggered()
     QString uidKey;
     DaqDeviceHandle existingDevHandle;
 
-    //numDevs = 2;
+    numDevs = ui->leNumDevs->text().toUInt();
     QHash<QString, DaqDeviceHandle> existingList = mMainWindow->getListedDevices();
     DaqDeviceInterface interfaceType = ANY_IFC;
 
@@ -320,14 +324,6 @@ void DiscoverSubWidget::on_actionRefresh_Devices_triggered()
                     existingDevHandle = existingList.value(uidKey);
                     existingList.remove(uidKey);
                 }
-                //existingDevHandle = mMainWindow->getExistingDevHandle(uidKey);
-                //if zero, add the device to the main window menu
-                /*if (!existingDevHandle == 0) {
-                    //if not zero, add the handle from the main window here
-                    mDaqDeviceHandle = existingDevHandle;
-                } else {
-                    mDaqDeviceHandle = -1;
-                }*/
                 mDaqDeviceHandle = existingDevHandle;
                 devList.insert(uidKey, mDaqDeviceHandle);
                 updateList();
@@ -416,6 +412,8 @@ void DiscoverSubWidget::checkConnection()
     if (!err==ERR_NO_ERROR) {
         mMainWindow->setError(err, sStartTime + funcStr);
     } else {
-        mMainWindow->removeDeviceFromMenu(mUidString);
+        mMainWindow->addFunction(sStartTime + funcStr);
+        ui->cmdDisconnect->setEnabled(connected);
+        ui->cmdConnect->setEnabled(!connected);
     }
 }

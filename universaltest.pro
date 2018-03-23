@@ -65,9 +65,13 @@ FORMS    += mainwindow.ui \
     queuedialog.ui \
     eventsdialog.ui
 
-DISTFILES +=
+DISTFILES += \
+    utlnxsplash.png
 
 unix:!macx: LIBS += -L$$PWD/./ -luldaq
 
 INCLUDEPATH += $$PWD/.
 DEPENDPATH += $$PWD/.
+
+RESOURCES += \
+    resource.qrc

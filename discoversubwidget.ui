@@ -275,6 +275,16 @@
        <number>2</number>
       </property>
       <item>
+       <widget class="QLineEdit" name="leNumDevs">
+        <property name="toolTip">
+         <string>Descriptor array size</string>
+        </property>
+        <property name="text">
+         <string>100</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <spacer name="horizontalSpacer_2">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
