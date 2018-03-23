@@ -336,6 +336,8 @@ QString getInfoDescription(int infoType, int infoItem, long long infoValue)
     case TYPE_CTR_INFO:
         if (infoItem == CTR_INFO_MEASUREMENT_TYPES)
             return getCtrMeasTypeNames((CounterMeasurementType)infoValue);
+        if (infoItem == CTR_INFO_REGISTER_TYPES)
+            return getCtrRegTypeNames((CounterRegisterType)infoValue);
         if (infoItem == CTR_INFO_SCAN_OPTIONS)
             return getOptionNames((ScanOption)infoValue);
         if (infoItem == CTR_INFO_TRIG_TYPES)
@@ -720,13 +722,13 @@ QString getDPortIoTypeName(DigitalPortIoType ioType)
 QString getCtrMeasTypeNames(CounterMeasurementType typeNum)
 {
     int mask;
-    AiChanType maskedVal;
+    CounterMeasurementType maskedVal;
     QString chanName;
 
-    maskedVal = (AiChanType)0;
+    maskedVal = (CounterMeasurementType)0;
     for (int i = 0; i < 6; i++) {
         mask = pow(2, i);
-        maskedVal = (AiChanType)(typeNum & (AiChanType)mask);
+        maskedVal = (CounterMeasurementType)(typeNum & (CounterMeasurementType)mask);
         switch (maskedVal) {
         case CMT_COUNT:
             chanName += "Count, ";
@@ -750,6 +752,44 @@ QString getCtrMeasTypeNames(CounterMeasurementType typeNum)
     }
     int loc = chanName.lastIndexOf(",");
     return chanName.left(loc);
+}
+
+QString getCtrRegTypeNames(CounterRegisterType regType)
+{
+    int mask;
+    CounterRegisterType maskedVal;
+    QString regName;
+
+    maskedVal = (CounterRegisterType)0;
+    for (int i = 0; i < 6; i++) {
+        mask = pow(2, i);
+        maskedVal = (CounterRegisterType)(regType & (CounterRegisterType)mask);
+        switch (maskedVal) {
+        case CRT_COUNT:
+            regName += "Count, ";
+            break;
+        case CRT_LOAD:
+            regName += "Load, ";
+            break;
+        case CRT_MIN_LIMIT:
+            regName += "MinLimit, ";
+            break;
+        case CRT_MAX_LIMIT:
+            regName += "MaxLimit, ";
+            break;
+        case CRT_OUTPUT_VAL0:
+            regName += "Output0, ";
+            break;
+        case CRT_OUTPUT_VAL1:
+            regName += "Output1, ";
+            break;
+        default:
+            //regName += "Invalid RegType, ";
+            break;
+        }
+    }
+    int loc = regName.lastIndexOf(",");
+    return regName.left(loc);
 }
 
 QString getTmrTypeName(TimerType tmrType)

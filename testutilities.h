@@ -39,6 +39,7 @@ QString getDigitalDirection(DigitalDirection digDir);
 QString getDioPortTypeName(DigitalPortType typeNum);
 QString getDPortIoTypeName(DigitalPortIoType ioType);
 QString getCtrMeasTypeNames(CounterMeasurementType typeNum);
+QString getCtrRegTypeNames(CounterRegisterType regType);
 QString getTmrTypeName(TimerType tmrType);
 QString getChanTypeNames(DaqInChanType typeNum);
 QString getChanTypeNames(AiChanType typeNum);

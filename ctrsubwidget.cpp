@@ -111,7 +111,7 @@ CtrSubWidget::CtrSubWidget(QWidget *parent) :
     ui->lwTypeModes->addItem("EncRangeLimOn");
     ui->lwTypeModes->addItem("EncZActiveEdge");
 
-    ui->cmbDebounceMode->addItem("Diasble", CDM_NONE);
+    ui->cmbDebounceMode->addItem("Disable", CDM_NONE);
     ui->cmbDebounceMode->addItem("Trig After Stable", CDM_TRIGGER_AFTER_STABLE);
     ui->cmbDebounceMode->addItem("Trig Before Stable", CDM_TRIGGER_BEFORE_STABLE);
 

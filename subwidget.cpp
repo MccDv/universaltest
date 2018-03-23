@@ -449,6 +449,9 @@ void subWidget::readInfo()
         devInfo = showInfo(infoType, infoItem, "Ctr Types");
         infoText.append(devInfo  + "</tr><tr>");
         showIndex = false;
+        infoItem = CTR_INFO_REGISTER_TYPES;
+        devInfo = showInfo(infoType, infoItem, "Ctr Reg Types");
+        infoText.append(devInfo  + "</tr><tr>");
         infoItem = CTR_INFO_RESOLUTION;
         devInfo = showInfo(infoType, infoItem, "Ctr Resolution");
         infoText.append(devInfo  + "</tr><tr>");
