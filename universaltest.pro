@@ -48,8 +48,7 @@ HEADERS  += mainwindow.h \
     trigdialog.h \
     dataselectdialog.h \
     queuedialog.h \
-    eventsdialog.h \
-    uldaq.h
+    eventsdialog.h
 
 FORMS    += mainwindow.ui \
     subwidget.ui \

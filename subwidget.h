@@ -1,12 +1,14 @@
 #ifndef SUBWIDGET_H
 #define SUBWIDGET_H
 
+#include <QMdiSubWindow>
 #include <QWidget>
 #include <QVariant>
-#include <QMdiSubWindow>
 #include <QDateTime>
-#include "testutilities.h"
+#include <QTimer>
+#include <QTime>
 #include "uldaq.h"
+//#include "mainwindow.h"
 
 namespace Ui {
 class subWidget;
@@ -32,7 +34,8 @@ private slots:
 
 private:
     Ui::subWidget *ui;
-//    ChildWindow *parentWindow;
+    //MainWindow* getMainWindow();
+    //MainWindow *mMainWindow;
     DaqDeviceHandle mDaqDeviceHandle;
     UlError err;
     QString mDevUID;

@@ -6,7 +6,6 @@
 #include "uldaq.h"
 #include "../Test/errordialog.h"
 
-
 CtrSubWidget::CtrSubWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::CtrSubWidget)

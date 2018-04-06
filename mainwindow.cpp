@@ -3,6 +3,7 @@
 #include "unitest.h"
 #include "uldaq.h"
 #include "../Test/errordialog.h"
+
 #define MAX_DEV_COUNT  100
 
 struct DaqDeviceDescriptor devDescriptors[MAX_DEV_COUNT];
@@ -142,6 +143,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionVolts_vs_Time, SIGNAL(triggered(bool)), this, SLOT(showPlot(bool)));
     connect(ui->actionConfigure_Data, SIGNAL(triggered(bool)), this, SLOT(configureData()));
     connect(ui->actionLoad_Queue, SIGNAL(triggered(bool)), this, SLOT(configureQueue()));
+    readWindowPosition();
+    ui->chkAutoDetect->setChecked(mAutoConnect);
 
     qApp->processEvents();
     this->updateInventory();
@@ -156,7 +159,6 @@ MainWindow::MainWindow(QWidget *parent) :
     mRetrigCount = 0;
     mScanOptions = SO_DEFAULTIO;
 
-    readWindowPosition();
 }
 
 MainWindow::~MainWindow()
@@ -1322,22 +1324,30 @@ void MainWindow::updateInventory()
                 devList.insert(uidKey, deviceHandle);
             }
 
-            funcName = "ulConnectDaqDevice";
-            argString = "(deviceHandle)\n";
-            sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
-            qApp->processEvents();
-            UlError err = ulConnectDaqDevice(deviceHandle);
-            argVals = QStringLiteral("(%1)")
-                    .arg(deviceHandle);
+            if(mAutoConnect) {
+                funcName = "ulConnectDaqDevice";
+                argString = "(deviceHandle)\n";
+                sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
+                qApp->processEvents();
+                UlError err = ulConnectDaqDevice(deviceHandle);
+                argVals = QStringLiteral("(%1)")
+                        .arg(deviceHandle);
+                funcStr = funcName + argString + "Arg vals: " + argVals;
+                if (!err==ERR_NO_ERROR) {
+                    setError(err, sStartTime + funcStr);
+                } else {
+                    addFunction(sStartTime + funcStr);
+                }
+            }
             temp = temp.append(funcName + argVals + QString(" [Error = %1]").arg(err) + ";  ");
 
             ui->lblAppStatus->setText(temp);
 
-            funcStr = funcName + argString + "Arg vals: " + argVals;
-            if (!err==ERR_NO_ERROR) {
-                setError(err, sStartTime + funcStr);
-            } else {
-                addFunction(sStartTime + funcStr);
+            //funcStr = funcName + argString + "Arg vals: " + argVals;
+            //if (!err==ERR_NO_ERROR) {
+            //    setError(err, sStartTime + funcStr);
+            //} else {
+            //    addFunction(sStartTime + funcStr);
                 if (numDevs) {
                     for (uint i=0;i<numDevs;i++) {
                         uidKey = devDescriptors[i].uniqueId;
@@ -1345,7 +1355,7 @@ void MainWindow::updateInventory()
                             devList.remove(uidKey);
                     }
                 }
-            }
+            //}
         }
     }
 }
@@ -1480,9 +1490,11 @@ QHash<QString, DaqDeviceHandle> MainWindow::getListedDevices()
 void MainWindow::readWindowPosition()
 {
     QSettings windowSettings("Measurement Computing", "Universal Test Linux");
+    QVariant autoConnect;
 
     windowSettings.beginGroup("mainwindow");
 
+    autoConnect = windowSettings.value("autoconnect", true);
     restoreGeometry(windowSettings.value("geometry", saveGeometry()).toByteArray());
     restoreState(windowSettings.value("savestate", saveState()).toByteArray());
     move(windowSettings.value("pos", pos()).toPoint());
@@ -1491,14 +1503,17 @@ void MainWindow::readWindowPosition()
         showMaximized();
 
     windowSettings.endGroup();
+    mAutoConnect = autoConnect.toBool();
 }
 
 void MainWindow::writeWindowPosition()
 {
     QSettings windowSettings("Measurement Computing", "Universal Test Linux");
 
+    mAutoConnect = ui->chkAutoDetect->isChecked();
     windowSettings.beginGroup("mainwindow");
 
+    windowSettings.setValue("autoconnect", mAutoConnect);
     windowSettings.setValue("geometry", saveGeometry());
     windowSettings.setValue("savestate", saveState());
     windowSettings.setValue("maximized", isMaximized());

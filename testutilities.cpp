@@ -336,6 +336,8 @@ QString getInfoDescription(int infoType, int infoItem, long long infoValue)
     case TYPE_CTR_INFO:
         if (infoItem == CTR_INFO_MEASUREMENT_TYPES)
             return getCtrMeasTypeNames((CounterMeasurementType)infoValue);
+        if (infoItem == CTR_INFO_MEASUREMENT_MODES)
+            return getCtrMeasModeNames((CounterMeasurementMode)infoValue);
         if (infoItem == CTR_INFO_REGISTER_TYPES)
             return getCtrRegTypeNames((CounterRegisterType)infoValue);
         if (infoItem == CTR_INFO_SCAN_OPTIONS)
@@ -790,6 +792,107 @@ QString getCtrRegTypeNames(CounterRegisterType regType)
     }
     int loc = regName.lastIndexOf(",");
     return regName.left(loc);
+}
+
+QString getCtrMeasModeNames(CounterMeasurementMode modeNum)
+{
+    int mask;
+    CounterMeasurementMode maskedVal;
+    QString modeName;
+
+    if (modeNum == 0)
+        return "Default";
+
+    maskedVal = (CounterMeasurementMode)0;
+    for (int i = 0; i < 26; i++) {
+        mask = pow(2, i);
+        maskedVal = (CounterMeasurementMode)(modeNum & (CounterMeasurementMode)mask);
+        switch (maskedVal) {
+        case CMM_CLEAR_ON_READ:
+            modeName += "ClearOnRead, ";
+            break;
+        case CMM_COUNT_DOWN:
+            modeName += "CountDown, ";
+            break;
+        case CMM_GATE_CONTROLS_DIR:
+            modeName += "GateDir, ";
+            break;
+        case CMM_GATE_CLEARS_CTR:
+            modeName += "GateClear, ";
+            break;
+        case CMM_GATE_TRIG_SRC:
+            modeName += "GateTrig, ";
+            break;
+        case CMM_OUTPUT_ON:
+            modeName += "OutputOn, ";
+            break;
+        case CMM_OUTPUT_INITIAL_STATE_HIGH:
+            modeName += "InitHigh, ";
+            break;
+        case CMM_NO_RECYCLE:
+            modeName += "NoRecycle, ";
+            break;
+        case CMM_RANGE_LIMIT_ON:
+            modeName += "Rangelimit, ";
+            break;
+        case CMM_GATING_ON:
+            modeName += "GateOn, ";
+            break;
+        case CMM_INVERT_GATE:
+            modeName += "InvGate, ";
+            break;
+        case CMM_PERIOD_X10:
+            modeName += "Per X10, ";
+            break;
+        case CMM_PERIOD_X100:
+            modeName += "Per X100, ";
+            break;
+        case CMM_PERIOD_X1000:
+            modeName += "Per X1000, ";
+            break;
+        case CMM_PERIOD_GATING_ON:
+            modeName += "Per GateOn, ";
+            break;
+        case CMM_PERIOD_INVERT_GATE:
+            modeName += "Per InvGate, ";
+            break;
+        case CMM_PULSE_WIDTH_GATING_ON:
+            modeName += "Pw GateOn, ";
+            break;
+        case CMM_PULSE_WIDTH_INVERT_GATE:
+            modeName += "Pw InvGate, ";
+            break;
+        case CMM_TIMING_MODE_INVERT_GATE:
+            modeName += "T InvGate, ";
+            break;
+        case CMM_ENCODER_X2:
+            modeName += "E X2, ";
+            break;
+        case CMM_ENCODER_X4:
+            modeName += "E X4, ";
+            break;
+        case CMM_ENCODER_LATCH_ON_Z:
+            modeName += "E LatchZ, ";
+            break;
+        case CMM_ENCODER_CLEAR_ON_Z:
+            modeName += "E ClearZ, ";
+            break;
+        case CMM_ENCODER_NO_RECYCLE:
+            modeName += "E NoRecycle, ";
+            break;
+        case CMM_ENCODER_RANGE_LIMIT_ON:
+            modeName += "E Rangelimit, ";
+            break;
+        case CMM_ENCODER_Z_ACTIVE_EDGE:
+            modeName += "Z Edge, ";
+            break;
+        default:
+            //modeName += "Invalid RegType, ";
+            break;
+        }
+    }
+    int loc = modeName.lastIndexOf(",");
+    return modeName.left(loc);
 }
 
 QString getTmrTypeName(TimerType tmrType)

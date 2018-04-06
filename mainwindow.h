@@ -104,6 +104,7 @@ private:
     void scanStopRequested(ChildWindow *curChild);
     void readWindowPosition();
     void writeWindowPosition();
+    bool mAutoConnect;
 
 signals:
     void devListCountChanged(int);

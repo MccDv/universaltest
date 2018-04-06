@@ -24,6 +24,14 @@ subWidget::~subWidget()
     delete ui;
 }
 
+/*MainWindow *subWidget::getMainWindow()
+{
+    foreach (QWidget *w, QApplication::topLevelWidgets())
+        if (QMainWindow* mainWin = qobject_cast<QMainWindow*>(w))
+            return qobject_cast<MainWindow *>(mainWin);
+    return nullptr;
+}*/
+
 void subWidget::updateParameters()
 {
     ChildWindow *parentWindow;
@@ -286,6 +294,12 @@ void subWidget::readInfo()
         infoItem = AI_INFO_MAX_THROUGHPUT;
         devInfo = showInfoDbl(infoType, infoItem, "AIScan throughput");
         infoText.append(devInfo  + "</tr><tr>");
+        infoItem = AI_INFO_MAX_BURST_RATE;
+        devInfo = showInfoDbl(infoType, infoItem, "Max Burstrate");
+        infoText.append(devInfo  + "</tr><tr>");
+        infoItem = AI_INFO_MAX_BURST_THROUGHPUT;
+        devInfo = showInfoDbl(infoType, infoItem, "Burst throughput");
+        infoText.append(devInfo  + "</tr><tr>");
 
         infoItem = AI_INFO_RESOLUTION;
         devInfo = showInfo(infoType, infoItem, "AI Resolution");
@@ -447,6 +461,9 @@ void subWidget::readInfo()
         infoItem = CTR_INFO_MEASUREMENT_TYPES;
         showIndex = true;
         devInfo = showInfo(infoType, infoItem, "Ctr Types");
+        infoText.append(devInfo  + "</tr><tr>");
+        infoItem = CTR_INFO_MEASUREMENT_MODES;
+        devInfo = showInfo(infoType, infoItem, "Ctr Modes");
         infoText.append(devInfo  + "</tr><tr>");
         showIndex = false;
         infoItem = CTR_INFO_REGISTER_TYPES;
@@ -864,7 +881,7 @@ QString subWidget::showConfigDbl(int configType, int configItem, QString showIte
 QString subWidget::showConfigStr(int configType, int configItem, QString showItem)
 {
     unsigned int maxConfigLen;
-    maxConfigLen = 5;
+    maxConfigLen = 15;
     char configValue[maxConfigLen];
     char *pConfigValue = configValue;
 
@@ -984,6 +1001,10 @@ QString subWidget::showInfo(int infoType, int infoItem, QString showItem)
         ctrInfoItem = (CtrInfoItem)infoItem;
         nameOfFunc = "ulCtrGetInfo";
         err = ulCtrGetInfo(mDaqDeviceHandle, ctrInfoItem, index, &infoValue);
+        if (ctrInfoItem == CTR_INFO_MEASUREMENT_MODES) {
+            indexName = getCtrMeasTypeNames((CounterMeasurementType)index);
+            indexInfo = true;
+        }
         break;
     case TYPE_TMR_INFO:
         tmrInfoItem = (TmrInfoItem)infoItem;
@@ -1292,7 +1313,9 @@ QString subWidget::showInfoMem(MemRegion memRegion)
 {
     QString nameOfFunc, funcStr, funcArgs;
     QString showItem, argVals, textToAdd;
-    QString infoDesc, str;
+    QTime t;
+    QString sStartTime;
+    QString infoDesc, str, iSt;
     MemDescriptor memDescriptor;
     long long infoValue;
 
@@ -1310,7 +1333,8 @@ QString subWidget::showInfoMem(MemRegion memRegion)
         break;
     }
     nameOfFunc = "ulMemGetInfo";
-    funcArgs = "(mDaqDeviceHandle, memRegion, memDescriptor)\n";
+    funcArgs = "(mDaqDeviceHandle, memRegion, {accessTypes, address, size})\n";
+    sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
     err = ulMemGetInfo(mDaqDeviceHandle, memRegion, &memDescriptor);
     argVals = QStringLiteral("(%1, %2, {%3, %4, %5})")
             .arg(mDaqDeviceHandle)
@@ -1340,19 +1364,16 @@ QString subWidget::showInfoMem(MemRegion memRegion)
             textToAdd = "<td>" + showItem + "</td>";
             textToAdd.append("<td>" + errDesc + "</td>");
         } else {
-            funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-            ErrorDialog errDlg;
-            errDlg.setModal(true);
-            errDlg.setError(err, funcStr);
-            errDlg.exec();
+            //mMainWindow->setError(err, sStartTime + funcStr);
         }
     } else {
+        //mMainWindow->addFunction(sStartTime + funcStr);
         infoValue = (long long)memDescriptor.accessTypes;
         int infoItem = 0;
         infoDesc = "";
         infoDesc = getInfoDescription(TYPE_MEM_INFO, infoItem, infoValue);
         textToAdd = "<td>" + showItem + "</td>";
-        textToAdd.append("<td>" + infoDesc + "</td>");
+        textToAdd.append("<td>" + iSt.setNum(infoValue) + "(" + infoDesc + ")</td>");
         textToAdd.append("<td>address: " + str.setNum(memDescriptor.address) + "</td>");
         textToAdd.append("<td>size: " + str.setNum(memDescriptor.size) + "</td>");
     }

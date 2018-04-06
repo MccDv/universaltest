@@ -3,8 +3,8 @@
 
 #include <QWidget>
 #include <QVariant>
-#include <QVector>
 #include <QMdiSubWindow>
+#include <QVector>
 #include <QTimer>
 #include <QTime>
 #include "mainwindow.h"
