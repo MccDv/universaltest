@@ -9,7 +9,7 @@
 #include "unitest.h"
 #include <QHash>
 #include "uldaq.h"
-#include "../Test/errordialog.h"
+#include "errordialog.h"
 //#include "plotwindow.h"
 #include "trigdialog.h"
 #include "eventsdialog.h"

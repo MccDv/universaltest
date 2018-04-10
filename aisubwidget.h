@@ -13,7 +13,7 @@
 #include "qmath.h"
 #include "testutilities.h"
 #include "queuedialog.h"
-#include "../Test/errordialog.h"
+#include "errordialog.h"
 
 namespace Ui {
 class AiSubWidget;

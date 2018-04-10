@@ -16,7 +16,7 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     subwidget.cpp \
     childwindow.cpp \
-    ../Test/errordialog.cpp \
+    errordialog.cpp \
     aisubwidget.cpp \
     diosubwidget.cpp \
     ctrsubwidget.cpp \
@@ -34,7 +34,7 @@ SOURCES += main.cpp\
 HEADERS  += mainwindow.h \
     subwidget.h \
     childwindow.h \
-    ../Test/errordialog.h \
+    errordialog.h \
     unitest.h \
     aisubwidget.h \
     diosubwidget.h \
@@ -52,7 +52,7 @@ HEADERS  += mainwindow.h \
 
 FORMS    += mainwindow.ui \
     subwidget.ui \
-    ../Test/errordialog.ui \
+    errordialog.ui \
     aisubwidget.ui \
     diosubwidget.ui \
     ctrsubwidget.ui \

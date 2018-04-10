@@ -5,7 +5,6 @@
 #include "unitest.h"
 #include "uldaq.h"
 #include "testutilities.h"
-#include "../Test/errordialog.h"
 
 AoSubWidget::AoSubWidget(QWidget *parent) :
     QWidget(parent),

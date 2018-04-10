@@ -16,6 +16,7 @@
 #include "qmath.h"
 #include "tgmath.h"
 #include "testutilities.h"
+#include "errordialog.h"
 
 namespace Ui {
 class AoSubWidget;
