@@ -4,7 +4,7 @@
 #include "childwindow.h"
 #include "unitest.h"
 #include "uldaq.h"
-#include "../Test/errordialog.h"
+#include "errordialog.h"
 
 subWidget::subWidget(QWidget *parent) :
     QWidget(parent),

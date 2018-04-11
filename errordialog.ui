@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>566</width>
-    <height>220</height>
+    <width>654</width>
+    <height>354</height>
    </rect>
   </property>
   <property name="font">
@@ -33,7 +33,27 @@
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
+    <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,2,4,1,1">
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QLineEdit" name="leHistSize">
+       <property name="toolTip">
+        <string>List limit</string>
+       </property>
+       <property name="text">
+        <string>50</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="lblNumListed">
+       <property name="text">
+        <string>List Size</string>
+       </property>
+      </widget>
+     </item>
      <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
@@ -49,6 +69,13 @@
         </size>
        </property>
       </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="cmdClearHistory">
+       <property name="text">
+        <string>Clear</string>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QPushButton" name="cmdOK">

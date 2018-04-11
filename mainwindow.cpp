@@ -2,7 +2,7 @@
 #include "ui_mainwindow.h"
 #include "unitest.h"
 #include "uldaq.h"
-#include "../Test/errordialog.h"
+#include "errordialog.h"
 
 #define MAX_DEV_COUNT  100
 
