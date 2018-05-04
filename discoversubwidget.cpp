@@ -13,6 +13,7 @@ DiscoverSubWidget::DiscoverSubWidget(QWidget *parent) :
     ui->leNumDevs->setText(str.setNum(MAX_DEV_COUNT));
     ui->lblInfo->setStyleSheet("QLabel { color : blue; }" );
     ui->textEdit->setStyleSheet("QTextEdit { background-color : white; color : blue; }");
+    ui->lblDevicesFound->setStyleSheet("QLabel { color : blue; }" );
     connect(ui->listWidget, SIGNAL(itemSelectionChanged()),
                      this, SLOT(on_listWidget_itemSelectionChanged()));
     //connect(ui->cmdCreate, SIGNAL(clicked()), MainWindow, SLOT(());
@@ -282,7 +283,7 @@ void DiscoverSubWidget::on_actionRefresh_Devices_triggered()
     QString nameOfFunc, funcArgs, argVals, funcStr;
     QTime t;
     QString sStartTime;
-    unsigned int numDevs = MAX_DEV_COUNT;
+    unsigned int numDevs;   // = MAX_DEV_COUNT
     QString uidKey;
     DaqDeviceHandle existingDevHandle;
 
@@ -299,6 +300,7 @@ void DiscoverSubWidget::on_actionRefresh_Devices_triggered()
             .arg("devDescriptors")
             .arg(numDevs);
     ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
+    ui->lblDevicesFound->setText(QString("Found: %1").arg(numDevs));
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
     if (!err==ERR_NO_ERROR) {

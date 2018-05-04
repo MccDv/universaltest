@@ -285,6 +285,18 @@
        </widget>
       </item>
       <item>
+       <widget class="QLabel" name="lblDevicesFound">
+        <property name="font">
+         <font>
+          <family>Courier 10 Pitch</family>
+         </font>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item>
        <spacer name="horizontalSpacer_2">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
