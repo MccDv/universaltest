@@ -5,7 +5,7 @@
 #include "testutilities.h"
 #include "unitest.h"
 #include "uldaq.h"
-#include "../Test/errordialog.h"
+#include "errordialog.h"
 
 
 DioSubWidget::DioSubWidget(QWidget *parent) :

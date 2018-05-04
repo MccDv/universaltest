@@ -1,6 +1,6 @@
 #include "discoversubwidget.h"
 #include "ui_discoversubwidget.h"
-#include "../Test/errordialog.h"
+#include "errordialog.h"
 #include <QMouseEvent>
 
 DiscoverSubWidget::DiscoverSubWidget(QWidget *parent) :

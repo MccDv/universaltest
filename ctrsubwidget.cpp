@@ -1,10 +1,10 @@
 #include "ctrsubwidget.h"
 #include "ui_ctrsubwidget.h"
-#include <qfont.h>
+//#include <qfont.h>
 #include "childwindow.h"
 #include "unitest.h"
 #include "uldaq.h"
-#include "../Test/errordialog.h"
+#include "errordialog.h"
 
 CtrSubWidget::CtrSubWidget(QWidget *parent) :
     QWidget(parent),
