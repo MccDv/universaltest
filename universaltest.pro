@@ -67,10 +67,15 @@ FORMS    += mainwindow.ui \
 DISTFILES += \
     utlnxsplash.png
 
-unix:!macx: LIBS += -L$$PWD/./ -luldaq
-
 INCLUDEPATH += $$PWD/.
 DEPENDPATH += $$PWD/.
 
 RESOURCES += \
     resource.qrc
+
+#unix:!macx: LIBS += -L$$PWD/./ -luldaq
+
+unix: LIBS += -L$$PWD/../../../usr/local/lib/ -luldaq
+
+INCLUDEPATH += $$PWD/../../../usr/local/include
+DEPENDPATH += $$PWD/../../../usr/local/include

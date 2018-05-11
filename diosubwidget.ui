@@ -462,6 +462,9 @@
            <property name="text">
             <string>3rdA</string>
            </property>
+           <property name="portNum" stdset="0">
+            <string>18</string>
+           </property>
           </widget>
          </item>
          <item row="0" column="3">
@@ -480,6 +483,9 @@
            <property name="text">
             <string>5thA</string>
            </property>
+           <property name="portNum" stdset="0">
+            <string>26</string>
+           </property>
           </widget>
          </item>
          <item row="0" column="4">
@@ -497,6 +503,9 @@
            </property>
            <property name="text">
             <string>7thA</string>
+           </property>
+           <property name="portNum" stdset="0">
+            <string>34</string>
            </property>
           </widget>
          </item>
@@ -558,6 +567,9 @@
            <property name="text">
             <string>3rdB</string>
            </property>
+           <property name="portNum" stdset="0">
+            <string>19</string>
+           </property>
           </widget>
          </item>
          <item row="1" column="3">
@@ -576,6 +588,9 @@
            <property name="text">
             <string>5thB</string>
            </property>
+           <property name="portNum" stdset="0">
+            <string>27</string>
+           </property>
           </widget>
          </item>
          <item row="1" column="4">
@@ -593,6 +608,9 @@
            </property>
            <property name="text">
             <string>7thB</string>
+           </property>
+           <property name="portNum" stdset="0">
+            <string>35</string>
            </property>
           </widget>
          </item>
@@ -654,6 +672,9 @@
            <property name="text">
             <string>3rdCL</string>
            </property>
+           <property name="portNum" stdset="0">
+            <string>20</string>
+           </property>
           </widget>
          </item>
          <item row="2" column="3">
@@ -672,6 +693,9 @@
            <property name="text">
             <string>5thCL</string>
            </property>
+           <property name="portNum" stdset="0">
+            <string>28</string>
+           </property>
           </widget>
          </item>
          <item row="2" column="4">
@@ -689,6 +713,9 @@
            </property>
            <property name="text">
             <string>7thCL</string>
+           </property>
+           <property name="portNum" stdset="0">
+            <string>36</string>
            </property>
           </widget>
          </item>
@@ -729,6 +756,9 @@
            <property name="text">
             <string>3rdCH</string>
            </property>
+           <property name="portNum" stdset="0">
+            <string>21</string>
+           </property>
           </widget>
          </item>
          <item row="3" column="3">
@@ -746,6 +776,9 @@
            </property>
            <property name="text">
             <string>5thCH</string>
+           </property>
+           <property name="portNum" stdset="0">
+            <string>29</string>
            </property>
           </widget>
          </item>
@@ -765,6 +798,9 @@
            <property name="text">
             <string>7thCH</string>
            </property>
+           <property name="portNum" stdset="0">
+            <string>37</string>
+           </property>
           </widget>
          </item>
          <item row="4" column="1">
@@ -782,6 +818,9 @@
            </property>
            <property name="text">
             <string>2ndA</string>
+           </property>
+           <property name="portNum" stdset="0">
+            <string>14</string>
            </property>
           </widget>
          </item>
@@ -801,6 +840,9 @@
            <property name="text">
             <string>4thA</string>
            </property>
+           <property name="portNum" stdset="0">
+            <string>22</string>
+           </property>
           </widget>
          </item>
          <item row="4" column="3">
@@ -818,6 +860,9 @@
            </property>
            <property name="text">
             <string>6thA</string>
+           </property>
+           <property name="portNum" stdset="0">
+            <string>30</string>
            </property>
           </widget>
          </item>
@@ -837,6 +882,9 @@
            <property name="text">
             <string>8thA</string>
            </property>
+           <property name="portNum" stdset="0">
+            <string>38</string>
+           </property>
           </widget>
          </item>
          <item row="5" column="1">
@@ -854,6 +902,9 @@
            </property>
            <property name="text">
             <string>2ndB</string>
+           </property>
+           <property name="portNum" stdset="0">
+            <string>15</string>
            </property>
           </widget>
          </item>
@@ -873,6 +924,9 @@
            <property name="text">
             <string>4thB</string>
            </property>
+           <property name="portNum" stdset="0">
+            <string>23</string>
+           </property>
           </widget>
          </item>
          <item row="5" column="3">
@@ -890,6 +944,9 @@
            </property>
            <property name="text">
             <string>6thB</string>
+           </property>
+           <property name="portNum" stdset="0">
+            <string>31</string>
            </property>
           </widget>
          </item>
@@ -909,6 +966,9 @@
            <property name="text">
             <string>8thB</string>
            </property>
+           <property name="portNum" stdset="0">
+            <string>39</string>
+           </property>
           </widget>
          </item>
          <item row="6" column="1">
@@ -926,6 +986,9 @@
            </property>
            <property name="text">
             <string>2ndCL</string>
+           </property>
+           <property name="portNum" stdset="0">
+            <string>16</string>
            </property>
           </widget>
          </item>
@@ -945,6 +1008,9 @@
            <property name="text">
             <string>4thCL</string>
            </property>
+           <property name="portNum" stdset="0">
+            <string>24</string>
+           </property>
           </widget>
          </item>
          <item row="6" column="3">
@@ -962,6 +1028,9 @@
            </property>
            <property name="text">
             <string>6thCL</string>
+           </property>
+           <property name="portNum" stdset="0">
+            <string>32</string>
            </property>
           </widget>
          </item>
@@ -981,6 +1050,9 @@
            <property name="text">
             <string>8thCL</string>
            </property>
+           <property name="portNum" stdset="0">
+            <string>40</string>
+           </property>
           </widget>
          </item>
          <item row="7" column="1">
@@ -998,6 +1070,9 @@
            </property>
            <property name="text">
             <string>2ndCH</string>
+           </property>
+           <property name="portNum" stdset="0">
+            <string>17</string>
            </property>
           </widget>
          </item>
@@ -1017,6 +1092,9 @@
            <property name="text">
             <string>4thCH</string>
            </property>
+           <property name="portNum" stdset="0">
+            <string>25</string>
+           </property>
           </widget>
          </item>
          <item row="7" column="3">
@@ -1035,6 +1113,9 @@
            <property name="text">
             <string>6thCH</string>
            </property>
+           <property name="portNum" stdset="0">
+            <string>33</string>
+           </property>
           </widget>
          </item>
          <item row="7" column="4">
@@ -1052,6 +1133,9 @@
            </property>
            <property name="text">
             <string>8thCH</string>
+           </property>
+           <property name="portNum" stdset="0">
+            <string>41</string>
            </property>
           </widget>
          </item>

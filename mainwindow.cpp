@@ -203,6 +203,9 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
+    foreach(DaqDeviceHandle dev, devList) {
+        UlError err = ulReleaseDaqDevice(dev);
+    }
     writeWindowPosition();
     event->accept();
 }
