@@ -66,6 +66,7 @@ void subWidget::setUiForGroup()
         configVisible = false;
         cmdLabel = "Go";
         ui->cmbInfoType->addItem("ulFlashLED");
+        ui->cmbInfoType->addItem("ulTmrPulseOutStatus");
         ui->cmbInfoType->addItem("ulAInScanStatus");
         ui->cmbInfoType->addItem("ulAOutScanStatus");
         ui->cmbInfoType->addItem("ulDInScanStatus");
@@ -1494,6 +1495,7 @@ void subWidget::setMiscFunction()
     QString nameOfFunc;
     QString funcStr, argVals, funcArgs;
     ScanStatus status;
+    TmrStatus tmrStatus;
     struct TransferStatus xferStatus;
     unsigned long long currentTotalCount;
     unsigned long long currentScanCount;
@@ -1504,6 +1506,9 @@ void subWidget::setMiscFunction()
     if(nameOfFunc == "ulFlashLED") {
         flashCount = ui->spnIndex->value();
         err = ulFlashLed(mDaqDeviceHandle, flashCount);
+    } else if(nameOfFunc == "ulTmrPulseOutStatus") {
+        flashCount = ui->spnIndex->value();
+        err = ulTmrPulseOutStatus(mDaqDeviceHandle, flashCount, &tmrStatus);
     } else if(nameOfFunc == "ulAInScanStatus") {
         err = ulAInScanStatus(mDaqDeviceHandle, &status, &xferStatus);
     } else if(nameOfFunc == "ulAOutScanStatus") {
@@ -1539,9 +1544,17 @@ void subWidget::setMiscFunction()
     currentTotalCount = xferStatus.currentTotalCount;
     if(nameOfFunc == "ulFlashLED") {
         funcArgs = "(mDaqDeviceHandle, flashCount)\n";
+        funcArgs = "(mDaqDeviceHandle, timerNum, &status)\n";
         argVals = QStringLiteral("(%1, %2)")
                 .arg(mDaqDeviceHandle)
                 .arg(flashCount);
+    } else if(nameOfFunc == "ulTmrPulseOutStatus") {
+        funcArgs = "(mDaqDeviceHandle, flashCount)\n";
+        funcArgs = "(mDaqDeviceHandle, timerNum, &status)\n";
+        argVals = QStringLiteral("(%1, %2, %3)")
+                .arg(mDaqDeviceHandle)
+                .arg(flashCount)
+                .arg(tmrStatus);
     } else if((nameOfFunc == "ulAInScanStatus")
               || (nameOfFunc == "ulAOutScanStatus")
               || (nameOfFunc == "ulDInScanStatus")

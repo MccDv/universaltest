@@ -25,6 +25,7 @@ AiSubWidget::AiSubWidget(QWidget *parent) :
     connect(tmrCheckStatus, SIGNAL(timeout()), this, SLOT(checkStatus()));
     connect(ui->cmdGo, SIGNAL(clicked(bool)), this, SLOT(onClickCmdGo()));
     connect(ui->cmdStop, SIGNAL(clicked(bool)), this, SLOT(onClickCmdStop()));
+
     connect(ui->AiPlot->xAxis, SIGNAL(rangeChanged(QCPRange)),
             ui->AiPlot->xAxis2, SLOT(setRange(QCPRange)));
     connect(ui->AiPlot->yAxis, SIGNAL(rangeChanged(QCPRange)),
