@@ -15,8 +15,12 @@ subWidget::subWidget(QWidget *parent) :
     ui->teShowValues->setFont(QFont ("Courier", 8));
     ui->teShowValues->setStyleSheet("QTextEdit { background-color : white; color : blue; }" );
     ui->lblStatus->setStyleSheet("QLabel { background-color : white; color : blue; }" );
-    connect(ui->spnIndex, SIGNAL(valueChanged(int)), SLOT(runSelectedFunc()));
+    //connect(ui->spnIndex, SIGNAL(valueChanged(int)), SLOT(runSelectedFunc()));
+    connect(ui->cmdStop, SIGNAL(clicked(bool)), this, SLOT(onStopCmd()));
     connect(ui->cmbInfoType, SIGNAL(currentIndexChanged(int)), this, SLOT(setConfigItemsForType()));
+    connect(ui->cmdSet, SIGNAL(clicked(bool)), this, SLOT(runSelectedFunc()));
+    //connect(ui->cmbConfigItem, SIGNAL(currentIndexChanged(int)), this, SLOT(runSelectedFunc()));
+    //connect(ui->spnIndex, SIGNAL(valueChanged(int)), this, SLOT(runSelectedFunc()));
 }
 
 subWidget::~subWidget()
@@ -40,6 +44,12 @@ void subWidget::updateParameters()
     mDaqDeviceHandle = parentWindow->devHandle();
     mDevName = parentWindow->devName();
     mDevUID = parentWindow->devUID();
+    mUseTimer = parentWindow->tmrEnabled();
+
+    if(mUseTimer)
+        ui->cmdStop->setEnabled(true);
+    mGoTmrIsRunning = parentWindow->tmrRunning();
+    ui->cmdStop->setEnabled(mGoTmrIsRunning);
 
     this->setWindowTitle(mFuncName + ": " + mDevName + QString(" [%1]").arg(mDaqDeviceHandle));
     ui->teShowValues->clear();
@@ -54,37 +64,27 @@ void subWidget::groupChanged(int newGroup)
 
 void subWidget::setUiForGroup()
 {
+    ChildWindow *parentWindow;
     bool configVisible;
     QString cmdLabel;
+    parentWindow = qobject_cast<ChildWindow *>(this->parent());
 
-    disconnect(ui->cmdSet, SIGNAL(clicked(bool)));
     disconnect(ui->cmbInfoType, SIGNAL(currentIndexChanged(int)));
-    ui->cmbInfoType->clear();
+    disconnect(ui->cmdSet, SIGNAL(clicked(bool)));
+    disconnect(ui->cmbConfigItem, SIGNAL(currentIndexChanged(int)));
+    disconnect(ui->spnIndex, SIGNAL(valueChanged(int)));
     switch (mCurGroup) {
     case FUNC_GROUP_MISC:
-        connect(ui->cmdSet, SIGNAL(clicked(bool)), this, SLOT(setMiscFunction()));
-        configVisible = false;
+        connect(ui->cmdSet, SIGNAL(clicked(bool)), this, SLOT(runSelectedFunc()));
+        //connect(ui->cmbConfigItem, SIGNAL(currentIndexChanged(int)), this, SLOT(runSelectedFunc()));
+        //connect(ui->spnIndex, SIGNAL(valueChanged(int)), this, SLOT(runSelectedFunc()));
         cmdLabel = "Go";
-        ui->cmbInfoType->addItem("ulFlashLED");
-        ui->cmbInfoType->addItem("ulTmrPulseOutStatus");
-        ui->cmbInfoType->addItem("ulAInScanStatus");
-        ui->cmbInfoType->addItem("ulAOutScanStatus");
-        ui->cmbInfoType->addItem("ulDInScanStatus");
-        ui->cmbInfoType->addItem("ulDOutScanStatus");
-        ui->cmbInfoType->addItem("ulCInScanStatus");
-        ui->cmbInfoType->addItem("ulDaqInScanStatus");
-        ui->cmbInfoType->addItem("ulDaqOutScanStatus");
-        ui->cmbInfoType->addItem("ulAInScanStop");
-        ui->cmbInfoType->addItem("ulAOutScanStop");
-        ui->cmbInfoType->addItem("ulDInScanStop");
-        ui->cmbInfoType->addItem("ulDOutScanStop");
-        ui->cmbInfoType->addItem("ulCInScanStop");
-        ui->cmbInfoType->addItem("ulDaqInScanStop");
-        ui->cmbInfoType->addItem("ulDaqOutScanStop");
         break;
     case FUNC_GROUP_CONFIG:
+        connect(ui->cmbInfoType, SIGNAL(currentIndexChanged(int)), this, SLOT(setConfigItemsForType()));
         connect(ui->cmdSet, SIGNAL(clicked(bool)), this, SLOT(setConfiguration()));
-        connect(ui->cmbInfoType, SIGNAL(currentIndexChanged(int)), this, SLOT(runSelectedFunc()));
+        connect(ui->cmbConfigItem, SIGNAL(currentIndexChanged(int)), this, SLOT(runSelectedFunc()));
+        connect(ui->spnIndex, SIGNAL(valueChanged(int)), this, SLOT(runSelectedFunc()));
         configVisible = true;
         cmdLabel = "Set";
     default:
@@ -100,33 +100,56 @@ void subWidget::functionChanged(int utFunction)
 {
     mUtFunction = utFunction;
     this->setUiForFunction();
-    runSelectedFunc();
+    //runSelectedFunc();
 }
 
 void subWidget::setUiForFunction()
 {
-    bool userFrameVisible, comboVisible, cmdSetVisible;
-    //lineEditVisible,
+    bool userFrameVisible, configComboVisible;
+    bool infoComboVisible, cmdSetVisible;
+    QString cmdLabel;
 
-    comboVisible = false;
-    //lineEditVisible = false;
+    configComboVisible = false;
+    infoComboVisible = true;
     cmdSetVisible = false;
     userFrameVisible = false;
 
+    ui->cmbInfoType->clear();
+    ui->spnIndex->setValue(0);
     switch (mCurGroup) {
     case FUNC_GROUP_MISC:
+        cmdLabel = "Go";
         switch (mUtFunction) {
         case UL_FLASH_LED:
             mFuncName = "ulFlashLED";
+            infoComboVisible = false;
+            ui->cmbInfoType->addItem("ulFlashLED");
+            ui->spnIndex->setValue(2);
             break;
         case UL_GET_ERR_MSG:
             mFuncName = "ulGetErrMsg";
+            infoComboVisible = false;
             break;
         case UL_GET_STATUS:
             mFuncName = "ulGetStatus";
+            ui->cmbInfoType->addItem("ulTmrPulseOutStatus");
+            ui->cmbInfoType->addItem("ulAInScanStatus");
+            ui->cmbInfoType->addItem("ulAOutScanStatus");
+            ui->cmbInfoType->addItem("ulDInScanStatus");
+            ui->cmbInfoType->addItem("ulDOutScanStatus");
+            ui->cmbInfoType->addItem("ulCInScanStatus");
+            ui->cmbInfoType->addItem("ulDaqInScanStatus");
+            ui->cmbInfoType->addItem("ulDaqOutScanStatus");
             break;
         case UL_SCAN_STOP:
             mFuncName = "ulStopScan";
+            ui->cmbInfoType->addItem("ulAInScanStop");
+            ui->cmbInfoType->addItem("ulAOutScanStop");
+            ui->cmbInfoType->addItem("ulDInScanStop");
+            ui->cmbInfoType->addItem("ulDOutScanStop");
+            ui->cmbInfoType->addItem("ulCInScanStop");
+            ui->cmbInfoType->addItem("ulDaqInScanStop");
+            ui->cmbInfoType->addItem("ulDaqOutScanStop");
             break;
         default:
             break;
@@ -136,6 +159,8 @@ void subWidget::setUiForFunction()
         break;
     case FUNC_GROUP_CONFIG:
         ui->cmbInfoType->clear();
+        cmdLabel = "Set";
+        configComboVisible = true;
         switch (mUtFunction) {
         case UL_GET_INFO:
             mFuncName = "ulGetInfo";
@@ -162,7 +187,7 @@ void subWidget::setUiForFunction()
             break;
         case UL_SET_CONFIG:
             mFuncName = "ulSetConfig";
-            comboVisible = true;
+            configComboVisible = true;
             //lineEditVisible = true;
             userFrameVisible = true;
             cmdSetVisible = true;
@@ -179,8 +204,10 @@ void subWidget::setUiForFunction()
     }
     ui->fraUser->setVisible(userFrameVisible);
     //ui->leSetValue->setVisible(lineEditVisible);
-    ui->cmbConfigItem->setVisible(comboVisible);
+    ui->cmbConfigItem->setVisible(configComboVisible);
+    ui->cmbInfoType->setVisible(infoComboVisible);
     ui->cmdSet->setVisible(cmdSetVisible);
+    ui->cmdSet->setText(cmdLabel);
     ui->cmdSet->setFocus();
     this->setWindowTitle(mFuncName + ": " + mDevName + QString(" [%1]").arg(mDaqDeviceHandle));
 }
@@ -218,18 +245,86 @@ void subWidget::setConfigItemsForType()
 
 void subWidget::runSelectedFunc()
 {
+    ChildWindow *parentWindow;
+    QFont goFont = ui->cmdSet->font();
+    bool makeBold, tmrIsEnabled, tmrIsRunning;
+    //bool showStop;
+
+    parentWindow = qobject_cast<ChildWindow *>(this->parent());
+    mUseTimer = parentWindow->tmrEnabled();
     ui->teShowValues->clear();
 
-    switch (mUtFunction) {
-    case UL_GET_INFO:
-        readInfo();
+    switch (mCurGroup) {
+    case FUNC_GROUP_MISC:
+        switch (mUtFunction) {
+        case UL_FLASH_LED:
+            setMiscFunction();
+            break;
+        case UL_GET_ERR_MSG:
+            getErrorMessage();
+            break;
+        case UL_GET_STATUS:
+            setMiscFunction();
+            break;
+        case UL_SCAN_STOP:
+            setMiscFunction();
+            break;
+        default:
+            break;
+        }
         break;
-    case UL_GET_CONFIG:
-        readConfig();
+    case FUNC_GROUP_CONFIG:
+        switch (mUtFunction) {
+        case UL_GET_INFO:
+            readInfo();
+            break;
+        case UL_GET_CONFIG:
+            readConfig();
+            break;
+        case UL_SET_CONFIG:
+            setConfiguration();
+            break;
+        default:
+            break;
+        }
         break;
     default:
         break;
     }
+
+    tmrIsEnabled = parentWindow->tmrEnabled();
+    tmrIsRunning = parentWindow->tmrRunning();
+    if (!tmrIsEnabled) {
+        if (tmrIsRunning)
+            parentWindow->setTmrRunning(false);
+        ui->cmdStop->setEnabled(false);
+        mUseTimer = false;
+        goFont.setBold(false);
+        ui->cmdSet->setFont(goFont);
+    } else {
+        if (mUseTimer) {
+            if (!tmrIsRunning) {
+                parentWindow->setTmrRunning(true);
+                ui->cmdStop->setEnabled(true);
+            }
+            makeBold = !ui->cmdSet->font().bold();
+            goFont.setBold(makeBold);
+            ui->cmdSet->setFont(goFont);
+        } else {
+            if (tmrIsRunning) {
+                parentWindow->setTmrRunning(false);
+                ui->cmdStop->setEnabled(false);
+            }
+            goFont.setBold(false);
+            ui->cmdSet->setFont(goFont);
+        }
+    }
+}
+
+void subWidget::onStopCmd()
+{
+    mUseTimer = false;
+    ui->cmdStop->setEnabled(false);
 }
 
 void subWidget::readInfo()
@@ -1501,6 +1596,7 @@ void subWidget::setMiscFunction()
     unsigned long long currentScanCount;
     long long curIndex;
 
+    tmrStatus = TMRS_IDLE;
     nameOfFunc = ui->cmbInfoType->currentText();
 
     if(nameOfFunc == "ulFlashLED") {
@@ -1544,12 +1640,10 @@ void subWidget::setMiscFunction()
     currentTotalCount = xferStatus.currentTotalCount;
     if(nameOfFunc == "ulFlashLED") {
         funcArgs = "(mDaqDeviceHandle, flashCount)\n";
-        funcArgs = "(mDaqDeviceHandle, timerNum, &status)\n";
-        argVals = QStringLiteral("(%1, %2)")
+        argVals = QString("(%1, %2)")
                 .arg(mDaqDeviceHandle)
                 .arg(flashCount);
     } else if(nameOfFunc == "ulTmrPulseOutStatus") {
-        funcArgs = "(mDaqDeviceHandle, flashCount)\n";
         funcArgs = "(mDaqDeviceHandle, timerNum, &status)\n";
         argVals = QStringLiteral("(%1, %2, %3)")
                 .arg(mDaqDeviceHandle)
@@ -1577,7 +1671,7 @@ void subWidget::setMiscFunction()
               || (nameOfFunc == "ulDaqOutScanStop")
               || (nameOfFunc == "ulDaqInScanStop")) {
         funcArgs = "(mDaqDeviceHandle)\n";
-        argVals = QStringLiteral("(%1)")
+        argVals = QString("(%1)")
                 .arg(mDaqDeviceHandle);
     }
     if(!err==ERR_NO_ERROR)
@@ -1596,4 +1690,23 @@ void subWidget::setMiscFunction()
         funcStr = nameOfFunc + argVals;
         ui->lblStatus->setText(funcStr);
     }
+}
+
+void subWidget::getErrorMessage()
+{
+    QString nameOfFunc;
+    QString funcStr, argVals, funcArgs;
+    char errMsg[ERR_MSG_LEN];
+
+    funcArgs = "(curError, errMsg)\n";
+    UlError curError, err;
+
+    curError = (UlError)ui->spnIndex->value();
+    err = ulGetErrMsg(curError, errMsg);
+    argVals = QString("(%1, %2)")
+            .arg(curError)
+            .arg(errMsg);
+
+    funcStr = nameOfFunc + argVals;
+    ui->lblStatus->setText(funcStr);
 }

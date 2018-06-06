@@ -31,6 +31,7 @@ private slots:
     void setConfigItemsForType();
     void setConfiguration();
     void setMiscFunction();
+    void onStopCmd();
 
 private:
     Ui::subWidget *ui;
@@ -41,6 +42,9 @@ private:
     QString mDevUID;
     QString mDevName;
     QString mFuncName;
+    bool mUseTimer;
+    bool mGoTmrIsRunning;
+
     int mUtFunction;
     bool showIndex;
     int mCurGroup;
@@ -56,6 +60,7 @@ private:
     void readMem();
     void setUiForGroup();
     void setUiForFunction();
+    void getErrorMessage();
 };
 
 #endif // SUBWIDGET_H
