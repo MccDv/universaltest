@@ -870,6 +870,8 @@ void AiSubWidget::runTInFunc()
         mBufSize = bufSize;
         buffer = new double[bufSize];
         memset(buffer, 0.00000001, mBufSize * sizeof(*buffer));
+        if(mPlot)
+            setupPlot(ui->AiPlot, mChanCount);
     }
 
     /*QVector<double> dataVal(numtInChans);
