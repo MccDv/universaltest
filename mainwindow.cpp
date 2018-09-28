@@ -53,6 +53,7 @@ MainWindow::MainWindow(QWidget *parent) :
     rangeGroup->addAction(ui->actionBIP2VOLTS);
     rangeGroup->addAction(ui->actionBIP1PT25VOLTS);
     rangeGroup->addAction(ui->actionBIP1VOLTS);
+    rangeGroup->addAction(ui->actionBIPPT078VOLTS);
     rangeGroup->addAction(ui->actionUNI10VOLTS);
     rangeGroup->addAction(ui->actionUNI5VOLTS);
 
@@ -64,8 +65,22 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->actionBIP2VOLTS->setData(BIP2VOLTS);
     ui->actionBIP1PT25VOLTS->setData(BIP1PT25VOLTS);
     ui->actionBIP1VOLTS->setData(BIP1VOLTS);
+    ui->actionBIPPT078VOLTS->setData(BIPPT078VOLTS);
     ui->actionUNI10VOLTS->setData(UNI10VOLTS);
     ui->actionUNI5VOLTS->setData(UNI5VOLTS);
+
+    scaleGroup = new QActionGroup(this);
+    scaleGroup->addAction(ui->actionCelsius);
+    scaleGroup->addAction(ui->actionFahrenheit);
+    scaleGroup->addAction(ui->actionKelvin);
+    scaleGroup->addAction(ui->actionVolts);
+    scaleGroup->addAction(ui->actionNo_Scale);
+
+    ui->actionCelsius->setData(TS_CELSIUS);
+    ui->actionFahrenheit->setData(TS_FAHRENHEIT);
+    ui->actionKelvin->setData(TS_KELVIN);
+    ui->actionVolts->setData(TS_VOLTS);
+    ui->actionNo_Scale->setData(TS_NOSCALE);
 
     trigTypeGroup = new QActionGroup(this);
     trigTypeGroup->addAction(ui->actionTRIG_NONE);
@@ -225,12 +240,6 @@ void MainWindow::setTimer()
     if (curChild) {
         curChild->setUpTimer();
     }
-
-    /*tmrDialog = new TmrDialog(this);
-    tmrDialog->setEnabled();
-    connect(tmrDialog, SIGNAL(accepted()), this, SLOT(readTmrParams()));
-    connect(tmrDialog, SIGNAL(rejected()), this, SLOT(disableTimer()));
-    tmrDialog->exec();*/
 }
 
 void MainWindow::readTmrParams()
@@ -447,6 +456,10 @@ void MainWindow::createFuncMenus()
             funcAction = ui->menuFunction->addAction("ulDaqInScan");
             funcAction->setCheckable(true);
             funcAction->setData(UL_DAQ_INSCAN);
+            functionGroup->addAction(funcAction);
+            funcAction = ui->menuFunction->addAction("ulTIn");
+            funcAction->setCheckable(true);
+            funcAction->setData(UL_TIN);
             functionGroup->addAction(funcAction);
             ui->actionFF_DEFAULT->setData(AIN_FF_DEFAULT);
             ui->actionFF_NOCALIBRATEDATA->setData(AIN_FF_NOCALIBRATEDATA);
@@ -680,6 +693,9 @@ void MainWindow::setBoardMenuSelect(QMdiSubWindow*)
                 break;
             case UL_DAQ_INSCAN:
                 actionName = "ulDaqInScan";
+                break;
+            case UL_TIN:
+                actionName = "ulTIn";
                 break;
             default:
                 actionName = "ulAIn";
@@ -974,6 +990,29 @@ void MainWindow::curRangeChanged()
     ui->menuRange->menuAction()->setText("Range (" + preFix + str.setNum(rangeVolts) +")");
     if (curChild) {
         curChild->setCurRange(newRange);
+    }
+}
+
+void MainWindow::curScaleChanged()
+{
+    ChildWindow *curChild = activeMdiChild();
+    TempScale newScale;
+    //double rangeVolts;
+    QString preFix, str;
+
+    int scaleVar = scaleGroup->checkedAction()->data().toInt();
+    newScale = (TempScale)scaleVar;
+    /*double vSpan = getRangeVolts(newRange);
+    if (newRange < 100) {
+        rangeVolts = vSpan / 2;
+        preFix = "±";
+    } else {
+        rangeVolts = vSpan;
+        preFix = "0 to ";
+    }*/
+    //ui->menuRange->menuAction()->setText("Range (" + preFix + str.setNum(rangeVolts) +")");
+    if (curChild) {
+        curChild->setCurScale(newScale);
     }
 }
 
@@ -1461,6 +1500,15 @@ void MainWindow::addDeviceToMenu(QString devName, QString devUiD, DaqDeviceHandl
         errDlg.setModal(true);
         errDlg.setError(err, errStr);
         errDlg.exec();
+    }
+}
+
+void MainWindow::syncScale(TempScale childScale)
+{
+    foreach (QAction* scaleAct, ui->menuRange->actions()) {
+        if (scaleAct->data() == childScale) {
+            scaleAct->setChecked(true);
+        }
     }
 }
 

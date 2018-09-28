@@ -150,7 +150,7 @@
      <x>0</x>
      <y>0</y>
      <width>1091</width>
-     <height>22</height>
+     <height>19</height>
     </rect>
    </property>
    <property name="nativeMenuBar">
@@ -175,9 +175,16 @@
     <addaction name="actionBIP2VOLTS"/>
     <addaction name="actionBIP1PT25VOLTS"/>
     <addaction name="actionBIP1VOLTS"/>
+    <addaction name="actionBIPPT078VOLTS"/>
     <addaction name="separator"/>
     <addaction name="actionUNI10VOLTS"/>
     <addaction name="actionUNI5VOLTS"/>
+    <addaction name="separator"/>
+    <addaction name="actionCelsius"/>
+    <addaction name="actionFahrenheit"/>
+    <addaction name="actionKelvin"/>
+    <addaction name="actionVolts"/>
+    <addaction name="actionNo_Scale"/>
     <addaction name="separator"/>
     <addaction name="actionLoad_Queue"/>
    </widget>
@@ -769,6 +776,57 @@
   <action name="actionFF_NOCLEAR_2">
    <property name="text">
     <string>FF_NOCLEAR</string>
+   </property>
+  </action>
+  <action name="actionCelsius">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Celsius</string>
+   </property>
+  </action>
+  <action name="actionFahrenheit">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Fahrenheit</string>
+   </property>
+  </action>
+  <action name="actionKelvin">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Kelvin</string>
+   </property>
+  </action>
+  <action name="actionVolts">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Volts</string>
+   </property>
+  </action>
+  <action name="actionNo_Scale">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>No Scale</string>
+   </property>
+  </action>
+  <action name="actionBIPPT078VOLTS">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>BIPPT078VOLTS</string>
    </property>
   </action>
  </widget>

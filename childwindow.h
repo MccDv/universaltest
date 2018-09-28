@@ -42,6 +42,7 @@ class ChildWindow : public QMdiSubWindow
 
     Q_PROPERTY(bool tmrEnabled READ tmrEnabled WRITE setTmrEnabled NOTIFY tmrEnabledChanged)
     Q_PROPERTY(int tmrInterval READ tmrInterval WRITE setTmrInterval NOTIFY tmrIntervalChanged)
+    Q_PROPERTY(bool tmrSampPerInterval READ tmrSampPerInterval WRITE setTmrSampPerInterval NOTIFY tmrSampPerIntervalChanged)
     Q_PROPERTY(bool tmrStopOnStart READ tmrStopOnStart WRITE setTmrStopOnStart NOTIFY tmrStopOnStartChanged)
     Q_PROPERTY(bool tmrRunning READ tmrRunning WRITE setTmrRunning NOTIFY tmrRunningChanged)
     Q_PROPERTY(bool showPlot READ showPlot WRITE setShowPlot NOTIFY showPlotChanged)
@@ -99,6 +100,12 @@ public:
     {
         mTmrInterval = tmrInterval;
         emit tmrIntervalChanged(tmrInterval);
+    }
+
+    void setTmrSampPerInterval(bool sampPerInterval)
+    {
+        mOneSamplePer = sampPerInterval;
+        emit tmrSampPerIntervalChanged(sampPerInterval);
     }
 
     void setTmrRunning(bool runTimer)
@@ -249,6 +256,8 @@ public:
 
     void setCurRange(Range curRange);
 
+    void setCurScale(TempScale curScale);
+
     //PlotWindow *plotWindow
     //property gets:
 
@@ -261,6 +270,7 @@ public:
 
     bool tmrEnabled() { return mTmrEnabled; }
     int tmrInterval() { return mTmrInterval; }
+    bool tmrSampPerInterval() { return mOneSamplePer; }
     bool tmrRunning() { return mTmrRunning; }
     bool tmrStopOnStart() { return mStopOnStart; }
     bool showPlot() { return mShowPlot; }
@@ -291,6 +301,7 @@ public:
     int currentFunctionGroup() { return curFunctionGroup; }
     int currentFunction() { return curFunction; }
     Range getCurrentRange() {return mRange; }
+    TempScale getCurrentScale() {return mScale; }
 
     void setUpTimer();
     void updateEventSetup();
@@ -336,10 +347,12 @@ private:
     bool mTmrEnabled = false;
     bool mStopOnStart = false;
     int mTmrInterval;
+    bool mOneSamplePer;
     bool mTmrRunning = false;
     int curFunction;
     int curFunctionGroup;
     Range mRange;
+    TempScale mScale;
     bool mShowPlot = false;
 
     void readWindowPosition();
@@ -359,6 +372,7 @@ signals:
     void tmrEnabledChanged(bool);
     void tmrIntervalChanged(int);
     void tmrRunningChanged(bool);
+    void tmrSampPerIntervalChanged(bool);
     void tmrStopOnStartChanged(bool);
 
     void devHandleChanged(DaqDeviceHandle);
@@ -390,6 +404,7 @@ signals:
     //void changeRange(int);
     void showPlotChanged(bool);
     void rangeChanged(Range newRange);
+    void scaleChanged(TempScale newScale);
     //PlotWindow *
 };
 

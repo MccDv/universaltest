@@ -565,6 +565,39 @@ QString getAiChanTypeName(AiChanType chanType)
     }
 }
 
+QString getTcTypeName(AiChanType tcType)
+{
+    switch (tcType) {
+    case TC_J:
+        return "J";
+        break;
+    case TC_K:
+        return "K";
+        break;
+    case TC_T:
+        return "T";
+        break;
+    case TC_E:
+        return "E";
+        break;
+    case TC_R:
+        return "R";
+        break;
+    case TC_S:
+        return "S";
+        break;
+    case TC_B:
+        return "B";
+        break;
+    case TC_N:
+        return "N";
+        break;
+    default:
+        return "Invalid Type";
+        break;
+    }
+}
+
 QString getChanTypeNames(AiChanType typeNum)
 {
     int mask;

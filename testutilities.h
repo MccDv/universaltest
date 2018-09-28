@@ -35,6 +35,7 @@ QString getInfoDescription(int infoType, int infoItem, long long infoValue);
 QString getEventNames(long long eventMask);
 QString getAiInputModeName(AiInputMode inMode);
 QString getAiChanTypeName(AiChanType chanType);
+QString getTcTypeName(AiChanType tcType);
 QString getDigitalDirection(DigitalDirection digDir);
 QString getDioPortTypeName(DigitalPortType typeNum);
 QString getDPortIoTypeName(DigitalPortIoType ioType);

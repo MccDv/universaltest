@@ -34,7 +34,8 @@ typedef enum
     UL_AINSCAN = 2,
     UL_AIN_LOAD_QUEUE = 3,
     UL_AIN_SET_TRIGGER = 4,
-    UL_DAQ_INSCAN = 5
+    UL_DAQ_INSCAN = 5,
+    UL_TIN = 6
 }UtAiFunctions;
 
 typedef enum

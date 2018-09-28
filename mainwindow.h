@@ -53,6 +53,7 @@ private slots:
     void setBoardMenuSelect(QMdiSubWindow*);
     void curFunctionChanged();
     void curRangeChanged();
+    void curScaleChanged();
     void curInputModeChanged();
     void curIoOptionChanged();
     void curOptionChanged();
@@ -64,6 +65,7 @@ private slots:
     void configureData();
     void configureQueue();
     void syncRange(Range childRange);
+    void syncScale(TempScale childScale);
     void showEventSetup();
     void eventDialogResponse();
     void showHistory();
@@ -81,6 +83,7 @@ private:
     QAction *bdAction;
     QActionGroup *optionGroup;
     QActionGroup *rangeGroup;
+    QActionGroup *scaleGroup;
     QActionGroup *functionGroup;
     QActionGroup *inputModeGroup;
     QActionGroup *trigTypeGroup;

@@ -58,6 +58,8 @@ AiSubWidget::AiSubWidget(QWidget *parent) :
 
     ui->cmdStop->setVisible(false);
     buffer = NULL;
+    mOneSampPerForTotalSamps = false;
+    mTotalRead = 0;
     mPlot = false;
     mPlotChan = -1;
     mEventType = DE_NONE;
@@ -118,6 +120,7 @@ void AiSubWidget::updateParameters()
         showStop = true;
     }
     mUseTimer = parentWindow->tmrEnabled();
+    mOneSampPerForTotalSamps = parentWindow->tmrSampPerInterval();
     mStopOnStart = parentWindow->tmrStopOnStart();
     mGoTmrIsRunning = parentWindow->tmrRunning();
     if (mUseTimer | showStop) {
@@ -344,6 +347,7 @@ void AiSubWidget::setUiForFunction()
     ChildWindow *parentWindow;
     parentWindow = qobject_cast<ChildWindow *>(this->parent());
     mRange = parentWindow->getCurrentRange();
+    mScale = parentWindow->getCurrentScale();
     bool scanVisible;
 
     mChanList.clear();
@@ -376,6 +380,10 @@ void AiSubWidget::setUiForFunction()
         mRangeList.insert(0, mRange);
         mChanTypeList.insert(0, DAQI_ANALOG_DIFF);
         break;
+    case UL_TIN:
+        mFuncName = "ulTIn";
+        ui->leNumSamples->setText("10");
+        break;
     default:
         break;
     }
@@ -398,6 +406,7 @@ void AiSubWidget::onClickCmdGo()
 
     mPlotIndex = 0;
     mPlotCount = 0;
+    mTotalRead = 0;
     tmrIsEnabled = parentWindow->tmrEnabled();
     mUseTimer = tmrIsEnabled;
     ui->teShowValues->clear();
@@ -418,6 +427,7 @@ void AiSubWidget::runSelectedFunc()
     mPlotCount = 0;
     parentWindow = qobject_cast<ChildWindow *>(this->parent());
     mRange = parentWindow->getCurrentRange();
+    mScale = parentWindow->getCurrentScale();
     //mRange = (Range)curRange;
     switch (mUtFunction) {
     case UL_AIN:
@@ -455,6 +465,9 @@ void AiSubWidget::runSelectedFunc()
             runSetTriggerFunc();
         }
         runDaqInScanFunc();
+        break;
+    case UL_TIN:
+        runTInFunc();
         break;
     default:
         break;
@@ -692,7 +705,7 @@ void AiSubWidget::eventCallback(DaqDeviceHandle devHandle, DaqEventType eventTyp
 
 void AiSubWidget::callbackHandler(DaqEventType eventType, unsigned long long eventData)
 {
-    //called from eventCallback in testUtilities
+    //called from eventCallback
     int finalBlockSize;
     QString nameOfFunc, funcArgs, argVals, funcStr;
     QTime t;
@@ -820,6 +833,108 @@ void AiSubWidget::runAInFunc()
     }
     dataText.append("</td></tr>");
     ui->teShowValues->setHtml(dataText);
+}
+
+void AiSubWidget::runTInFunc()
+{
+    QString dataText, str, val;
+    int tInChan, tInLastChan, numtInChans;
+    int samplesToRead, numSamples, curIndex;
+    double data, curSample;
+    QString nameOfFunc, funcArgs, argVals, funcStr;
+    QString showSign = "+";
+    int afterDecimal, totalZ, bufIndex;
+    QTime t;
+    QString sStartTime;
+
+    mTiFlags = TIN_FF_DEFAULT; //currently the only value
+    tInChan = ui->spnLowChan->value();
+    tInLastChan = ui->spnHighChan->value();
+    mChanCount = (tInLastChan - tInChan) + 1;
+    mSamplesPerChan = ui->leNumSamples->text().toLong();
+
+    samplesToRead = mSamplesPerChan;
+    curIndex = 0;
+    if(mOneSampPerForTotalSamps) {
+        samplesToRead = 1;
+        curIndex = mTotalRead * mChanCount;
+    }
+
+    if((!mOneSampPerForTotalSamps) | (mTotalRead == 0)) {
+        if (buffer) {
+            delete[] buffer;
+            buffer = NULL;
+        }
+
+        long long bufSize = mChanCount * mSamplesPerChan;
+        mBufSize = bufSize;
+        buffer = new double[bufSize];
+        memset(buffer, 0.00000001, mBufSize * sizeof(*buffer));
+    }
+
+    /*QVector<double> dataVal(numtInChans);
+    QVector<QVector<double>>  dataArray(numSamples);
+    for (int sample=0; sample<numSamples; sample++)
+        dataArray[sample].resize(numtInChans);*/
+
+    nameOfFunc = "ulTIn";
+    funcArgs = "(mDaqDeviceHandle, channel, scale, flags, &data)\n";
+
+    for (long sampleNum = 0; sampleNum < samplesToRead; sampleNum++) {
+        //curIndex = 0;
+        for (int curChan = tInChan; curChan <= tInLastChan; curChan ++) {
+            sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
+            err = ulTIn(mDaqDeviceHandle, curChan, mScale, mTiFlags, &data);
+            argVals = QStringLiteral("(%1, %2, %3, %4, %5)")
+                    .arg(mDaqDeviceHandle)
+                    .arg(curChan)
+                    .arg(mScale)
+                    .arg(mTiFlags)
+                    .arg(data);
+            ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
+            buffer[curIndex] = data;
+            //dataArray[sampleNum][curIndex] = dataVal[curIndex];
+
+            funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
+            if (!err==ERR_NO_ERROR) {
+                mUseTimer = false;
+                mMainWindow->setError(err, sStartTime + funcStr);
+                return;
+            } else {
+                mMainWindow->addFunction(sStartTime + funcStr);
+            }
+            curIndex++;
+        }
+        mTotalRead += 1;
+    }
+
+    afterDecimal = 5;
+    totalZ = afterDecimal;
+    funcStr = nameOfFunc + argVals;
+    curIndex = 0;
+    bufIndex = 0;
+    ui->teShowValues->clear();
+    dataText = "<style> th, td { padding-right: 10px;}</style><tr>";
+    for (long thisSample = 0; thisSample < mSamplesPerChan; thisSample++) {
+        dataText.append("<td>" + str.setNum(thisSample * mChanCount) + "</td>");
+        for (curIndex = 0; curIndex < mChanCount; curIndex++) {
+            //curSample = dataArray[thisSample][curIndex];
+            curSample = buffer[bufIndex];
+            totalZ = afterDecimal;
+            if(curSample < -500)
+                totalZ = 1;
+            val = QString("%1%2").arg((curSample < 0) ? "" : showSign).arg
+                    (curSample, 2, 'f', totalZ, '0');
+            dataText.append("<td>" + val + "</td>");
+            bufIndex++;
+        }
+        dataText.append("</tr><tr>");
+    }
+    dataText.append("</td></tr>");
+    ui->teShowValues->setHtml(dataText);
+    if(mTotalRead == mSamplesPerChan) {
+        mUseTimer = false;
+    }
 }
 
 void AiSubWidget::runAInScanFunc()

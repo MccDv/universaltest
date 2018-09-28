@@ -67,12 +67,14 @@ private:
     int mUtFunction;
     int mCurGroup;
     bool mUseTimer;
+    bool mOneSampPerForTotalSamps;
 
     DaqDeviceHandle mDaqDeviceHandle;
     QString mDevUID;
     QString mDevName;
 
     int mSamplesPerChan;
+    long mTotalRead;
     AiInputMode mInputMode;
     AInFlag mAiFlags;
     struct DaqInChanDescriptor chanDescriptors[32];
@@ -80,6 +82,8 @@ private:
     ScanOption mScanOptions;
     AInScanFlag mFunctionFlag;
     Range mRange;
+    TempScale mScale;
+    TInFlag mTiFlags;
 
     TriggerType mTriggerType;
     DaqInChanType mTrigChanType;
@@ -137,6 +141,7 @@ private:
     void runEventDisable(DaqEventType eventType);
     void runEventEnable(DaqEventType eventType, unsigned long long eventParam);
     void runAInFunc();
+    void runTInFunc();
     void runAInScanFunc();
     void runDaqInScanFunc();
     UlError stopScan(long long perChan, long long curCount, long long curIndex);

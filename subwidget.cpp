@@ -724,6 +724,8 @@ void subWidget::readConfig()
         configText.append(devConfig + "</tr><tr>");
         configItem = AI_CFG_CHAN_COUPLING_MODE;
         devConfig = showConfig(configType, configItem, "AI Chan Coupling Mode");
+        configItem = AI_CFG_CHAN_SENSOR_CONNECTION_TYPE;
+        devConfig = showConfig(configType, configItem, "AI Sensor Connection");
         configText.append(devConfig + "</tr><tr>");
         showIndex = false;
         ui->teShowValues->setHtml(configText);
@@ -806,11 +808,17 @@ QString subWidget::showConfig(int configType, int configItem, QString showItem)
     case TYPE_AI_INFO:
         aiConfigItem = (AiConfigItem)configItem;
         nameOfFunc = "ulAIGetConfig";
+        if (aiConfigItem == AI_CFG_TEMP_UNIT) {
+            errDesc = " (" + getTcTypeName((AiChanType)configValue) + ")";
+        }
         err = ulAIGetConfig(mDaqDeviceHandle, aiConfigItem, index, &configValue);
         if (aiConfigItem == AI_CFG_CAL_DATE) {
             mSec = (qint64)(configValue * 1000);
             QDateTime calTime = QDateTime::fromMSecsSinceEpoch(mSec);
             errDesc = " (" + calTime.toString() + ")";
+        }
+        if (aiConfigItem == AI_CFG_CHAN_TC_TYPE) {
+            errDesc = " (" + getTcTypeName((AiChanType)configValue) + ")";
         }
         break;
     case TYPE_AO_INFO:

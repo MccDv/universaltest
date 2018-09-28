@@ -55,6 +55,7 @@ ChildWindow::ChildWindow(QWidget *parent, UtFunctionGroup funcGroup) : QMdiSubWi
     tmrRunFunc = new QTimer(this);
     mTmrEnabled = false;
     mTmrInterval = 0;
+    mOneSamplePer = false;
     mRange = BIP10VOLTS;
     mInputMode = AI_DIFFERENTIAL;
     mAiFlags = (AInFlag)0;
@@ -84,6 +85,8 @@ ChildWindow::ChildWindow(QWidget *parent, UtFunctionGroup funcGroup) : QMdiSubWi
     connect(tmrRunFunc, SIGNAL(timeout()), subwidget, SLOT(runSelectedFunc()));
     connect(this, SIGNAL(tmrRunningChanged(bool)), this, SLOT(goTimerRun(bool)));
     connect(this, SIGNAL(tmrEnabledChanged(bool)), subwidget, SLOT(updateParameters()));
+    connect(this, SIGNAL(tmrSampPerIntervalChanged(bool)), subwidget, SLOT(updateParameters()));
+    connect(this, SIGNAL(tmrIntervalChanged(int)), subwidget, SLOT(updateParameters()));
     connect(this, SIGNAL(devHandleChanged(DaqDeviceHandle)), subwidget, SLOT(updateParameters()));
     connect(this, SIGNAL(devNameChanged(QString)), subwidget, SLOT(updateParameters()));
     connect(this, SIGNAL(devUIDChanged(QString)), subwidget, SLOT(updateParameters()));
@@ -109,6 +112,7 @@ ChildWindow::ChildWindow(QWidget *parent, UtFunctionGroup funcGroup) : QMdiSubWi
     connect(this, SIGNAL(funcChanged(int)), subwidget, SLOT(functionChanged(int)));
     connect(this, SIGNAL(stopScanRequest()), subwidget, SLOT(swStopScan()));
     connect(this, SIGNAL(rangeChanged(Range)), mainParent, SLOT(syncRange(Range)));
+    connect(this, SIGNAL(scaleChanged(TempScale)), mainParent, SLOT(syncScale(TempScale)));
     curFunctionGroup = funcGroup;
     emit groupChanged(funcGroup);
 
@@ -149,6 +153,12 @@ void ChildWindow::setCurRange(Range curRange)
     emit rangeChanged(curRange);
 }
 
+void ChildWindow::setCurScale(TempScale curScale)
+{
+    mScale = curScale;
+    emit scaleChanged(curScale);
+}
+
 void ChildWindow::updateEventSetup()
 {
     emit eventsReadyForUpdate();
@@ -167,6 +177,7 @@ void ChildWindow::setUpTimer()
         mTmrInterval = 1000;
     tmrDialog->setEnabled(mTmrEnabled);
     tmrDialog->setInterval(mTmrInterval);
+    tmrDialog->setOnePerInterval(mOneSamplePer);
     tmrDialog->setStopOnStart(mStopOnStart);
     tmrDialog->exec();
 }
@@ -175,9 +186,11 @@ void ChildWindow::tmrDialogResponse()
 {
     mTmrEnabled = tmrDialog->enabled();
     mTmrInterval = tmrDialog->interval();
+    mOneSamplePer = tmrDialog->onePerInterval();
     mStopOnStart = tmrDialog->stopOnStart();
     disconnect(tmrDialog);
     delete tmrDialog;
+    emit tmrIntervalChanged(mTmrInterval);
 }
 
 void ChildWindow::stopScan()

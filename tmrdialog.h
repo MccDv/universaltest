@@ -13,6 +13,7 @@ class TmrDialog : public QDialog
     Q_PROPERTY(int interval READ interval WRITE setInterval NOTIFY intervalChanged)
     Q_PROPERTY(bool enabled READ enabled WRITE setEnabled NOTIFY enabledChanged)
     Q_PROPERTY(bool stopOnStart READ stopOnStart WRITE setStopOnStart NOTIFY stopOnStartChanged)
+    Q_PROPERTY(bool onePerInterval READ onePerInterval WRITE setOnePerInterval NOTIFY onePerIntervalChanged)
 
 public:
     explicit TmrDialog(QWidget *parent = 0);
@@ -36,14 +37,22 @@ public:
         emit stopOnStartChanged(stopOnStart);
     }
 
+    void setOnePerInterval(bool oneSamplePer)
+    {
+        mOneSamplePer = oneSamplePer;
+        emit onePerIntervalChanged(oneSamplePer);
+    }
+
     bool stopOnStart() { return mStopOnStart; }
     bool enabled() { return mEnabled; }
     int interval() { return mInterval; }
+    bool onePerInterval() { return mOneSamplePer; }
 
 private slots:
     void setParams();
     void updateInterval();
     void updateEnabling();
+    void updateOnePer();
     void updateStopOnStart();
 
 private:
@@ -51,12 +60,14 @@ private:
 
     bool mEnabled;
     bool mStopOnStart;
+    bool mOneSamplePer;
     int mInterval;
 
 signals:
     void intervalChanged(int);
     void enabledChanged(bool);
     void stopOnStartChanged(bool);
+    void onePerIntervalChanged(bool);
 };
 
 #endif // TMRDIALOG_H
