@@ -908,30 +908,34 @@ void AiSubWidget::runTInFunc()
         mTotalRead += 1;
     }
 
-    afterDecimal = 5;
-    totalZ = afterDecimal;
-    funcStr = nameOfFunc + argVals;
-    curIndex = 0;
-    bufIndex = 0;
-    ui->teShowValues->clear();
-    dataText = "<style> th, td { padding-right: 10px;}</style><tr>";
-    for (long thisSample = 0; thisSample < mSamplesPerChan; thisSample++) {
-        dataText.append("<td>" + str.setNum(thisSample * mChanCount) + "</td>");
-        for (curIndex = 0; curIndex < mChanCount; curIndex++) {
-            //curSample = dataArray[thisSample][curIndex];
-            curSample = buffer[bufIndex];
-            totalZ = afterDecimal;
-            if(curSample < -500)
-                totalZ = 1;
-            val = QString("%1%2").arg((curSample < 0) ? "" : showSign).arg
-                    (curSample, 2, 'f', totalZ, '0');
-            dataText.append("<td>" + val + "</td>");
-            bufIndex++;
+    if(mPlot)
+        plotScan(0, 0, mTotalRead);
+    else {
+        afterDecimal = 5;
+        totalZ = afterDecimal;
+        funcStr = nameOfFunc + argVals;
+        curIndex = 0;
+        bufIndex = 0;
+        ui->teShowValues->clear();
+        dataText = "<style> th, td { padding-right: 10px;}</style><tr>";
+        for (long thisSample = 0; thisSample < mSamplesPerChan; thisSample++) {
+            dataText.append("<td>" + str.setNum(thisSample * mChanCount) + "</td>");
+            for (curIndex = 0; curIndex < mChanCount; curIndex++) {
+                curSample = buffer[bufIndex];
+                totalZ = afterDecimal;
+                if(curSample < -500)
+                    totalZ = 1;
+                val = QString("%1%2").arg((curSample < 0) ? "" : showSign).arg
+                        (curSample, 2, 'f', totalZ, '0');
+                dataText.append("<td>" + val + "</td>");
+                bufIndex++;
+            }
+            dataText.append("</tr><tr>");
         }
-        dataText.append("</tr><tr>");
+        dataText.append("</td></tr>");
+        ui->teShowValues->setHtml(dataText);
     }
-    dataText.append("</td></tr>");
-    ui->teShowValues->setHtml(dataText);
+
     if(mTotalRead == mSamplesPerChan) {
         mUseTimer = false;
     }
@@ -1446,9 +1450,11 @@ void AiSubWidget::updatePlot()
     for (int i = mChanCount; i<8; i++)
         rbPlotSel[i]->setVisible(false);
     autoScale = ui->rbAutoScale->isChecked();
-    if(autoScale)
+    if(autoScale) {
         ui->AiPlot->rescaleAxes();
-    else {
+        double center = ui->AiPlot->yAxis->range().center();
+        ui->AiPlot->yAxis->scaleRange(1.2, center);
+    } else {
         if (mRange == BIPPT078VOLTS) {
             AiConfigItem configItem = AI_CFG_CHAN_TYPE;
             unsigned int index = 0;
@@ -1458,10 +1464,13 @@ void AiSubWidget::updatePlot()
             if ((err == ERR_NO_ERROR) && (configValue == 2))
                 setTCRange = true;
         }
+        if (mUtFunction == UL_TIN)
+            setTCRange = true;
+
         if (setTCRange) {
             rangeBuf = 0;
-            rangeUpper = 35;
-            rangeLower = 15;
+            rangeUpper = 50;
+            rangeLower = 10;
         } else {
             if (mAiFlags && AIN_FF_NOSCALEDATA) {
                 long fsCount = qPow(2, mAiResolution);
