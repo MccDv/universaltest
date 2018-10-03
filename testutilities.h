@@ -45,6 +45,7 @@ QString getCtrRegTypeNames(CounterRegisterType regType);
 QString getTmrTypeName(TimerType tmrType);
 QString getChanTypeNames(DaqInChanType typeNum);
 QString getChanTypeNames(AiChanType typeNum);
+QString getSensorConnectNames(SensorConnectionType connType);
 QString getChanOTypeNames(DaqOutChanType typeNum);
 QString getTrigTypeNames(TriggerType typeNum);
 QString getQueueTypeNames(AiQueueType typeNum);

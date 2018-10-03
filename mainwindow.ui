@@ -180,6 +180,8 @@
     <addaction name="actionUNI10VOLTS"/>
     <addaction name="actionUNI5VOLTS"/>
     <addaction name="separator"/>
+    <addaction name="actionMA0TO20"/>
+    <addaction name="separator"/>
     <addaction name="actionCelsius"/>
     <addaction name="actionFahrenheit"/>
     <addaction name="actionKelvin"/>
@@ -827,6 +829,14 @@
    </property>
    <property name="text">
     <string>BIPPT078VOLTS</string>
+   </property>
+  </action>
+  <action name="actionMA0TO20">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>MA0TO20</string>
    </property>
   </action>
  </widget>

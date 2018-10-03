@@ -235,7 +235,14 @@ void subWidget::setConfigItemsForType()
         ui->cmbConfigItem->addItem("IEPE Mode", AI_CFG_CHAN_OFFSET);
         ui->cmbConfigItem->addItem("Chan Coupling Mode", AI_CFG_CHAN_SENSOR_SENSIVITY);
         break;
+    case TYPE_AO_INFO:
+        ui->cmbConfigItem->addItem("AO Sync Mode", AO_CFG_SYNC_MODE);
+        break;
     case TYPE_DIO_INFO:
+        ui->cmbConfigItem->addItem("Dio Port Dir Mask", DIO_CFG_PORT_DIRECTION_MASK);
+        ui->cmbConfigItem->addItem("Dio Port Out Val", DIO_CFG_PORT_INITIAL_OUTPUT_VAL);
+        ui->cmbConfigItem->addItem("Dio Iso Filter Mask", DIO_CFG_PORT_ISO_FILTER_MASK);
+        ui->cmbConfigItem->addItem("Dio Port Out Logic", DIO_CFG_PORT_OUTPUT_LOGIC);
         break;
     default:
         break;
@@ -731,12 +738,28 @@ void subWidget::readConfig()
         ui->teShowValues->setHtml(configText);
         break;
     case TYPE_AO_INFO:
-        noCfgExists = true;
+        configItem = AO_CFG_SYNC_MODE;
+        showIndex = true;
+        devConfig = showConfig(configType, configItem, "AO Sync Mode");
+        configText.append(devConfig + "</tr><tr>");
+        ui->teShowValues->setHtml(configText);
         break;
     case TYPE_DIO_INFO:
         configItem = DIO_CFG_PORT_DIRECTION_MASK;
         showIndex = true;
         devConfig = showConfig(configType, configItem, "DIO Port Direction Mask");
+        configText.append(devConfig + "</tr><tr>");
+        configItem = DIO_CFG_PORT_INITIAL_OUTPUT_VAL;
+        showIndex = true;
+        devConfig = showConfig(configType, configItem, "DIO Port Output Val");
+        configText.append(devConfig + "</tr><tr>");
+        configItem = DIO_CFG_PORT_ISO_FILTER_MASK;
+        showIndex = true;
+        devConfig = showConfig(configType, configItem, "DIO Iso Filter Mask");
+        configText.append(devConfig + "</tr><tr>");
+        configItem = DIO_CFG_PORT_OUTPUT_LOGIC;
+        showIndex = true;
+        devConfig = showConfig(configType, configItem, "DIO Port Output Logic");
         configText.append(devConfig + "</tr><tr>");
         ui->teShowValues->setHtml(configText);
         showIndex = false;
@@ -783,6 +806,7 @@ QString subWidget::showConfig(int configType, int configItem, QString showItem)
     long long configValue;
     UlConfigItem ulConfigItem;
     AiConfigItem aiConfigItem;
+    AoConfigItem aoConfigItem;
     DioConfigItem dioConfigItem;
     QString nameOfFunc, textToAdd;
     QString errStr, argVals, str;
@@ -820,9 +844,14 @@ QString subWidget::showConfig(int configType, int configItem, QString showItem)
         if (aiConfigItem == AI_CFG_CHAN_TC_TYPE) {
             errDesc = " (" + getTcTypeName((AiChanType)configValue) + ")";
         }
+        if (aiConfigItem == AI_CFG_CHAN_SENSOR_CONNECTION_TYPE) {
+            errDesc = " (" + getSensorConnectNames((SensorConnectionType)configValue) + ")";
+        }
         break;
     case TYPE_AO_INFO:
-        noConfigItem = true;
+        aoConfigItem = (AoConfigItem)configItem;
+        nameOfFunc = "ulAOGetConfig";
+        err = ulAOGetConfig(mDaqDeviceHandle, aoConfigItem, index, &configValue);
         break;
     case TYPE_DIO_INFO:
         dioConfigItem = (DioConfigItem)configItem;
@@ -1371,6 +1400,9 @@ QString subWidget::showInfoStr(int infoType, int infoItem, QString showItem)
         index = 0;
         nameOfFunc = "ulAIGetConfigStr";
         err = ulAIGetConfigStr(mDaqDeviceHandle, aiInfoItem, index, pInfoValue, &maxConfigLen);
+        aiInfoItem = AI_CFG_CHAN_COEFS_STR;
+        index = (unsigned int)infoItem;
+        err = ulAIGetConfigStr(mDaqDeviceHandle, aiInfoItem, index, pInfoValue, &maxConfigLen);
         break;
     default:
         break;
@@ -1488,6 +1520,8 @@ void subWidget::setConfiguration()
 {
     UlConfigItem ulConfigItem;
     AiConfigItem aiConfigItem;
+    AoConfigItem aoConfigItem;
+    DioConfigItem dioConfigItem;
     AiConfigItemDbl aiConfigItemDbl;
 
     QString showItem = "";
@@ -1504,6 +1538,9 @@ void subWidget::setConfiguration()
     configItem = ui->cmbConfigItem->currentData(Qt::UserRole).toInt();
     configValue = ui->leSetValue->text().toLongLong();
     index = ui->spnIndex->value();
+
+    if(configItem == 0)
+        return;
 
     showItem = ui->cmbConfigItem->currentText();
 
@@ -1526,15 +1563,17 @@ void subWidget::setConfiguration()
         } else {
             dblConfigItem = true;
             aiConfigItemDbl = (AiConfigItemDbl)configItem;
-            nameOfFunc = "";
+            nameOfFunc = "ulAISetConfigDbl";
             err = ulAISetConfigDbl(mDaqDeviceHandle, aiConfigItemDbl, index, configValueDbl);
         }
         break;
     case TYPE_AO_INFO:
-        noConfigItem = true;
+        aoConfigItem = (AoConfigItem)configItem;
+        err = ulAOSetConfig(mDaqDeviceHandle, aoConfigItem, index, configValue);
         break;
     case TYPE_DIO_INFO:
-        noConfigItem = true;
+        dioConfigItem = (DioConfigItem)configItem;
+        err = ulDIOSetConfig(mDaqDeviceHandle, dioConfigItem, index, configValue);
         break;
     case TYPE_CTR_INFO:
         noConfigItem = true;

@@ -56,6 +56,7 @@ MainWindow::MainWindow(QWidget *parent) :
     rangeGroup->addAction(ui->actionBIPPT078VOLTS);
     rangeGroup->addAction(ui->actionUNI10VOLTS);
     rangeGroup->addAction(ui->actionUNI5VOLTS);
+    rangeGroup->addAction(ui->actionMA0TO20);
 
     ui->actionBIP20VOLTS->setData(BIP20VOLTS);
     ui->actionBIP10VOLTS->setData(BIP10VOLTS);
@@ -68,6 +69,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->actionBIPPT078VOLTS->setData(BIPPT078VOLTS);
     ui->actionUNI10VOLTS->setData(UNI10VOLTS);
     ui->actionUNI5VOLTS->setData(UNI5VOLTS);
+    ui->actionMA0TO20->setData(MA0TO20);
 
     scaleGroup = new QActionGroup(this);
     scaleGroup->addAction(ui->actionCelsius);

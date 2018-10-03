@@ -216,6 +216,9 @@ double getRangeVolts(Range rangeVal)
     case UNI5VOLTS:
         rangeVolts = 5;
         break;
+    case MA0TO20:
+        rangeVolts = 0.02;
+        break;
     default:
         rangeVolts = 0;
         break;
@@ -634,6 +637,27 @@ QString getChanTypeNames(AiChanType typeNum)
     }
     int loc = chanName.lastIndexOf(",");
     return chanName.left(loc);
+}
+
+QString getSensorConnectNames(SensorConnectionType connType)
+{
+    switch (connType) {
+    case SCT_2_WIRE_1:
+        return "Two-wire, 1 sensor";
+        break;
+    case SCT_2_WIRE_2:
+        return "Two-wire, 2 sensor";
+        break;
+    case SCT_3_WIRE:
+        return "Three-wire";
+        break;
+    case SCT_4_WIRE:
+        return "Four-wire";
+        break;
+    default:
+        return "Invalid Type";
+        break;
+    }
 }
 
 QString getDigitalDirection(DigitalDirection digDir)
