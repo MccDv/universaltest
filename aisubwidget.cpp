@@ -384,6 +384,10 @@ void AiSubWidget::setUiForFunction()
         mFuncName = "ulTIn";
         ui->leNumSamples->setText("10");
         break;
+    case UL_TINARRAY:
+        mFuncName = "ulTInArray";
+        ui->leNumSamples->setText("10");
+        break;
     default:
         break;
     }
@@ -468,6 +472,9 @@ void AiSubWidget::runSelectedFunc()
         break;
     case UL_TIN:
         runTInFunc();
+        break;
+    case UL_TINARRAY:
+        runTInArray();
         break;
     default:
         break;
@@ -907,6 +914,112 @@ void AiSubWidget::runTInFunc()
             }
             curIndex++;
         }
+        mTotalRead += 1;
+    }
+
+    if(mPlot)
+        plotScan(0, 0, mTotalRead);
+    else {
+        afterDecimal = 5;
+        totalZ = afterDecimal;
+        funcStr = nameOfFunc + argVals;
+        curIndex = 0;
+        bufIndex = 0;
+        ui->teShowValues->clear();
+        dataText = "<style> th, td { padding-right: 10px;}</style><tr>";
+        for (long thisSample = 0; thisSample < mSamplesPerChan; thisSample++) {
+            dataText.append("<td>" + str.setNum(thisSample * mChanCount) + "</td>");
+            for (curIndex = 0; curIndex < mChanCount; curIndex++) {
+                curSample = buffer[bufIndex];
+                totalZ = afterDecimal;
+                if(curSample < -500)
+                    totalZ = 1;
+                val = QString("%1%2").arg((curSample < 0) ? "" : showSign).arg
+                        (curSample, 2, 'f', totalZ, '0');
+                dataText.append("<td>" + val + "</td>");
+                bufIndex++;
+            }
+            dataText.append("</tr><tr>");
+        }
+        dataText.append("</td></tr>");
+        ui->teShowValues->setHtml(dataText);
+    }
+
+    if(mTotalRead == mSamplesPerChan) {
+        mUseTimer = false;
+    }
+}
+
+void AiSubWidget::runTInArray()
+{
+    QString dataText, str, val;
+    int lowChan, highChan;
+    int samplesToRead, curIndex;
+    double curSample;
+    double *data;
+    QString nameOfFunc, funcArgs, argVals, funcStr;
+    QString showSign = "+";
+    int afterDecimal, totalZ, bufIndex;
+    QTime t;
+    QString sStartTime;
+
+    mTiArrFlags = TINARRAY_FF_DEFAULT; //currently the only value
+    lowChan = ui->spnLowChan->value();
+    highChan = ui->spnHighChan->value();
+    mChanCount = (highChan - lowChan) + 1;
+    mSamplesPerChan = ui->leNumSamples->text().toLong();
+    data = new double[mChanCount];
+
+    samplesToRead = mSamplesPerChan;
+    curIndex = 0;
+    if(mOneSampPerForTotalSamps) {
+        samplesToRead = 1;
+        curIndex = mTotalRead * mChanCount;
+    }
+
+    if((!mOneSampPerForTotalSamps) | (mTotalRead == 0)) {
+        if (buffer) {
+            delete[] buffer;
+            buffer = NULL;
+        }
+
+        long long bufSize = mChanCount * mSamplesPerChan;
+        mBufSize = bufSize;
+        buffer = new double[bufSize];
+        memset(buffer, 0.00000001, mBufSize * sizeof(*buffer));
+        if(mPlot)
+            setupPlot(ui->AiPlot, mChanCount);
+    }
+
+    nameOfFunc = "ulTInArray";
+    funcArgs = "(mDaqDeviceHandle, lowChan, highChan, scale, flags, &data)\n";
+
+    for (long sampleNum = 0; sampleNum < samplesToRead; sampleNum++) {
+        sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
+        err = ulTInArray(mDaqDeviceHandle, lowChan, highChan, mScale, mTiArrFlags, data);
+        argVals = QStringLiteral("(%1, %2, %3, %4, %5, %6)")
+                .arg(mDaqDeviceHandle)
+                .arg(lowChan)
+                .arg(highChan)
+                .arg(mScale)
+                .arg(mTiArrFlags)
+                .arg(data[0]);
+
+        ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
+        funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
+        if (!err==ERR_NO_ERROR) {
+            mUseTimer = false;
+            mMainWindow->setError(err, sStartTime + funcStr);
+            return;
+        } else {
+            mMainWindow->addFunction(sStartTime + funcStr);
+        }
+
+        for (int curChan = 0; curChan < mChanCount; curChan ++) {
+            buffer[curIndex] = data[curChan];
+            curIndex++;
+        }
+
         mTotalRead += 1;
     }
 

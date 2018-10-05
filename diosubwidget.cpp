@@ -264,6 +264,20 @@ void DioSubWidget::setUiForFunction()
         mPlot = true;
         stackIndex = 2;
         break;
+    case UL_D_INARRAY:
+        mFuncName = "ulDInArray";
+        asyncVisible = true;
+        startSample = "10";
+        sampToolTip = "Samples per channel";
+        setNumberVisible = true;
+        break;
+    case UL_D_OUTARRAY:
+        portsVisible = true;
+        mFuncName = "ulDOutArray";
+        goText = "Write";
+        asyncVisible = true;
+        setNumberVisible = true;
+        break;
     default:
         break;
     }
@@ -876,6 +890,12 @@ void DioSubWidget::runSelectedFunc()
         }
         runDOutScanFunc();
         break;
+    case UL_D_INARRAY:
+        runDInArray();
+        break;
+    case UL_D_OUTARRAY:
+        runDOutArray();
+        break;
     default:
         break;
     }
@@ -1298,6 +1318,96 @@ void DioSubWidget::runDInFunc()
     }
 }
 
+void DioSubWidget::runDInArray()
+{
+    QString dataText, str;
+    QString nameOfFunc, funcArgs, argVals, funcStr;
+    unsigned long long *data;
+    unsigned long long dataVal;
+    int numDigPorts, numSamples, curIndex;
+    int arraySize;
+    QTime t;
+    QString sStartTime;
+    QList<DigitalPortType> portsSelected;
+    DigitalPortType portTypeLow, portTypeHigh;
+
+    portTypeLow = (DigitalPortType)0;
+    portTypeHigh = (DigitalPortType)0;
+    portsSelected.clear();
+    foreach (QCheckBox *chkPort, portCheckBoxes) {
+        if (chkPort->isChecked()) {
+            int portNum = chkPort->property("portNum").toInt();
+            if(portTypeLow == 0)
+                portTypeLow = (DigitalPortType)portNum;
+            portTypeHigh = (DigitalPortType)portNum;
+        }
+    }
+    numDigPorts = (portTypeHigh - portTypeLow) + 1;
+    if (mUtFunction == UL_D_CONFIG_PORT) {
+        numSamples = 1;
+    } else {
+        numSamples = ui->leNumSamples->text().toInt();
+    }
+    arraySize = numSamples * numDigPorts;
+    data = new unsigned long long[arraySize];
+    //QVector<unsigned long long> dataVal(numDigPorts);
+    QVector<QVector<unsigned long long>>  dataArray(numSamples);
+    for (int sample=0; sample<numSamples; sample++)
+        dataArray[sample].resize(numDigPorts);
+
+    nameOfFunc = "ulDInArray";
+    funcArgs = "(mDaqDeviceHandle, portTypeLow, portTypeHigh, data[])\n";
+    for (int sampleNum = 0; sampleNum < numSamples; sampleNum++) {
+        sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
+        err = ulDInArray(mDaqDeviceHandle, portTypeLow, portTypeHigh, data);
+        for(curIndex = 0; curIndex < numDigPorts; curIndex++) {
+            dataArray[sampleNum][curIndex] = data[curIndex];
+        }
+        argVals = QStringLiteral("(%1, %2, %3, %4)")
+                .arg(mDaqDeviceHandle)
+                .arg(portTypeLow)
+                .arg(portTypeHigh)
+                .arg(data[0]);
+        ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
+
+        funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
+        if (!err==ERR_NO_ERROR) {
+            mMainWindow->setError(err, sStartTime + funcStr);
+            return;
+        } else {
+            mMainWindow->addFunction(sStartTime + funcStr);
+        }
+    }
+
+    QString temp;
+    QListIterator<DigitalPortType> i(portsSelected);
+    if (mUtFunction == UL_D_CONFIG_PORT) {
+        QString portValues = "";
+        curIndex = 0;
+        while (i.hasNext()) {
+            dataVal = dataArray[0][curIndex];
+            portValues.append(QString("%1, ").arg(dataVal));
+            i.next();
+            curIndex++;
+        }
+        int loc = portValues.lastIndexOf(",");
+        ui->leNumSamples->setText(portValues.left(loc));
+    } else {
+        ui->teShowValues->clear();
+        dataText = "<style> th, td { padding-right: 10px;}</style><tr>";
+        for (int sampleNum = 0; sampleNum < numSamples; sampleNum++) {
+            dataText.append("<td>" + str.setNum(sampleNum * numDigPorts) + "</td>");
+            for(curIndex = 0; curIndex < numDigPorts; curIndex++) {
+                dataVal = dataArray[sampleNum][curIndex];
+                dataText.append("<td>P" + str.setNum(portTypeLow + curIndex) + ": " + temp.setNum(dataVal) + "</td>");
+            }
+            dataText.append("</tr><tr>");
+        }
+        dataText.append("</td></tr>");
+        ui->teShowValues->setHtml(dataText);
+    }
+}
+
 void DioSubWidget::runDBitInFunc()
 {
     QString nameOfFunc, funcArgs, argVals, funcStr;
@@ -1371,6 +1481,53 @@ void DioSubWidget::runDOutFunc()
                 ui->lblInfo->setText(funcStr);
             }
         }
+    }
+}
+
+void DioSubWidget::runDOutArray()
+{
+    DigitalPortType portTypeLow, portTypeHigh;
+    QString nameOfFunc, funcArgs, argVals, funcStr;
+    unsigned long long *data;
+    unsigned long long dataVal;
+    int numDigPorts;
+    QTime t;
+    QString sStartTime;
+
+    nameOfFunc = "ulDOutArray";
+    funcArgs = "(mDaqDeviceHandle, portTypeLow, portTypeHigh, data)\n";
+
+    portTypeLow = (DigitalPortType)0;
+    portTypeHigh = (DigitalPortType)0;
+    foreach (QCheckBox *chkPort, portCheckBoxes) {
+        if (chkPort->isChecked()) {
+            int portNum = chkPort->property("portNum").toInt();
+            if(portTypeLow == 0)
+                portTypeLow = (DigitalPortType)portNum;
+            portTypeHigh = (DigitalPortType)portNum;
+        }
+    }
+    numDigPorts = (portTypeHigh - portTypeLow) + 1;
+    dataVal = ui->leNumSamples->text().toULongLong();
+    data = new unsigned long long[numDigPorts];
+    for (int port = 0; port < numDigPorts; port++)
+        data[port] = dataVal;
+
+    sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
+    err = ulDOutArray(mDaqDeviceHandle, portTypeLow, portTypeHigh, data);
+    argVals = QStringLiteral("(%1, %2, %3, %4)")
+            .arg(mDaqDeviceHandle)
+            .arg(portTypeLow)
+            .arg(portTypeHigh)
+            .arg(data[0]);
+
+    funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
+    if (!err==ERR_NO_ERROR) {
+        mMainWindow->setError(err, sStartTime + funcStr);
+    } else {
+        mMainWindow->addFunction(sStartTime + funcStr);
+        funcStr = nameOfFunc + argVals;
+        ui->lblInfo->setText(funcStr);
     }
 }
 

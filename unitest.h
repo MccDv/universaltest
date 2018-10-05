@@ -35,7 +35,8 @@ typedef enum
     UL_AIN_LOAD_QUEUE = 3,
     UL_AIN_SET_TRIGGER = 4,
     UL_DAQ_INSCAN = 5,
-    UL_TIN = 6
+    UL_TIN = 6,
+    UL_TINARRAY = 7
 }UtAiFunctions;
 
 typedef enum
@@ -43,7 +44,8 @@ typedef enum
     UL_AOUT = 1,
     UL_AOUT_SCAN = 2,
     UL_DAQ_OUTSCAN = 3,
-    UL_AOUT_SET_TRIGGER = 5
+    UL_AOUT_SET_TRIGGER = 5,
+    UL_AOUTARRAY = 6
 }UtAoFunctions;
 
 typedef enum
@@ -55,7 +57,9 @@ typedef enum
     UL_D_BIT_IN = 5,
     UL_D_BIT_OUT = 6,
     UL_D_INSCAN = 7,
-    UL_D_OUTSCAN = 8
+    UL_D_OUTSCAN = 8,
+    UL_D_INARRAY = 9,
+    UL_D_OUTARRAY = 10
 }UtDioFunctions;
 
 typedef enum

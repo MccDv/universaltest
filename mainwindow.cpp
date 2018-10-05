@@ -138,12 +138,14 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(rangeGroup, SIGNAL(triggered(QAction*)), this, SLOT(curRangeChanged()));
     connect(inputModeGroup, SIGNAL(triggered(QAction*)), this, SLOT(curInputModeChanged()));
+    connect(scaleGroup, SIGNAL(triggered(QAction*)), this, SLOT(curScaleChanged()));
 
     //connect(ui->actionRefresh_Devices, SIGNAL(triggered(bool)), this, SLOT(discoverDevices()));
     connect(ui->actionTmrLoop, SIGNAL(triggered(bool)), this, SLOT(setTimer()));
     connect(ui->actionFF_DEFAULT, SIGNAL(triggered(bool)), this, SLOT(setAiFlags()));
     connect(ui->actionFF_NOCALIBRATEDATA, SIGNAL(triggered(bool)), this, SLOT(setAiFlags()));
     connect(ui->actionFF_NOSCALEDATA, SIGNAL(triggered(bool)), this, SLOT(setAiFlags()));
+    connect(ui->actionFF_SIMULTANEOUS, SIGNAL(triggered(bool)), this, SLOT(setAiFlags()));
     connect(ui->actionFF_CTR64_BIT, SIGNAL(triggered(bool)), this, SLOT(setAiFlags()));
     connect(ui->actionFF_NOCLEAR, SIGNAL(triggered(bool)), this, SLOT(setAiFlags()));
 
@@ -420,7 +422,7 @@ void MainWindow::createFuncMenus()
     ChildWindow *curChild;
     bool optionVisible, rangeVisible, trigVisible;
     bool dataVisible, inModeVisible, flagsVisible;
-    bool plotVisible;
+    bool plotVisible, simultaneousVisible;
 
     functionGroup->actions().clear();
     rangeVisible = false;
@@ -429,6 +431,7 @@ void MainWindow::createFuncMenus()
     dataVisible = false;
     inModeVisible = false;
     flagsVisible = true;
+    simultaneousVisible = false;
     plotVisible = true;
     curChild = activeMdiChild();
     ui->actionFF_DEFAULT->setText("FF_DEFAULT");
@@ -463,6 +466,10 @@ void MainWindow::createFuncMenus()
             funcAction->setCheckable(true);
             funcAction->setData(UL_TIN);
             functionGroup->addAction(funcAction);
+            funcAction = ui->menuFunction->addAction("ulTInArray");
+            funcAction->setCheckable(true);
+            funcAction->setData(UL_TINARRAY);
+            functionGroup->addAction(funcAction);
             ui->actionFF_DEFAULT->setData(AIN_FF_DEFAULT);
             ui->actionFF_NOCALIBRATEDATA->setData(AIN_FF_NOCALIBRATEDATA);
             ui->actionFF_NOSCALEDATA->setData(AIN_FF_NOSCALEDATA);
@@ -485,9 +492,15 @@ void MainWindow::createFuncMenus()
             funcAction->setCheckable(true);
             funcAction->setData(UL_DAQ_OUTSCAN);
             functionGroup->addAction(funcAction);
+            funcAction = ui->menuFunction->addAction("ulAOutArray");
+            funcAction->setCheckable(true);
+            funcAction->setData(UL_AOUTARRAY);
+            functionGroup->addAction(funcAction);
             ui->actionFF_DEFAULT->setData(AOUT_FF_DEFAULT);
             ui->actionFF_NOCALIBRATEDATA->setData(AOUT_FF_NOCALIBRATEDATA);
             ui->actionFF_NOSCALEDATA->setData(AOUT_FF_NOSCALEDATA);
+            ui->actionFF_SIMULTANEOUS->setData(AOUTARRAY_FF_SIMULTANEOUS);
+            simultaneousVisible = true;
             break;
         case FUNC_GROUP_DIN:
             optionVisible = true;
@@ -513,6 +526,10 @@ void MainWindow::createFuncMenus()
             funcAction->setCheckable(true);
             functionGroup->addAction(funcAction);
             funcAction->setData(UL_D_INSCAN);
+            funcAction = ui->menuFunction->addAction("ulDInArray");
+            funcAction->setCheckable(true);
+            functionGroup->addAction(funcAction);
+            funcAction->setData(UL_D_INARRAY);
             break;
         case FUNC_GROUP_DOUT:
             optionVisible = true;
@@ -539,6 +556,10 @@ void MainWindow::createFuncMenus()
             funcAction->setCheckable(true);
             functionGroup->addAction(funcAction);
             funcAction->setData(UL_D_OUTSCAN);
+            funcAction = ui->menuFunction->addAction("ulDOutArray");
+            funcAction->setCheckable(true);
+            functionGroup->addAction(funcAction);
+            funcAction->setData(UL_D_OUTARRAY);
             break;
         case FUNC_GROUP_CTR:
             optionVisible = true;
@@ -640,6 +661,7 @@ void MainWindow::createFuncMenus()
     ui->actionFF_DEFAULT->setVisible(flagsVisible);
     ui->actionFF_NOSCALEDATA->setVisible(flagsVisible);
     ui->actionFF_NOCALIBRATEDATA->setVisible(flagsVisible);
+    ui->actionFF_SIMULTANEOUS->setVisible(simultaneousVisible);
 }
 
 void MainWindow::setBoardMenuSelect(QMdiSubWindow*)
@@ -829,9 +851,13 @@ void MainWindow::setBoardMenuSelect(QMdiSubWindow*)
         if (rangeVisible) {
             curRange = curChild->getCurrentRange();
             foreach (QAction *rangeAction, ui->menuRange->actions()) {
-                rangeAction->setChecked(false);
-                if (rangeAction->data().toInt() == (int)curRange)
-                    rangeAction->setChecked(true);
+                bool update = ((rangeAction->actionGroup() == rangeGroup) && (curFunc < 6));
+                update = update | ((rangeAction->actionGroup() == rangeGroup) && (curFunc > 5));
+                if (update) {
+                    rangeAction->setChecked(false);
+                    if (rangeAction->data().toInt() == (int)curRange)
+                        rangeAction->setChecked(true);
+                }
             }
             newRange = (Range)curRange;
             double vSpan = getRangeVolts(newRange);
@@ -1055,6 +1081,7 @@ void MainWindow::setAiFlags()
         if (ui->actionFF_DEFAULT->isChecked()) {
             ui->actionFF_NOCALIBRATEDATA->setChecked(false);
             ui->actionFF_NOSCALEDATA->setChecked(false);
+            ui->actionFF_SIMULTANEOUS->setChecked(false);
             ui->actionFF_CTR64_BIT->setChecked(false);
             ui->actionFF_NOCLEAR->setChecked(false);
         }
@@ -1063,6 +1090,8 @@ void MainWindow::setAiFlags()
             tempFlag = ui->actionFF_NOSCALEDATA->data().toInt();
         if (ui->actionFF_NOCALIBRATEDATA->isChecked())
             tempFlag |= ui->actionFF_NOCALIBRATEDATA->data().toInt();
+        if (ui->actionFF_SIMULTANEOUS->isChecked())
+            tempFlag |= ui->actionFF_SIMULTANEOUS->data().toInt();
         if (ui->actionFF_CTR64_BIT->isChecked())
             tempFlag |= ui->actionFF_CTR64_BIT->data().toInt();
         if (ui->actionFF_NOCLEAR->isChecked())
@@ -1097,6 +1126,10 @@ void MainWindow::setAiFlags()
             if (curFunction == UL_DAQ_OUTSCAN) {
                 daqoFlag = static_cast<DaqOutScanFlag>(tempFlag);
                 mdiChild->setDaqOutFlag(daqoFlag);
+            }
+            if (curFunction == UL_AOUTARRAY) {
+                aoFlag = static_cast<AOutFlag>(tempFlag);
+                mdiChild->setAoFlags(aoFlag);
             }
             break;
         case FUNC_GROUP_CTR:

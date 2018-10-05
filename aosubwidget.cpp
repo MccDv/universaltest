@@ -179,6 +179,13 @@ void AoSubWidget::setUiForFunction()
         mRangeList.insert(0, mRange);
         mChanTypeList.insert(0, DAQO_ANALOG);
         break;
+    case UL_AOUTARRAY:
+        scanVisible = false;
+        mPlot = false;
+        ui->leNumSamples->setText("1");
+        ui->leBlockSize->setText("1");
+        mFuncName = "ulAOutArray";
+        break;
     default:
         break;
     }
@@ -544,8 +551,11 @@ void AoSubWidget::initDeviceParams()
 
 void AoSubWidget::updateValueBox()
 {
+    AOutFlag maskedVal;
     int sliderOut = ui->hSldAoutVal->value();
-    switch (mAoFlags) {
+    maskedVal = (AOutFlag)0;
+    maskedVal = AOutFlag(mAoFlags & AOUT_FF_NOSCALEDATA);
+    switch (maskedVal) {
     case AOUT_FF_NOSCALEDATA:
         ui->leAoutVal->setText(QString("%1").arg(sliderOut));
         break;
@@ -879,6 +889,10 @@ void AoSubWidget::runSelectedFunc()
         }
         runDaqOutScanFunc();
         break;
+    case UL_AOUTARRAY:
+        getDataValues();
+        runAOutArray();
+        break;
     default:
         break;
     }
@@ -1179,6 +1193,59 @@ void AoSubWidget::runAOutFunc()
         } else {
             mMainWindow->addFunction(sStartTime + funcStr);
         }
+    }
+}
+
+void AoSubWidget::runAOutArray()
+{
+    int lowChan, highChan, chanCount;    //, aOutLastChan, numAoutChans;
+    double *data;
+    double dataVal;
+    Range *rangeArray;
+    QString nameOfFunc, funcArgs, argVals, funcStr;
+    QTime t;
+    QString sStartTime;
+    AOutArrayFlag aoArrFlags;
+
+    aoArrFlags = (AOutArrayFlag)mAoFlags;
+    if (mCancelAOut) {
+        ui->cmdStop->setVisible(true);
+        return;
+    }
+
+    lowChan = ui->spnLowChan->value();
+    highChan = ui->spnHighChan->value();
+    chanCount = (highChan - lowChan) + 1;
+    data = new double[chanCount];
+    rangeArray = new Range[chanCount];
+
+    nameOfFunc = "ulAOutArray";
+    funcArgs = "(mDaqDeviceHandle, lowChan, highChan, range[], flags, data[])\n";
+    dataVal = ui->leAoutVal->text().toDouble();
+    for (int chan = 0; chan < chanCount; chan++) {
+        rangeArray[chan] = mRange;
+        data[chan] = dataVal;
+    }
+
+    sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
+    err = ulAOutArray(mDaqDeviceHandle, lowChan, highChan, rangeArray, aoArrFlags, data);
+    argVals = QStringLiteral("(%1, %2, %3, %4, %5, %6)")
+            .arg(mDaqDeviceHandle)
+            .arg(lowChan)
+            .arg(highChan)
+            .arg(rangeArray[0])
+            .arg(aoArrFlags)
+            .arg(data[0]);
+    ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
+
+    funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
+    if (!err==ERR_NO_ERROR) {
+        mMainWindow->setError(err, sStartTime + funcStr);
+        mCancelAOut = true;
+        ui->cmdStop->setVisible(true);
+        return;
+    } else {
+        mMainWindow->addFunction(sStartTime + funcStr);
     }
 }
 

@@ -568,6 +568,21 @@ QString getAiChanTypeName(AiChanType chanType)
     }
 }
 
+QString getAoSyncModeName(AOutSyncMode syncMode)
+{
+    switch (syncMode) {
+    case AOSM_SLAVE:
+        return "Slave";
+        break;
+    case AOSM_MASTER:
+        return "Master";
+        break;
+    default:
+        return "Invalid";
+        break;
+    }
+}
+
 QString getTcTypeName(AiChanType tcType)
 {
     switch (tcType) {
@@ -1099,6 +1114,8 @@ QString getRangeName(Range rangeVal)
         return "Uni1Pt25Volts";
     case UNI1VOLTS:
         return "Uni1Volts";
+    case MA0TO20:
+        return "0to20ma";
     default:
         return "Invalid Range";
     }

@@ -84,6 +84,7 @@ private:
     Range mRange;
     TempScale mScale;
     TInFlag mTiFlags;
+    TInArrayFlag mTiArrFlags;
 
     TriggerType mTriggerType;
     DaqInChanType mTrigChanType;
@@ -142,6 +143,7 @@ private:
     void runEventEnable(DaqEventType eventType, unsigned long long eventParam);
     void runAInFunc();
     void runTInFunc();
+    void runTInArray();
     void runAInScanFunc();
     void runDaqInScanFunc();
     UlError stopScan(long long perChan, long long curCount, long long curIndex);

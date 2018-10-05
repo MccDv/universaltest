@@ -137,6 +137,8 @@ private:
     void createBitBoxes();
     void runDConfigBit(DigitalPortType portType, int bitNum, DigitalDirection direction);
     void runDInFunc();
+    void runDInArray();
+    void runDOutArray();
     void runDBitInFunc();
     void runDOutFunc();
     void runDBitOutFunc(DigitalPortType portType, int bitNum, unsigned int bitValue);

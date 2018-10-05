@@ -145,6 +145,7 @@ private:
     void runEventDisable(DaqEventType eventType);
     void runEventEnable(DaqEventType eventType, unsigned long long eventParam);
     void runAOutFunc();
+    void runAOutArray();
     void runAOutScanFunc();
     void runDaqOutScanFunc();
     UlError stopScan(long long curCount, long long curIndex);

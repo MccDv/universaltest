@@ -852,6 +852,8 @@ QString subWidget::showConfig(int configType, int configItem, QString showItem)
         aoConfigItem = (AoConfigItem)configItem;
         nameOfFunc = "ulAOGetConfig";
         err = ulAOGetConfig(mDaqDeviceHandle, aoConfigItem, index, &configValue);
+        if (aoConfigItem == AO_CFG_SYNC_MODE)
+            errDesc = " (" + getAoSyncModeName((AOutSyncMode)configValue) + ")";
         break;
     case TYPE_DIO_INFO:
         dioConfigItem = (DioConfigItem)configItem;

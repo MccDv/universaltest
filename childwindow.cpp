@@ -70,6 +70,7 @@ ChildWindow::ChildWindow(QWidget *parent, UtFunctionGroup funcGroup) : QMdiSubWi
     mTrigLevel = 1.00;
     mTrigVariance = 0.002;
     mScanOptions = SO_DEFAULTIO;
+    mScale = TS_CELSIUS;
 
     connect(this, SIGNAL(refreshData()), subwidget, SLOT(runSelectedFunc()));
     connect(this, SIGNAL(refreshBoads()), subwidget, SLOT(initDeviceParams()));

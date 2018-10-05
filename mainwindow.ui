@@ -213,6 +213,7 @@
     <addaction name="actionFF_DEFAULT"/>
     <addaction name="actionFF_NOSCALEDATA"/>
     <addaction name="actionFF_NOCALIBRATEDATA"/>
+    <addaction name="actionFF_SIMULTANEOUS"/>
     <addaction name="actionFF_CTR64_BIT"/>
     <addaction name="actionFF_NOCLEAR"/>
     <addaction name="separator"/>
@@ -837,6 +838,17 @@
    </property>
    <property name="text">
     <string>MA0TO20</string>
+   </property>
+  </action>
+  <action name="actionFF_SIMULTANEOUS">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>FF_SIMULTANEOUS</string>
    </property>
   </action>
  </widget>
