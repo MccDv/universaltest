@@ -8,7 +8,7 @@
 #include <QTimer>
 #include <QTime>
 #include "uldaq.h"
-//#include "mainwindow.h"
+#include "mainwindow.h"
 
 namespace Ui {
 class subWidget;
@@ -35,8 +35,8 @@ private slots:
 
 private:
     Ui::subWidget *ui;
-    //MainWindow* getMainWindow();
-    //MainWindow *mMainWindow;
+    MainWindow* getMainWindow();
+    MainWindow *mMainWindow;
     DaqDeviceHandle mDaqDeviceHandle;
     UlError err;
     QString mDevUID;

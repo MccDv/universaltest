@@ -821,16 +821,39 @@ void MainWindow::setBoardMenuSelect(QMdiSubWindow*)
             rangeVisible = false;
             optionVisible = false;
             switch (curFunc) {
+            case UL_FLASH_LED:
+                actionName = "ulFlashLED";
+                break;
+            case UL_GET_ERR_MSG:
+                actionName = "ulGetErrMsg";
+                break;
+            case UL_GET_STATUS:
+                actionName = "ulGetStatus";
+                break;
+            case UL_SCAN_STOP:
+                actionName = "ulStopScan";
+                break;
             default:
-                /*
-                ulFlashLED
-                ulGetErrMsg
-                ulGetStatus
-                ulStopBackground
-                ulGetInfo
-                ulGetConfig
-                ulSetConfig
-                 */
+                actionName = "ulFlashLED";
+                break;
+            }
+            break;
+        case FUNC_GROUP_CONFIG:
+            curFunctionGroupName = "Information Functions";
+            rangeVisible = false;
+            optionVisible = false;
+            switch (curFunc) {
+            case UL_GET_INFO:
+                actionName = "ulGetInfo";
+                break;
+            case UL_GET_CONFIG:
+                actionName = "ulGetConfig";
+                break;
+            case UL_SET_CONFIG:
+                actionName = "ulSetConfig";
+                break;
+            default:
+                actionName = "ulGetInfo";
                 break;
             }
             break;

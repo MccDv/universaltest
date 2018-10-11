@@ -502,7 +502,7 @@ void DioSubWidget::initDeviceParams()
                     mMainWindow->setError(err, sStartTime + funcStr);
                 } else {
                     mMainWindow->addFunction(sStartTime + funcStr);
-                    portBits[portType] = 4;//bitCount;
+                    portBits[portType] = bitCount;
                 }
             }
         }
