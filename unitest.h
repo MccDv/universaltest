@@ -25,7 +25,8 @@ typedef enum
     FUNC_GROUP_CTR = 5,
     FUNC_GROUP_MISC = 6,
     FUNC_GROUP_CONFIG = 7,
-    FUNC_GROUP_DAQSCAN = 8
+    FUNC_GROUP_DAQSCAN = 8,
+    FUNC_GROUP_MEM = 9
 }UtFunctionGroup;
 
 typedef enum
@@ -86,7 +87,9 @@ typedef enum
     UL_FLASH_LED = 1,
     UL_GET_ERR_MSG = 2,
     UL_GET_STATUS = 3,
-    UL_SCAN_STOP = 4
+    UL_SCAN_STOP = 4,
+    UL_MEM_READ = 5,
+    UL_MEM_WRITE = 6
 }UtMiscFunctions;
 
 #endif // UNITEST_H

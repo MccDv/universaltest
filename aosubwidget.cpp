@@ -402,7 +402,7 @@ void AoSubWidget::initDeviceParams()
     nameOfFunc = "ulAOGetInfo";
     funcArgs = "(mDaqDeviceHandle, infoItem, 0, &infoValue)\n";
 
-    Range curRange = mRange;
+    //Range curRange = mRange;
     infoItem = AO_INFO_RESOLUTION;
     sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
     err = ulAOGetInfo(mDaqDeviceHandle, infoItem, 0, &infoValue);
@@ -605,6 +605,7 @@ void AoSubWidget::getDataValues()
     int chanScale;
     QString dataText, str, val;
 
+    floatValue = false;
     //following sets up daqscan value ranges
     if (mUtFunction == UL_DAQ_OUTSCAN) {
         int daqList = mChanList.count();
@@ -940,6 +941,7 @@ void AoSubWidget::runSetTriggerFunc()
     //to do: make this user-settable
     trigChanDescriptor.type = DAQI_DIGITAL;
     trigChanDescriptor.channel = 1;
+    trigChanDescriptor.range = BIP5VOLTS;
     if (mUtFunction == UL_DAQ_OUTSCAN) {
         nameOfFunc = "ulDaqOutSetTrigger";
         funcArgs = "(mDaqDeviceHandle, trigType, {trigChan, range}, level, variance, trigCount)\n";
@@ -1154,7 +1156,7 @@ void AoSubWidget::callbackHandler(DaqEventType eventType, unsigned long long eve
 
 void AoSubWidget::runAOutFunc()
 {
-    int aOutLowChan, aOutHighChan, chanCount;    //, aOutLastChan, numAoutChans;
+    int aOutLowChan, aOutHighChan; //, chanCount;    //, aOutLastChan, numAoutChans;
     double data; //, curSample
     QString nameOfFunc, funcArgs, argVals, funcStr;
     QTime t;
@@ -1167,7 +1169,7 @@ void AoSubWidget::runAOutFunc()
 
     aOutLowChan = ui->spnLowChan->value();
     aOutHighChan = ui->spnHighChan->value();
-    chanCount = (aOutHighChan - aOutLowChan) + 1;
+    //chanCount = (aOutHighChan - aOutLowChan) + 1;
 
     nameOfFunc = "ulAOut";
     funcArgs = "(mDaqDeviceHandle, aOutChan, range, flags, &data)\n";
@@ -1416,6 +1418,8 @@ void AoSubWidget::onClickCmdStop()
         unsigned long long currentScanCount;
         long long currentIndex;
 
+        currentTotalCount = 0;
+        currentIndex = 0;
         if(mUseGetStatus) {
             funcArgs = "(mDaqDeviceHandle, &status, {&currentScanCount, &currentTotalCount, &currentIndex})\n";
             if (mUtFunction == UL_AOUT_SCAN) {

@@ -827,7 +827,7 @@ void CtrSubWidget::readRegister()
     QList<int> ctrsSelected;
     CounterRegisterType regType;
     unsigned long long data;
-    int ctrNum, numCtrChans;
+    int ctrNum; //, numCtrChans;
     QString nameOfFunc, funcArgs, argVals;
     QString str, funcStr, regName;
     QTime t;
@@ -840,7 +840,7 @@ void CtrSubWidget::readRegister()
             ctrsSelected.append(ctrNum);
         }
     }
-    numCtrChans = ctrsSelected.count();
+    //numCtrChans = ctrsSelected.count();
     nameOfFunc = "ulCRead";
     funcArgs = "(mDaqDeviceHandle, ctrNum, regType, data)\n";
 

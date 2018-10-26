@@ -303,6 +303,8 @@ QString getInfoDescription(int infoType, int infoItem, long long infoValue)
     case TYPE_DEV_INFO:
         if (infoItem == DEV_INFO_DAQ_EVENT_TYPES)
             return getEventNames(infoValue);
+        if (infoItem == DEV_INFO_MEM_REGIONS)
+            return getRegionNames((MemRegion)infoValue);
         break;
     case TYPE_AI_INFO:
         if (infoItem == AI_INFO_CHAN_TYPES)
@@ -568,6 +570,46 @@ QString getAiChanTypeName(AiChanType chanType)
     }
 }
 
+QString getChanTypeNames(AiChanType typeNum)
+{
+    int mask;
+    AiChanType maskedVal;
+    QString chanName;
+
+    maskedVal = (AiChanType)0;
+    for (int i = 0; i < 6; i++) {
+        mask = pow(2, i);
+        if (i == 5)
+            mask = pow(2, 30);
+        maskedVal = (AiChanType)(typeNum & (AiChanType)mask);
+        switch (maskedVal) {
+        case AI_VOLTAGE:
+            chanName += "Voltage, ";
+            break;
+        case AI_TC:
+            chanName += "TC, ";
+            break;
+        case AI_RTD:
+            chanName += "RTD, ";
+            break;
+        case AI_THERMISTOR:
+            chanName += "Thermistor, ";
+            break;
+        case AI_SEMICONDUCTOR:
+            chanName += "Semiconductor, ";
+            break;
+        case AI_DISABLED:
+            chanName += "Disabled, ";
+            break;
+        default:
+            //chanName += "Invalid Type";
+            break;
+        }
+    }
+    int loc = chanName.lastIndexOf(",");
+    return chanName.left(loc);
+}
+
 QString getAoSyncModeName(AOutSyncMode syncMode)
 {
     switch (syncMode) {
@@ -583,7 +625,7 @@ QString getAoSyncModeName(AOutSyncMode syncMode)
     }
 }
 
-QString getTcTypeName(AiChanType tcType)
+QString getTcTypeName(TcType tcType)
 {
     switch (tcType) {
     case TC_J:
@@ -616,42 +658,30 @@ QString getTcTypeName(AiChanType tcType)
     }
 }
 
-QString getChanTypeNames(AiChanType typeNum)
+QString getTempUnitName(TempUnit tempUnit)
 {
-    int mask;
-    AiChanType maskedVal;
-    QString chanName;
-
-    maskedVal = (AiChanType)0;
-    for (int i = 0; i < 6; i++) {
-        mask = pow(2, i);
-        maskedVal = (AiChanType)(typeNum & (AiChanType)mask);
-        switch (maskedVal) {
-        case AI_VOLTAGE:
-            chanName += "Ai Voltage, ";
-            break;
-        case AI_TC:
-            chanName += "Ai TC, ";
-            break;
-        case AI_RTD:
-            chanName += "Ai RTD, ";
-            break;
-        case AI_THERMISTOR:
-            chanName += "Ai Thermistor, ";
-            break;
-        case AI_SEMICONDUCTOR:
-            chanName += "Ai Semiconductor, ";
-            break;
-        case AI_DISABLED:
-            chanName += "Ai Disabled, ";
-            break;
-        default:
-            //chanName += "Invalid Type";
-            break;
-        }
+    switch (tempUnit) {
+    case TU_CELSIUS:
+        return "Celsius";
+    case TU_FAHRENHEIT:
+        return "Fahrenheit";
+    case TU_KELVIN:
+        return "Kelvin";
+    default:
+        return "Invalid temp unit";
     }
-    int loc = chanName.lastIndexOf(",");
-    return chanName.left(loc);
+}
+
+QString getChanCouplingModeName(CouplingMode cplMode)
+{
+    switch (cplMode) {
+    case CM_DC:
+        return "DC Coupling";
+    case CM_AC:
+        return "AC Coupling";
+    default:
+        return "Invalid Coupling Mode";
+    }
 }
 
 QString getSensorConnectNames(SensorConnectionType connType)
@@ -776,19 +806,19 @@ QString getDPortIoTypeName(DigitalPortIoType ioType)
         return "Fixed input";
         break;
     case DPIOT_OUT:
-        return "Fixed input";
+        return "Fixed output";
         break;
     case DPIOT_IO:
-        return "PortProgIO";
+        return "IO Port-Config";
         break;
     case DPIOT_BITIO:
-        return "BitProgIO";
+        return "IO Bit-Config";
         break;
     case DPIOT_NONCONFIG:
-        return "NonProgIO";
+        return "IO Non-Config";
         break;
     default:
-        return "InvalidType";
+        return "Invalid Type";
         break;
     }
 }
@@ -1135,6 +1165,25 @@ QString getAccessTypes(MemAccessType memAccess)
         if (accessDesc.length())
             return accessDesc.left(accessDesc.length() - 2);
         return "Invalid Access Type";
+    }
+}
+
+QString getRegionNames(MemRegion memRegion)
+{
+    QString regionNames;
+
+    if (memRegion == 0)
+        return "None";
+    else {
+        if (memRegion & MR_CAL)
+            regionNames = "Cal, ";
+        if (memRegion & MR_USER)
+            regionNames += "User, ";
+        if (memRegion & MR_SETTINGS)
+            regionNames += "Settings, ";
+        if (regionNames.length())
+            return regionNames.left(regionNames.length() - 2);
+        return "Invalid Region";
     }
 }
 

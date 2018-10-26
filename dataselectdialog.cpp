@@ -33,7 +33,7 @@ DataSelectDialog::DataSelectDialog(QWidget *parent) :
 
     //set defaults
     double defaultOffset = 0;
-    double defaultAmplitude;
+    double defaultAmplitude = 0;
     int defaultScale = mDataScale.value(0);
     int defaultResolution = mResolution.value(0);
     double defaultFSRange = mFSRange.value(0);

@@ -557,6 +557,7 @@ void DioSubWidget::togglePortSelection()
 {
     bool chkState, getState;
 
+    chkState = false;
     foreach (QCheckBox *chkPort, portCheckBoxes) {
         if (!getState) {
             chkState = !chkPort->isChecked();

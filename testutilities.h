@@ -35,8 +35,10 @@ QString getInfoDescription(int infoType, int infoItem, long long infoValue);
 QString getEventNames(long long eventMask);
 QString getAiInputModeName(AiInputMode inMode);
 QString getAiChanTypeName(AiChanType chanType);
+QString getChanCouplingModeName(CouplingMode cplMode);
 QString getAoSyncModeName(AOutSyncMode syncMode);
-QString getTcTypeName(AiChanType tcType);
+QString getTcTypeName(TcType tcType);
+QString getTempUnitName(TempUnit tempUnit);
 QString getDigitalDirection(DigitalDirection digDir);
 QString getDioPortTypeName(DigitalPortType typeNum);
 QString getDPortIoTypeName(DigitalPortIoType ioType);
@@ -53,5 +55,6 @@ QString getQueueTypeNames(AiQueueType typeNum);
 QString getQueueLimitNames(AiChanQueueLimitation typeNum);
 QString getRangeName(Range rangeVal);
 QString getAccessTypes(MemAccessType memAccess);
+QString getRegionNames(MemRegion memRegion);
 CounterMeasurementMode getMeasModeFromListIndex(int listIndex);
 #endif // TESTUTILITIES_H

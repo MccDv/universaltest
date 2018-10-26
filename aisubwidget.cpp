@@ -62,6 +62,7 @@ AiSubWidget::AiSubWidget(QWidget *parent) :
     mTotalRead = 0;
     mPlot = false;
     mPlotChan = -1;
+    mPlotCount = 0;
     mEventType = DE_NONE;
     mGoTmrIsRunning = false;
     mRunning = false;
@@ -718,6 +719,7 @@ void AiSubWidget::callbackHandler(DaqEventType eventType, unsigned long long eve
     QTime t;
     QString sStartTime;
 
+    finalBlockSize = 0;
     nameOfFunc = "eventCallback";
     funcArgs = "(devHandle, eventType, eventData, *userData)\n";
     sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
@@ -845,10 +847,11 @@ void AiSubWidget::runAInFunc()
 void AiSubWidget::runTInFunc()
 {
     QString dataText, str, val;
-    int tInChan, tInLastChan, numtInChans;
-    int samplesToRead, numSamples, curIndex;
+    int tInChan, tInLastChan;
+    int samplesToRead, curIndex;
     double data, curSample;
     QString nameOfFunc, funcArgs, argVals, funcStr;
+    QString errNumStr;
     QString showSign = "+";
     int afterDecimal, totalZ, bufIndex;
     QTime t;
@@ -904,11 +907,24 @@ void AiSubWidget::runTInFunc()
             buffer[curIndex] = data;
             //dataArray[sampleNum][curIndex] = dataVal[curIndex];
 
+            QString errDesc = "";
             funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-            if (!err==ERR_NO_ERROR) {
-                mUseTimer = false;
-                mMainWindow->setError(err, sStartTime + funcStr);
-                return;
+            if (err != ERR_NO_ERROR) {
+                errNumStr = QString("[Error %1: ").arg(err);
+                switch (err) {
+                case ERR_OPEN_CONNECTION:
+                    errDesc = errNumStr + "Open thermocouple]";
+                    break;
+                default:
+                    break;
+                }
+                if (errDesc.length()) {
+                    mMainWindow->addFunction(sStartTime + funcStr + errDesc);
+                } else {
+                    mUseTimer = false;
+                    mMainWindow->setError(err, sStartTime + funcStr);
+                    return;
+                }
             } else {
                 mMainWindow->addFunction(sStartTime + funcStr);
             }
@@ -945,8 +961,10 @@ void AiSubWidget::runTInFunc()
         ui->teShowValues->setHtml(dataText);
     }
 
-    if(mTotalRead == mSamplesPerChan) {
-        mUseTimer = false;
+    if(mOneSampPerForTotalSamps) {
+        if(mTotalRead == mSamplesPerChan) {
+            mUseTimer = false;
+        }
     }
 }
 
@@ -1274,9 +1292,9 @@ void AiSubWidget::onClickCmdStop()
     if ((mUtFunction == UL_AINSCAN) | (mUtFunction == UL_DAQ_INSCAN)) {
         ScanStatus status;
         struct TransferStatus xferStatus;
-        unsigned long long currentScanCount;
-        unsigned long long currentTotalCount;
-        long long currentIndex;
+        unsigned long long currentScanCount = 0;
+        unsigned long long currentTotalCount = 0;
+        long long currentIndex = 0;
 
         if(mUseGetStatus) {
             funcArgs = "(mDaqDeviceHandle, &status, &currentScanCount, &currentTotalCount, &currentIndex)\n";
@@ -1452,6 +1470,7 @@ void AiSubWidget::printData(unsigned long long currentCount, long long currentIn
     bool floatValue;
     long long samplePerChanel = mChanCount * ui->leNumSamples->text().toLongLong();;
 
+    floatValue = false;
     if (mUtFunction == UL_DAQ_INSCAN)
         floatValue = (!(mDaqiFlags & DAQINSCAN_FF_NOSCALEDATA));
     if (mUtFunction == UL_AINSCAN)

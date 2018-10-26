@@ -64,10 +64,10 @@ void subWidget::groupChanged(int newGroup)
 
 void subWidget::setUiForGroup()
 {
-    ChildWindow *parentWindow;
+    //ChildWindow *parentWindow;
     bool configVisible;
     QString cmdLabel;
-    parentWindow = qobject_cast<ChildWindow *>(this->parent());
+    //parentWindow = qobject_cast<ChildWindow *>(this->parent());
 
     disconnect(ui->cmbInfoType, SIGNAL(currentIndexChanged(int)));
     disconnect(ui->cmdSet, SIGNAL(clicked(bool)));
@@ -86,6 +86,10 @@ void subWidget::setUiForGroup()
         connect(ui->spnIndex, SIGNAL(valueChanged(int)), this, SLOT(runSelectedFunc()));
         configVisible = true;
         cmdLabel = "Set";
+        break;
+    case FUNC_GROUP_MEM:
+        connect(ui->cmdSet, SIGNAL(clicked(bool)), this, SLOT(memRead()));
+        break;
     default:
         break;
     }
@@ -152,6 +156,14 @@ void subWidget::setUiForFunction()
             ui->cmbInfoType->addItem("ulCInScanStop");
             ui->cmbInfoType->addItem("ulDaqInScanStop");
             ui->cmbInfoType->addItem("ulDaqOutScanStop");
+            break;
+        case UL_MEM_READ:
+        case UL_MEM_WRITE:
+            ui->cmbInfoType->addItem("Cal Region", MR_CAL);
+            ui->cmbInfoType->addItem("User Region", MR_USER);
+            ui->cmbInfoType->addItem("Settings Region", MR_SETTINGS);
+            connect(ui->cmdSet, SIGNAL(clicked(bool)), this, SLOT(memRead()));
+            infoComboVisible = true;
             break;
         default:
             break;
@@ -231,15 +243,15 @@ void subWidget::setConfigItemsForType()
     case TYPE_AI_INFO:
         ui->cmbConfigItem->addItem("AIn Chan Type", AI_CFG_CHAN_TYPE);
         ui->cmbConfigItem->addItem("Chan Tc Type", AI_CFG_CHAN_TC_TYPE);
-        ui->cmbConfigItem->addItem("Chan Temp Unit", AI_CFG_CHAN_TEMP_UNIT);
-        ui->cmbConfigItem->addItem("Temp Unit", AI_CFG_TEMP_UNIT);
+        ui->cmbConfigItem->addItem("Chan Temp Unit", AI_CFG_SCAN_CHAN_TEMP_UNIT);
+        ui->cmbConfigItem->addItem("Temp Unit", AI_CFG_SCAN_TEMP_UNIT);
         ui->cmbConfigItem->addItem("Adc Timing Mode", AI_CFG_ADC_TIMING_MODE);
         ui->cmbConfigItem->addItem("Auto Zero Mode", AI_CFG_AUTO_ZERO_MODE);
         ui->cmbConfigItem->addItem("IEPE Mode", AI_CFG_CHAN_IEPE_MODE);
         ui->cmbConfigItem->addItem("Chan Coupling Mode", AI_CFG_CHAN_COUPLING_MODE);
-        ui->cmbConfigItem->addItem("Auto Zero Mode", AI_CFG_CHAN_SLOPE);
-        ui->cmbConfigItem->addItem("IEPE Mode", AI_CFG_CHAN_OFFSET);
-        ui->cmbConfigItem->addItem("Chan Coupling Mode", AI_CFG_CHAN_SENSOR_SENSIVITY);
+        ui->cmbConfigItem->addItem("Chan Slope", AI_CFG_CHAN_SLOPE);
+        ui->cmbConfigItem->addItem("Chan Offset", AI_CFG_CHAN_OFFSET);
+        ui->cmbConfigItem->addItem("Chan Sensor Sensitivity", AI_CFG_CHAN_SENSOR_SENSITIVITY);
         break;
     case TYPE_AO_INFO:
         ui->cmbConfigItem->addItem("AO Sync Mode", AO_CFG_SYNC_MODE);
@@ -248,7 +260,7 @@ void subWidget::setConfigItemsForType()
         ui->cmbConfigItem->addItem("Dio Port Dir Mask", DIO_CFG_PORT_DIRECTION_MASK);
         ui->cmbConfigItem->addItem("Dio Port Out Val", DIO_CFG_PORT_INITIAL_OUTPUT_VAL);
         ui->cmbConfigItem->addItem("Dio Iso Filter Mask", DIO_CFG_PORT_ISO_FILTER_MASK);
-        ui->cmbConfigItem->addItem("Dio Port Out Logic", DIO_CFG_PORT_OUTPUT_LOGIC);
+        ui->cmbConfigItem->addItem("Dio Port Out Logic", DIO_CFG_PORT_LOGIC);
         break;
     default:
         break;
@@ -337,6 +349,71 @@ void subWidget::onStopCmd()
 {
     mUseTimer = false;
     ui->cmdStop->setEnabled(false);
+}
+
+void subWidget::memRead()
+{
+    QString nameOfFunc, funcArgs, argVals;
+    QString str, s;
+    QTime t;
+    QString sStartTime, funcStr;
+    QString result = "";
+    MemRegion memRegion;
+    MemDescriptor memDescriptor;
+    unsigned int address;
+    unsigned int maxMemLen;
+
+    memRegion = (MemRegion)ui->cmbInfoType->currentData(Qt::UserRole).toInt();
+    nameOfFunc = "ulMemGetInfo";
+    funcArgs = "(mDaqDeviceHandle, memRegion, {accessTypes, address, size})\n";
+    sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
+    err = ulMemGetInfo(mDaqDeviceHandle, memRegion, &memDescriptor);
+    argVals = QStringLiteral("(%1, %2, {%3, %4, %5})")
+            .arg(mDaqDeviceHandle)
+            .arg(memRegion)
+            .arg(memDescriptor.accessTypes)
+            .arg(memDescriptor.address)
+            .arg(memDescriptor.size);
+
+    funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
+    if(err != ERR_NO_ERROR) {
+        mMainWindow->setError(err, sStartTime + funcStr);
+        ui->lblStatus->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
+    } else {
+        maxMemLen = memDescriptor.size;
+        address = memDescriptor.address;
+        unsigned char memValue[maxMemLen];
+        unsigned char *pMemValue = memValue;
+        nameOfFunc = "ulMemRead";
+        sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
+        err = ulMemRead(mDaqDeviceHandle, memRegion, address, pMemValue, maxMemLen);
+        funcArgs = "(mDaqDeviceHandle, memRegion, address, pMemValue, maxMemLen)\n";
+        argVals = QStringLiteral("(%1, %2, %3, %4, %5)")
+                .arg(mDaqDeviceHandle)
+                .arg(memRegion)
+                .arg(address)
+                .arg(memValue[0])
+                .arg(maxMemLen);
+
+        int rev = strlen(reinterpret_cast<const char*>(memValue));
+        // Print String in Reverse order....
+        for (int i = 0; i<rev; i++) {
+            s = QString("%1").arg(memValue[i], 0, 16);
+            if(s == "0")
+                  s="00";
+             result.append(s);
+        }
+        funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
+        str = getRegionNames(memRegion);
+        if(err != ERR_NO_ERROR) {
+            mMainWindow->setError(err, sStartTime + funcStr);
+            ui->lblStatus->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
+        } else {
+            ui->lblStatus->setText(nameOfFunc + argVals);
+            ui->teShowValues->setText(result);
+            mMainWindow->addFunction(sStartTime + funcStr);
+        }
+    }
 }
 
 void subWidget::readInfo()
@@ -714,11 +791,11 @@ void subWidget::readConfig()
         configItem = AI_CFG_CHAN_TC_TYPE;
         devConfig = showConfig(configType, configItem, "AI Chan TC Type");
         configText.append(devConfig + "</tr><tr>");
-        configItem = AI_CFG_CHAN_TEMP_UNIT;
+        configItem = AI_CFG_SCAN_CHAN_TEMP_UNIT;
         devConfig = showConfig(configType, configItem, "AI Chan Temp Unit");
         configText.append(devConfig + "</tr><tr>");
         showIndex = false;
-        configItem = AI_CFG_TEMP_UNIT;
+        configItem = AI_CFG_SCAN_TEMP_UNIT;
         devConfig = showConfig(configType, configItem, "AI Temp Unit");
         configText.append(devConfig + "</tr><tr>");
         configItem = AI_CFG_ADC_TIMING_MODE;
@@ -749,7 +826,7 @@ void subWidget::readConfig()
         configItem = AI_CFG_CHAN_OFFSET;
         devConfig = showConfigDbl(configType, configItem, "AI Chan Offset");
         configText.append(devConfig + "</tr><tr>");
-        configItem = AI_CFG_CHAN_SENSOR_SENSIVITY;
+        configItem = AI_CFG_CHAN_SENSOR_SENSITIVITY;
         devConfig = showConfigDbl(configType, configItem, "AI Sensor Sensitivity");
         configText.append(devConfig + "</tr><tr>");
         configItem = AI_CFG_CHAN_COEFS_STR;
@@ -778,7 +855,7 @@ void subWidget::readConfig()
         showIndex = true;
         devConfig = showConfig(configType, configItem, "DIO Iso Filter Mask");
         configText.append(devConfig + "</tr><tr>");
-        configItem = DIO_CFG_PORT_OUTPUT_LOGIC;
+        configItem = DIO_CFG_PORT_LOGIC;
         showIndex = true;
         devConfig = showConfig(configType, configItem, "DIO Port Output Logic");
         configText.append(devConfig + "</tr><tr>");
@@ -838,7 +915,7 @@ QString subWidget::showConfig(int configType, int configItem, QString showItem)
     bool noConfigItem;
 
     index = ui->spnIndex->value();
-    QString errDesc;
+    QString errDesc, errNumStr;
 
     errDesc = "";
     noConfigItem = false;
@@ -857,18 +934,23 @@ QString subWidget::showConfig(int configType, int configItem, QString showItem)
     case TYPE_AI_INFO:
         aiConfigItem = (AiConfigItem)configItem;
         nameOfFunc = "ulAIGetConfig";
-        if (aiConfigItem == AI_CFG_TEMP_UNIT) {
-            errDesc = " (" + getTcTypeName((AiChanType)configValue) + ")";
-        }
         err = ulAIGetConfig(mDaqDeviceHandle, aiConfigItem, index, &configValue);
         if (aiConfigItem == AI_CFG_CAL_DATE) {
             mSec = (qint64)(configValue * 1000);
             QDateTime calTime = QDateTime::fromMSecsSinceEpoch(mSec);
             errDesc = " (" + calTime.toString() + ")";
         }
+        if (aiConfigItem == AI_CFG_CHAN_TYPE)
+            errDesc = " (" + getChanTypeNames((AiChanType)configValue) + ")";
         if (aiConfigItem == AI_CFG_CHAN_TC_TYPE) {
-            errDesc = " (" + getTcTypeName((AiChanType)configValue) + ")";
+            errDesc = " (" + getTcTypeName((TcType)configValue) + ")";
         }
+        if ((aiConfigItem == AI_CFG_SCAN_TEMP_UNIT) |
+                (aiConfigItem == AI_CFG_SCAN_CHAN_TEMP_UNIT)) {
+            errDesc = " (" + getTempUnitName((TempUnit)configValue) + ")";
+        }
+        if (aiConfigItem == AI_CFG_CHAN_COUPLING_MODE)
+            errDesc = " (" + getChanCouplingModeName((CouplingMode)configValue) + ")";
         if (aiConfigItem == AI_CFG_CHAN_SENSOR_CONNECTION_TYPE) {
             errDesc = " (" + getSensorConnectNames((SensorConnectionType)configValue) + ")";
         }
@@ -919,21 +1001,25 @@ QString subWidget::showConfig(int configType, int configItem, QString showItem)
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
     if(err != ERR_NO_ERROR) {
+        errNumStr = QString("[Error %1: ").arg(err);
         switch (err) {
         case ERR_BAD_DEV_TYPE:
-            errDesc = " [error: bad device type]";
+            errDesc = errNumStr + "Function incompatible with device]";
             break;
         case ERR_BAD_AI_CHAN:
-            errDesc = " [error: bad Ain chan]";
+            errDesc = errNumStr + "Invalid Ain chan]";
             break;
         case ERR_CONFIG_NOT_SUPPORTED:
-            errDesc = " [error: not supported]";
+            errDesc = errNumStr + "Configuration not supported]";
             break;
         case ERR_BAD_CONFIG_VAL:
-            errDesc = " [error: bad configVal]";
+            errDesc = errNumStr + "Invalid configVal]";
             break;
         case ERR_BAD_CONFIG_ITEM:
-            errDesc = " [error: bad configItem]";
+            errDesc = errNumStr + "Invalid configItem]";
+            break;
+        case ERR_BAD_PORT_INDEX:
+            errDesc = errNumStr + "Invalid port index]";
             break;
         default:
             break;
@@ -950,6 +1036,7 @@ QString subWidget::showConfig(int configType, int configItem, QString showItem)
             mMainWindow->setError(err, sStartTime + funcStr);
             //errStr = funcStr + "\n(ConfigItem = " + showItem + ")";
         }
+        ui->lblStatus->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
     } else {
         ui->lblStatus->setText(nameOfFunc + argVals);
         QString strIndex = "<td></td>";
@@ -970,8 +1057,8 @@ QString subWidget::showConfigDbl(int configType, int configItem, QString showIte
     AiConfigItemDbl aiConfigItem;
     QTime t;
     QString sStartTime, textToAdd;
-    QString nameOfFunc, errDesc;
-    QString errStr, argVals, str;
+    QString nameOfFunc, errNumStr, errDesc;
+    QString argVals, str;
     QString funcStr, funcArgs;
     unsigned int index;
 
@@ -1005,22 +1092,25 @@ QString subWidget::showConfigDbl(int configType, int configItem, QString showIte
     funcStr = nameOfFunc + funcArgs + argVals;
 
     if(err != ERR_NO_ERROR) {
-        errStr = funcStr + "\n(ConfigItem = " + showItem + ")";
+        errNumStr = QString("[Error %1: ").arg(err);
         switch (err) {
         case ERR_BAD_DEV_TYPE:
-            errDesc = " [error: bad device type]";
+            errDesc = errNumStr + "Function incompatible with device]";
             break;
         case ERR_BAD_AI_CHAN:
-            errDesc = " [error: bad Ain chan]";
+            errDesc = errNumStr + "Invalid Ain chan]";
             break;
         case ERR_CONFIG_NOT_SUPPORTED:
-            errDesc = " [error: not supported]";
+            errDesc = errNumStr + "Configuration not supported]";
             break;
         case ERR_BAD_CONFIG_VAL:
-            errDesc = " [error: bad configVal]";
+            errDesc = errNumStr + "Invalid configVal]";
             break;
         case ERR_BAD_CONFIG_ITEM:
-            errDesc = " [error: bad configItem]";
+            errDesc = errNumStr + "Invalid configItem]";
+            break;
+        case ERR_BAD_PORT_INDEX:
+            errDesc = errNumStr + "Invalid port index]";
             break;
         default:
             break;
@@ -1058,9 +1148,9 @@ QString subWidget::showConfigStr(int configType, int configItem, QString showIte
 
     DevConfigItemStr devConfigItem;
     AiConfigItemStr aiConfigItem;
-    QString errStr, argVals;
+    QString errStr, argVals, returnStr;
     QString funcStr, funcArgs;
-    QString nameOfFunc, errDesc;
+    QString nameOfFunc, errNumStr, errDesc;
     QTime t;
     QString sStartTime, textToAdd, str;
     unsigned int index;
@@ -1085,12 +1175,13 @@ QString subWidget::showConfigStr(int configType, int configItem, QString showIte
         break;
     }
 
+    returnStr = QString::fromLocal8Bit(pConfigValue, (int)maxConfigLen);
     if(configType == TYPE_UL_INFO) {
         funcArgs = "(configItem, index, &configValue, maxConfigLen)\n";
         argVals = QStringLiteral("Arg vals: (%1, %2, {%3}, %4)")
                 .arg(configItem)
                 .arg(index)
-                .arg(configValue)
+                .arg(returnStr)
                 .arg(maxConfigLen);
     } else {
         funcArgs = "(mDaqDeviceHandle, configItem, index, &configValue, maxConfigLen)\n";
@@ -1098,27 +1189,31 @@ QString subWidget::showConfigStr(int configType, int configItem, QString showIte
                 .arg(mDaqDeviceHandle)
                 .arg(configItem)
                 .arg(index)
-                .arg(configValue)
+                .arg(returnStr)
                 .arg(maxConfigLen);
     }
 
     funcStr = nameOfFunc + funcArgs + argVals;
     if(err != ERR_NO_ERROR) {
+        errNumStr = QString("[Error %1: ").arg(err);
         switch (err) {
         case ERR_BAD_DEV_TYPE:
-            errDesc = " [error: bad device type]";
+            errDesc = errNumStr + "Function incompatible with device]";
             break;
         case ERR_BAD_AI_CHAN:
-            errDesc = " [error: bad Ain chan]";
+            errDesc = errNumStr + "Invalid Ain chan]";
             break;
         case ERR_CONFIG_NOT_SUPPORTED:
-            errDesc = " [error: not supported]";
+            errDesc = errNumStr + "Configuration not supported]";
             break;
         case ERR_BAD_CONFIG_VAL:
-            errDesc = " [error: bad configVal]";
+            errDesc = errNumStr + "Invalid configVal]";
             break;
         case ERR_BAD_CONFIG_ITEM:
-            errDesc = " [error: bad configItem]";
+            errDesc = errNumStr + "Invalid configItem]";
+            break;
+        case ERR_BAD_PORT_INDEX:
+            errDesc = errNumStr + "Invalid port index]";
             break;
         default:
             break;
@@ -1141,7 +1236,7 @@ QString subWidget::showConfigStr(int configType, int configItem, QString showIte
             strIndex = "<td>(" + str.setNum(index) + ")</td>";
         textToAdd = "<td>" + showItem + "</td>";
         textToAdd.append(strIndex);
-        textToAdd.append("<td>" + QString("%1").arg(configValue) + "</td>");
+        textToAdd.append("<td>" + QString("%1").arg(returnStr) + "</td>");
         mMainWindow->addFunction(sStartTime + funcStr);
     }
     return textToAdd;
@@ -1159,7 +1254,7 @@ QString subWidget::showInfo(int infoType, int infoItem, QString showItem)
     DaqIInfoItem daqInInfoItem;
     DaqOInfoItem daqOutInfoItem;
     QString textToAdd, str;
-    QString errStr, argVals, indexName;
+    QString errNumStr, argVals, indexName;
     QString nameOfFunc, funcStr, funcArgs;
     QTime t;
     QString sStartTime;
@@ -1254,21 +1349,25 @@ QString subWidget::showInfo(int infoType, int infoItem, QString showItem)
     QString errDesc = "";
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
     if(err != ERR_NO_ERROR) {
+        errNumStr = QString("[Error %1: ").arg(err);
         switch (err) {
         case ERR_BAD_DEV_TYPE:
-            errDesc = " [error: bad device type]";
+            errDesc = errNumStr + "Function incompatible with device]";
             break;
         case ERR_BAD_AI_CHAN:
-            errDesc = " [error: bad Ain chan]";
+            errDesc = errNumStr + "Invalid Ain chan]";
             break;
         case ERR_CONFIG_NOT_SUPPORTED:
-            errDesc = " [error: not supported]";
+            errDesc = errNumStr + "Configuration not supported]";
             break;
         case ERR_BAD_CONFIG_VAL:
-            errDesc = " [error: bad configVal]";
+            errDesc = errNumStr + "Invalid configVal]";
             break;
         case ERR_BAD_CONFIG_ITEM:
-            errDesc = " [error: bad configItem]";
+            errDesc = errNumStr + "Invalid configItem]";
+            break;
+        case ERR_BAD_PORT_INDEX:
+            errDesc = errNumStr + "Invalid port index]";
             break;
         default:
             break;
@@ -1314,7 +1413,7 @@ QString subWidget::showInfoDbl(int infoType, int infoItem, QString showItem)
     DaqOInfoItemDbl daqOInfoItem;
     QString nameOfFunc, textToAdd;
     QString str, infoDesc, indexName;
-    QString errStr, argVals;
+    QString errStr, argVals, errNumStr;
     QString funcStr, funcArgs;
     QString sStartTime;
     QTime t;
@@ -1397,21 +1496,25 @@ QString subWidget::showInfoDbl(int infoType, int infoItem, QString showItem)
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
     if(!err==ERR_NO_ERROR) {
+        errNumStr = QString("[Error %1: ").arg(err);
         switch (err) {
         case ERR_BAD_DEV_TYPE:
-            errDesc = " [error: bad device type]";
+            errDesc = errNumStr + "Function incompatible with device]";
             break;
         case ERR_BAD_AI_CHAN:
-            errDesc = " [error: bad Ain chan]";
+            errDesc = errNumStr + "Invalid Ain chan]";
             break;
         case ERR_CONFIG_NOT_SUPPORTED:
-            errDesc = " [error: not supported]";
+            errDesc = errNumStr + "Configuration not supported]";
             break;
         case ERR_BAD_CONFIG_VAL:
-            errDesc = " [error: bad configVal]";
+            errDesc = errNumStr + "Invalid configVal]";
             break;
         case ERR_BAD_CONFIG_ITEM:
-            errDesc = " [error: bad configItem]";
+            errDesc = errNumStr + "Invalid configItem]";
+            break;
+        case ERR_BAD_PORT_INDEX:
+            errDesc = errNumStr + "Invalid port index]";
             break;
         default:
             break;
@@ -1458,13 +1561,13 @@ QString subWidget::showInfoStr(int infoType, int infoItem, QString showItem)
     //DevConfigItemStr devInfoItem;
     //AiConfigItemStr aiInfoItem;
     QString nameOfFunc, funcArgs, argVals;
-    QString textToAdd, str;
+    QString textToAdd, str, returnStr;
     QTime t;
     QString sStartTime, funcStr;
     unsigned int index;
-    bool indexInfo;
+    //bool indexInfo;
 
-    indexInfo = false;
+    //indexInfo = false;
     index = ui->spnIndex->value();
 
     sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
@@ -1490,12 +1593,13 @@ QString subWidget::showInfoStr(int infoType, int infoItem, QString showItem)
         break;
     }
 
+    returnStr = QString::fromLocal8Bit(pInfoValue, (int)maxConfigLen);
     //if (infoType == TYPE_UL_INFO) {
     funcArgs = "(ulInfoItemStr, index, pInfoString, &maxConfigLen)\n";
     argVals = QStringLiteral("(%1, %2, %3, %4)")
             .arg(infoItem)
             .arg(index)
-            .arg(configValue)
+            .arg(returnStr)
             .arg(maxConfigLen);
     /*} else {
         funcArgs = "(mDaqDeviceHandle, infoItemStr, index, pInfoString, &maxConfigLen)";
@@ -1510,6 +1614,7 @@ QString subWidget::showInfoStr(int infoType, int infoItem, QString showItem)
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
     if(err != ERR_NO_ERROR) {
         mMainWindow->setError(err, sStartTime + funcStr);
+        ui->lblStatus->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
     } else {
         ui->lblStatus->setText(nameOfFunc + argVals);
         QString strIndex = "<td></td>";
@@ -1517,7 +1622,7 @@ QString subWidget::showInfoStr(int infoType, int infoItem, QString showItem)
             strIndex = "<td>(" + str.setNum(index) + ")</td>";
         textToAdd = "<td>" + showItem + "</td>";
         textToAdd.append(strIndex);
-        textToAdd.append("<td>" + QString("%1").arg(configValue) + "</td>");
+        textToAdd.append("<td>" + QString("%1").arg(returnStr) + "</td>");
         mMainWindow->addFunction(sStartTime + funcStr);
     }
     return textToAdd;
@@ -1528,7 +1633,7 @@ QString subWidget::showInfoMem(MemRegion memRegion)
     QString nameOfFunc, funcStr, funcArgs;
     QString showItem, argVals, textToAdd;
     QTime t;
-    QString sStartTime;
+    QString sStartTime, errNumStr;
     QString infoDesc, str, iSt;
     MemDescriptor memDescriptor;
     long long infoValue;
@@ -1561,15 +1666,16 @@ QString subWidget::showInfoMem(MemRegion memRegion)
     QString errDesc = "";
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
     if(err != ERR_NO_ERROR) {
+        errNumStr = QString("[Error %1: ").arg(err);
         switch (err) {
         case ERR_BAD_MEM_ADDRESS:
-            errDesc = "Bad address";
+            errDesc = errNumStr + "Bad mem address]";
             break;
         case ERR_BAD_MEM_REGION:
-            errDesc = "Bad region";
+            errDesc = errNumStr + "Bad mem region]";
             break;
         case ERR_BAD_MEM_TYPE:
-            errDesc = "Bad memtype";
+            errDesc = errNumStr + "Bad mem type]";
             break;
         default:
             errDesc = "";
@@ -1605,6 +1711,7 @@ void subWidget::setConfiguration()
     AiConfigItemDbl aiConfigItemDbl;
 
     QString showItem = "";
+    QString valueText = "";
     QString funcStr, nameOfFunc, funcArgs, argVals;
     QTime t;
     QString sStartTime, textToAdd;
@@ -1642,6 +1749,8 @@ void subWidget::setConfiguration()
             aiConfigItem = (AiConfigItem)configItem;
             nameOfFunc = "ulAISetConfig";
             err = ulAISetConfig(mDaqDeviceHandle, aiConfigItem, index, configValue);
+            if(aiConfigItem == AI_CFG_CHAN_TC_TYPE)
+                valueText = " [type " + getTcTypeName((TcType)configValue) + "]";
         } else {
             dblConfigItem = true;
             aiConfigItemDbl = (AiConfigItemDbl)configItem;
@@ -1707,7 +1816,7 @@ void subWidget::setConfiguration()
         textToAdd = QString("%1 = %2")
                 .arg(showItem)
                 .arg(configValue);
-        if(showIndex) textToAdd += QString(" (%1)").arg(index);
+        if(showIndex) textToAdd += QString(" (index %1)").arg(index) + valueText;
         ui->teShowValues->append(textToAdd);
     }
 }
@@ -1726,6 +1835,7 @@ void subWidget::setMiscFunction()
     QTime t;
     QString sStartTime;
 
+    flashCount = 0;
     tmrStatus = TMRS_IDLE;
     nameOfFunc = ui->cmbInfoType->currentText();
 
@@ -1809,6 +1919,7 @@ void subWidget::setMiscFunction()
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
     if (err != ERR_NO_ERROR) {
         mMainWindow->setError(err, sStartTime + funcStr);
+        ui->lblStatus->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
     } else {
         mMainWindow->addFunction(sStartTime + funcStr);
         ui->lblStatus->setText(nameOfFunc + argVals);
@@ -1832,5 +1943,5 @@ void subWidget::getErrorMessage()
             .arg(errMsg);
 
     funcStr = nameOfFunc + argVals;
-    ui->lblStatus->setText(funcStr);
+    ui->lblStatus->setText(funcStr + QString(" [Error = %1]").arg(err));
 }

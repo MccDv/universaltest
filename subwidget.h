@@ -31,6 +31,7 @@ private slots:
     void setConfigItemsForType();
     void setConfiguration();
     void setMiscFunction();
+    void memRead();
     void onStopCmd();
 
 private:

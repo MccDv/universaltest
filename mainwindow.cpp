@@ -223,7 +223,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     foreach(DaqDeviceHandle dev, devList) {
-        UlError err = ulReleaseDaqDevice(dev);
+        ulReleaseDaqDevice(dev);
     }
     writeWindowPosition();
     event->accept();
@@ -356,6 +356,8 @@ void MainWindow::createChild(UtFunctionGroup utFuncGroup, int defaultFunction)
     uidKey.clear();
     int descriptorIndex;
 
+    devHandle = 0;
+    descriptorIndex = 0;
     foreach (QAction *devAct, ui->menuBoards->actions()) {
         if (devAct->isChecked()) {
             uidKey = devAct->data().toString();
@@ -624,6 +626,14 @@ void MainWindow::createFuncMenus()
             funcAction = ui->menuFunction->addAction("ulStopBackground");
             funcAction->setCheckable(true);
             funcAction->setData(UL_SCAN_STOP);
+            functionGroup->addAction(funcAction);
+            funcAction = ui->menuFunction->addAction("ulMemRead");
+            funcAction->setCheckable(true);
+            funcAction->setData(UL_MEM_READ);
+            functionGroup->addAction(funcAction);
+            funcAction = ui->menuFunction->addAction("ulMemWrite");
+            funcAction->setCheckable(true);
+            funcAction->setData(UL_MEM_WRITE);
             functionGroup->addAction(funcAction);
             break;
         case FUNC_GROUP_CONFIG:
@@ -1467,6 +1477,7 @@ void MainWindow::removeDeviceFromMenu(QString devUiD)
     QString funcStr, argString, argVals;
     bool wasChecked;
 
+    wasChecked = false;
     foreach (QAction *boardMenu, ui->menuBoards->actions()) {
         QVariant dataVal = boardMenu->data();
         if (dataVal.toString() == devUiD) {

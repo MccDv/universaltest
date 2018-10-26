@@ -73,9 +73,17 @@ DEPENDPATH += $$PWD/.
 RESOURCES += \
     resource.qrc
 
-#unix:!macx: LIBS += -L$$PWD/./ -luldaq
+unix:!macx: LIBS += -L$$PWD/./ -luldaq
 
 unix: LIBS += -L$$PWD/../../../usr/local/lib/ -luldaq
 
 INCLUDEPATH += $$PWD/../../../usr/local/include
 DEPENDPATH += $$PWD/../../../usr/local/include
+
+#can't build in xcompiler due to old gcc (3.4.21) requires 5+
+#build on RPI
+
+#unix:!macx: LIBS += -L$$PWD/../../../opt/qtrpi/raspbian/sysroot-minimal/usr/lib/ -luldaq
+
+#INCLUDEPATH += $$PWD/../../../opt/qtrpi/raspbian/sysroot-minimal/usr/include
+#DEPENDPATH += $$PWD/../../../opt/qtrpi/raspbian/sysroot-minimal/usr/include

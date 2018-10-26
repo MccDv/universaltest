@@ -177,6 +177,9 @@ void QueueDialog::onLoadQueue()
     QString curMode;
     bool daqParams;
 
+    inputMode = AI_DIFFERENTIAL;
+    chanType = DAQI_ANALOG_DIFF;
+    chanOutType = DAQO_ANALOG;
     elementRange = static_cast<Range>(
                 ui->cmbRange->currentData(Qt::UserRole).toInt());
     if (inputFunctions) {

@@ -43,6 +43,7 @@ void EventsDialog::showEvent(QShowEvent *)
     bool eventValue, eventsEnabled;
     unsigned long long paramValue;
 
+    eventsEnabled = false;
     if (getEndInScanEvent(mDaqDeviceHandle, eventValue)) {
         ui->chkEndOfScan->setChecked(eventValue);
         eventsEnabled = eventValue;
