@@ -2,6 +2,10 @@
 #include <QtMath>
 #include "aisubwidget.h"
 
+CounterMeasurementMode CMM_LATCH_ON_INDEX = static_cast<CounterMeasurementMode>(1 << 26);
+CounterMeasurementMode CMM_PHB_CONTROLS_DIR = static_cast<CounterMeasurementMode>(1 << 27);
+CounterMeasurementMode CMM_DECREMENT_ON = static_cast<CounterMeasurementMode>(1 << 28);
+
 QHash<long long, bool> endInScanEventList;
 QHash<long long, bool> inScanErrorEventList;
 QHash<long long, bool> outScanErrorEventList;
@@ -1244,7 +1248,13 @@ CounterMeasurementMode getMeasModeFromListIndex(int listIndex)
         return CMM_ENCODER_RANGE_LIMIT_ON;
     case 26:
         return CMM_ENCODER_Z_ACTIVE_EDGE;
-    default:
+    case 27:
+        return CMM_LATCH_ON_INDEX;
+    case 28:
+        return CMM_PHB_CONTROLS_DIR;
+    case 29:
+        return CMM_DECREMENT_ON;
+     default:
         return CMM_DEFAULT;
     }
 }

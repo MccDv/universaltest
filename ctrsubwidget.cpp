@@ -109,6 +109,9 @@ CtrSubWidget::CtrSubWidget(QWidget *parent) :
     ui->lwTypeModes->addItem("EncNoRecycle");
     ui->lwTypeModes->addItem("EncRangeLimOn");
     ui->lwTypeModes->addItem("EncZActiveEdge");
+    ui->lwTypeModes->addItem("LatchOnIndex");
+    ui->lwTypeModes->addItem("PhBControlsDir");
+    ui->lwTypeModes->addItem("DecrementOn");
 
     ui->cmbDebounceMode->addItem("Disable", CDM_NONE);
     ui->cmbDebounceMode->addItem("Trig After Stable", CDM_TRIGGER_AFTER_STABLE);
