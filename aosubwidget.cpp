@@ -967,7 +967,7 @@ void AoSubWidget::runSetTriggerFunc()
     ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-    if (!err==ERR_NO_ERROR) {
+    if (err != ERR_NO_ERROR) {
         mMainWindow->setError(err, sStartTime + funcStr);
     } else {
         mMainWindow->addFunction(sStartTime + funcStr);
@@ -1082,7 +1082,7 @@ void AoSubWidget::runEventEnable(DaqEventType eventType, unsigned long long even
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
     int newEventType = 0;
-    if (!err==ERR_NO_ERROR) {
+    if (err != ERR_NO_ERROR) {
         mMainWindow->setError(err, sStartTime + funcStr);
     } else {
         mMainWindow->addFunction(sStartTime + funcStr);
@@ -1109,7 +1109,7 @@ void AoSubWidget::runEventDisable(DaqEventType eventType)
     ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-    if (!err==ERR_NO_ERROR) {
+    if (err != ERR_NO_ERROR) {
         mMainWindow->setError(err, sStartTime + funcStr);
     } else {
         mMainWindow->addFunction(sStartTime + funcStr);
@@ -1187,7 +1187,7 @@ void AoSubWidget::runAOutFunc()
         ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
 
         funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-        if (!err==ERR_NO_ERROR) {
+        if (err != ERR_NO_ERROR) {
             mMainWindow->setError(err, sStartTime + funcStr);
             mCancelAOut = true;
             ui->cmdStop->setVisible(true);
@@ -1241,7 +1241,7 @@ void AoSubWidget::runAOutArray()
     ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-    if (!err==ERR_NO_ERROR) {
+    if (err != ERR_NO_ERROR) {
         mMainWindow->setError(err, sStartTime + funcStr);
         mCancelAOut = true;
         ui->cmdStop->setVisible(true);
@@ -1267,7 +1267,7 @@ void AoSubWidget::runAOutScanFunc()
         argVals = QString("(%1)")
                 .arg(mDaqDeviceHandle);
         funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-        if (!err==ERR_NO_ERROR) {
+        if (err != ERR_NO_ERROR) {
             mMainWindow->setError(err, sStartTime + funcStr);
             return;
         } else {
@@ -1294,7 +1294,7 @@ void AoSubWidget::runAOutScanFunc()
     ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-    if (!err==ERR_NO_ERROR) {
+    if (err != ERR_NO_ERROR) {
         mMainWindow->setError(err, sStartTime + funcStr);
     } else {
         mMainWindow->addFunction(sStartTime + funcStr);
@@ -1314,7 +1314,7 @@ void AoSubWidget::runAOutScanFunc()
                     .arg(mWaitTime);
 
             funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-            if (!err==ERR_NO_ERROR) {
+            if (err != ERR_NO_ERROR) {
                 mMainWindow->setError(err, sStartTime + funcStr);
             } else {
                 mMainWindow->addFunction(sStartTime + funcStr);
@@ -1371,7 +1371,7 @@ void AoSubWidget::runDaqOutScanFunc()
     ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-    if (!err==ERR_NO_ERROR) {
+    if (err != ERR_NO_ERROR) {
         mMainWindow->setError(err, sStartTime + funcStr);
     } else {
         mMainWindow->addFunction(sStartTime + funcStr);
@@ -1391,7 +1391,7 @@ void AoSubWidget::runDaqOutScanFunc()
                     .arg(mWaitTime);
 
             funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-            if (!err==ERR_NO_ERROR) {
+            if (err != ERR_NO_ERROR) {
                 mMainWindow->setError(err, sStartTime + funcStr);
             } else {
                 mMainWindow->addFunction(sStartTime + funcStr);
@@ -1500,7 +1500,7 @@ void AoSubWidget::checkStatus()
                            .arg(currentIndex));
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-    if ((!err==ERR_NO_ERROR) && mStatusTimerEnabled) {
+    if ((err != ERR_NO_ERROR) && mStatusTimerEnabled) {
         mStatusTimerEnabled = false;
         mMainWindow->setError(err, sStartTime + funcStr);
     } else if ((status == SS_RUNNING) && mStatusTimerEnabled) {
@@ -1536,7 +1536,7 @@ UlError AoSubWidget::stopScan(long long curCount, long long curIndex)
             .arg(mDaqDeviceHandle);
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-    if (!err==ERR_NO_ERROR) {
+    if (err != ERR_NO_ERROR) {
         mStatusTimerEnabled = false;
         mMainWindow->setError(err, sStartTime + funcStr);
         return err;

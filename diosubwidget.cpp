@@ -461,7 +461,7 @@ void DioSubWidget::initDeviceParams()
             .arg(infoValue);
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-    if (!err==ERR_NO_ERROR) {
+    if (err != ERR_NO_ERROR) {
         if (err == ERR_BAD_DEV_TYPE)
             return;
         mMainWindow->setError(err, sStartTime + funcStr);
@@ -480,7 +480,7 @@ void DioSubWidget::initDeviceParams()
                     .arg(portValue);
 
             funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-            if (!err==ERR_NO_ERROR) {
+            if (err != ERR_NO_ERROR) {
                 mMainWindow->setError(err, sStartTime + funcStr);
             } else {
                 mMainWindow->addFunction(sStartTime + funcStr);
@@ -498,7 +498,7 @@ void DioSubWidget::initDeviceParams()
                         .arg(bitCount);
 
                 funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-                if (!err==ERR_NO_ERROR) {
+                if (err != ERR_NO_ERROR) {
                     mMainWindow->setError(err, sStartTime + funcStr);
                 } else {
                     mMainWindow->addFunction(sStartTime + funcStr);
@@ -590,7 +590,7 @@ void DioSubWidget::configureInputs()
                     .arg(direction);
 
             funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-            if (!err==ERR_NO_ERROR) {
+            if (err != ERR_NO_ERROR) {
                 mMainWindow->setError(err, sStartTime + funcStr);
             } else {
                 mMainWindow->addFunction(sStartTime + funcStr);
@@ -624,7 +624,7 @@ void DioSubWidget::configureOutputs()
                     .arg(direction);
 
             funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-            if (!err==ERR_NO_ERROR) {
+            if (err != ERR_NO_ERROR) {
                 mMainWindow->setError(err, sStartTime + funcStr);
             } else {
                 mMainWindow->addFunction(sStartTime + funcStr);
@@ -960,7 +960,7 @@ void DioSubWidget::runSetTriggerFunc()
     ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-    if (!err==ERR_NO_ERROR) {
+    if (err != ERR_NO_ERROR) {
         mMainWindow->setError(err, sStartTime + funcStr);
     } else {
         mMainWindow->addFunction(sStartTime + funcStr);
@@ -985,7 +985,7 @@ void DioSubWidget::runDConfigBit(DigitalPortType portType, int bitNum, DigitalDi
     ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-    if (!err==ERR_NO_ERROR) {
+    if (err != ERR_NO_ERROR) {
         mMainWindow->setError(err, sStartTime + funcStr);
         return;
     } else {
@@ -1013,7 +1013,7 @@ long long DioSubWidget::getIOConfigMask(int portIndex)
             .arg(configValue);
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-    if (!err==ERR_NO_ERROR) {
+    if (err != ERR_NO_ERROR) {
         mMainWindow->setError(err, sStartTime + funcStr);
         return 0;
     } else {
@@ -1139,7 +1139,7 @@ void DioSubWidget::runEventEnable(DaqEventType eventType, unsigned long long eve
 
     int newEventType = 0;
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-    if (!err==ERR_NO_ERROR) {
+    if (err != ERR_NO_ERROR) {
         mMainWindow->setError(err, sStartTime + funcStr);
     } else {
         mMainWindow->addFunction(sStartTime + funcStr);
@@ -1165,7 +1165,7 @@ void DioSubWidget::runEventDisable(DaqEventType eventType)
     ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-    if (!err==ERR_NO_ERROR) {
+    if (err != ERR_NO_ERROR) {
         mMainWindow->setError(err, sStartTime + funcStr);
     } else {
         mMainWindow->addFunction(sStartTime + funcStr);
@@ -1279,7 +1279,7 @@ void DioSubWidget::runDInFunc()
             ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
 
             funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-            if (!err==ERR_NO_ERROR) {
+            if (err != ERR_NO_ERROR) {
                 mMainWindow->setError(err, sStartTime + funcStr);
                 return;
             } else {
@@ -1372,7 +1372,7 @@ void DioSubWidget::runDInArray()
         ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
 
         funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-        if (!err==ERR_NO_ERROR) {
+        if (err != ERR_NO_ERROR) {
             mMainWindow->setError(err, sStartTime + funcStr);
             return;
         } else {
@@ -1435,7 +1435,7 @@ void DioSubWidget::runDBitInFunc()
             ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
 
             funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-            if (!err==ERR_NO_ERROR) {
+            if (err != ERR_NO_ERROR) {
                 mMainWindow->setError(err, sStartTime + funcStr);
                 disableCheckboxInput(false);
                 return;
@@ -1474,7 +1474,7 @@ void DioSubWidget::runDOutFunc()
                     .arg(data);
 
             funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-            if (!err==ERR_NO_ERROR) {
+            if (err != ERR_NO_ERROR) {
                 mMainWindow->setError(err, sStartTime + funcStr);
             } else {
                 mMainWindow->addFunction(sStartTime + funcStr);
@@ -1523,7 +1523,7 @@ void DioSubWidget::runDOutArray()
             .arg(data[0]);
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-    if (!err==ERR_NO_ERROR) {
+    if (err != ERR_NO_ERROR) {
         mMainWindow->setError(err, sStartTime + funcStr);
     } else {
         mMainWindow->addFunction(sStartTime + funcStr);
@@ -1550,7 +1550,7 @@ void DioSubWidget::runDBitOutFunc(DigitalPortType portType, int bitNum, unsigned
     ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-    if (!err==ERR_NO_ERROR) {
+    if (err != ERR_NO_ERROR) {
         mMainWindow->setError(err, sStartTime + funcStr);
         return;
     } else {
@@ -1605,7 +1605,7 @@ void DioSubWidget::runDInScanFunc()
                 .arg(mDaqDeviceHandle);
 
         funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-        if (!err==ERR_NO_ERROR) {
+        if (err != ERR_NO_ERROR) {
             mMainWindow->setError(err, sStartTime + funcStr);
             return;
         } else {
@@ -1639,7 +1639,7 @@ void DioSubWidget::runDInScanFunc()
     ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-    if (!err==ERR_NO_ERROR) {
+    if (err != ERR_NO_ERROR) {
         mStatusTimerEnabled = false;
         mMainWindow->setError(err, sStartTime + funcStr);
     } else {
@@ -1660,7 +1660,7 @@ void DioSubWidget::runDInScanFunc()
                     .arg(mWaitTime);
 
             funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-            if (!err==ERR_NO_ERROR) {
+            if (err != ERR_NO_ERROR) {
                 mMainWindow->setError(err, sStartTime + funcStr);
             } else {
                 mMainWindow->addFunction(sStartTime + funcStr);
@@ -1722,7 +1722,7 @@ void DioSubWidget::runDOutScanFunc()
     ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-    if (!err==ERR_NO_ERROR) {
+    if (err != ERR_NO_ERROR) {
         mStatusTimerEnabled = false;
         mMainWindow->setError(err, sStartTime + funcStr);
     } else {
@@ -1743,7 +1743,7 @@ void DioSubWidget::runDOutScanFunc()
                     .arg(mWaitTime);
 
             funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-            if (!err==ERR_NO_ERROR) {
+            if (err != ERR_NO_ERROR) {
                 mMainWindow->setError(err, sStartTime + funcStr);
             } else {
                 mMainWindow->addFunction(sStartTime + funcStr);
@@ -1791,7 +1791,7 @@ void DioSubWidget::checkStatus()
 
     mRunning = (status == SS_RUNNING);
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-    if ((!err==ERR_NO_ERROR) && mStatusTimerEnabled) {
+    if ((err != ERR_NO_ERROR) && mStatusTimerEnabled) {
         mStatusTimerEnabled = false;
         mMainWindow->setError(err, sStartTime + funcStr);
     } else if ((status == SS_RUNNING) && mStatusTimerEnabled) {
@@ -1841,7 +1841,7 @@ UlError DioSubWidget::stopScan(long long perChan, long long curCount, long long 
     ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-    if (!err==ERR_NO_ERROR) {
+    if (err != ERR_NO_ERROR) {
         mStatusTimerEnabled = false;
         mMainWindow->setError(err, sStartTime + funcStr);
         return err;
@@ -2076,7 +2076,7 @@ void DioSubWidget::stopGoTimer()
         ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
 
         funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-        if (!err==ERR_NO_ERROR) {
+        if (err != ERR_NO_ERROR) {
             mMainWindow->setError(err, sStartTime + funcStr);
         } else {
             mMainWindow->addFunction(sStartTime + funcStr);
@@ -2113,7 +2113,7 @@ void DioSubWidget::readSingleBit()
     ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-    if (!err==ERR_NO_ERROR) {
+    if (err != ERR_NO_ERROR) {
         mMainWindow->setError(err, sStartTime + funcStr);
     } else {
         mMainWindow->addFunction(sStartTime + funcStr);

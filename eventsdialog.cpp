@@ -31,6 +31,13 @@ EventsDialog::EventsDialog(QWidget *parent, DaqDeviceHandle devHandle) :
     connect(ui->chkEndOutScan, SIGNAL(clicked(bool)), this, SLOT(updateEndOfOutScan()));
     connect(ui->chkOutScanError, SIGNAL(clicked(bool)), this, SLOT(updateOutScanError()));
     connect(ui->leEventParams, SIGNAL(textChanged(QString)), this, SLOT(updateParamValue()));
+
+    ALL_EVENT_TYPES =
+                (DaqEventType)(DE_ON_DATA_AVAILABLE
+                | DE_ON_END_OF_INPUT_SCAN
+                | DE_ON_END_OF_OUTPUT_SCAN
+                | DE_ON_INPUT_SCAN_ERROR
+                | DE_ON_OUTPUT_SCAN_ERROR);
 }
 
 EventsDialog::~EventsDialog()

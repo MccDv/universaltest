@@ -11,6 +11,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 TARGET = universaltest
 TEMPLATE = app
 #CONFIG += static
+CONFIG += c++11
 
 SOURCES += main.cpp\
         mainwindow.cpp \
@@ -73,7 +74,7 @@ DEPENDPATH += $$PWD/.
 RESOURCES += \
     resource.qrc
 
-unix:!macx: LIBS += -L$$PWD/./ -luldaq
+#unix:!macx: LIBS += -L$$PWD/./ -luldaq
 
 unix: LIBS += -L$$PWD/../../../usr/local/lib/ -luldaq
 

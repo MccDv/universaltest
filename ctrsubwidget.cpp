@@ -604,7 +604,7 @@ void CtrSubWidget::runSetTriggerFunc()
     ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-    if (!err==ERR_NO_ERROR) {
+    if (err != ERR_NO_ERROR) {
         mMainWindow->setError(err, sStartTime + funcStr);
     } else {
         mMainWindow->addFunction(sStartTime + funcStr);
@@ -698,7 +698,7 @@ void CtrSubWidget::runEventEnable(DaqEventType eventType, unsigned long long eve
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
     int newEventType = 0;
-    if (!err==ERR_NO_ERROR) {
+    if (err != ERR_NO_ERROR) {
         mMainWindow->setError(err, sStartTime + funcStr);
     } else {
         mMainWindow->addFunction(sStartTime + funcStr);
@@ -724,7 +724,7 @@ void CtrSubWidget::runEventDisable(DaqEventType eventType)
     ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-    if (!err==ERR_NO_ERROR) {
+    if (err != ERR_NO_ERROR) {
         mMainWindow->setError(err, sStartTime + funcStr);
     } else {
         mMainWindow->addFunction(sStartTime + funcStr);
@@ -816,7 +816,7 @@ void CtrSubWidget::runCLoadFunc()
         ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
 
         funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-        if(!err==ERR_NO_ERROR) {
+        if(err != ERR_NO_ERROR) {
             mMainWindow->setError(err, sStartTime + funcStr);
             return;
         } else {
@@ -860,7 +860,7 @@ void CtrSubWidget::readRegister()
         ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
 
         funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-        if(!err==ERR_NO_ERROR) {
+        if(err != ERR_NO_ERROR) {
             mMainWindow->setError(err, sStartTime + funcStr);
             return;
         } else {
@@ -931,7 +931,7 @@ void CtrSubWidget::runCInFunc()
             ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
 
             funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-            if(!err==ERR_NO_ERROR) {
+            if(err != ERR_NO_ERROR) {
                 mMainWindow->setError(err, sStartTime + funcStr);
                 return;
             } else {
@@ -978,7 +978,7 @@ void CtrSubWidget::runClearFunc()
             ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
 
             funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-            if(!err==ERR_NO_ERROR) {
+            if(err != ERR_NO_ERROR) {
                 mMainWindow->setError(err, sStartTime + funcStr);
             } else {
                 mMainWindow->addFunction(sStartTime + funcStr);
@@ -1029,7 +1029,7 @@ void CtrSubWidget::runCConfigScan()
             ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
 
             funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-            if(!err==ERR_NO_ERROR) {
+            if(err != ERR_NO_ERROR) {
                 mMainWindow->setError(err, sStartTime + funcStr);
                 return;
             } else {
@@ -1086,7 +1086,7 @@ void CtrSubWidget::runCInScan()
     ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-    if(!err==ERR_NO_ERROR) {
+    if(err != ERR_NO_ERROR) {
         mMainWindow->setError(err, sStartTime + funcStr);
     } else {
         mMainWindow->addFunction(sStartTime + funcStr);
@@ -1106,7 +1106,7 @@ void CtrSubWidget::runCInScan()
                     .arg(mWaitTime);
 
             funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-            if (!err==ERR_NO_ERROR) {
+            if (err != ERR_NO_ERROR) {
                 mMainWindow->setError(err, sStartTime + funcStr);
             } else {
                 mMainWindow->addFunction(sStartTime + funcStr);
@@ -1209,7 +1209,7 @@ void CtrSubWidget::runTimerOut()
             ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
 
             funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-            if(!err==ERR_NO_ERROR) {
+            if(err != ERR_NO_ERROR) {
                 mMainWindow->setError(err, sStartTime + funcStr);
             } else {
                 mMainWindow->addFunction(sStartTime + funcStr);
@@ -1225,7 +1225,7 @@ void CtrSubWidget::runTimerOut()
                 ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
 
                 funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-                if(!err==ERR_NO_ERROR) {
+                if(err != ERR_NO_ERROR) {
                     mMainWindow->setError(err, sStartTime + funcStr);
                 } else {
                     mMainWindow->addFunction(sStartTime + funcStr);
@@ -1280,7 +1280,7 @@ void CtrSubWidget::checkScanStatus()
     mRunning = (status == SS_RUNNING);
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-    if ((!err==ERR_NO_ERROR) && mStatusTimerEnabled) {
+    if ((err != ERR_NO_ERROR) && mStatusTimerEnabled) {
         mStatusTimerEnabled = false;
         mMainWindow->setError(err, sStartTime + funcStr);
     } else if ((status == SS_RUNNING) && mStatusTimerEnabled) {
@@ -1335,7 +1335,7 @@ void CtrSubWidget::checkTmrStatus()
         ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
 
         funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-        if(!err==ERR_NO_ERROR) {
+        if(err != ERR_NO_ERROR) {
             mStatusTimerEnabled = false;
             mMainWindow->setError(err, sStartTime + funcStr);
             return;
@@ -1365,7 +1365,7 @@ UlError CtrSubWidget::stopScan(long long perChan, long long curCount, long long 
             .arg(mDaqDeviceHandle);
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-    if (!err==ERR_NO_ERROR) {
+    if (err != ERR_NO_ERROR) {
         mStatusTimerEnabled = false;
         mMainWindow->setError(err, sStartTime + funcStr);
         return err;
@@ -1413,7 +1413,7 @@ void CtrSubWidget::runTimerStop()
             ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
 
             funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-            if(!err==ERR_NO_ERROR) {
+            if(err != ERR_NO_ERROR) {
                 mMainWindow->setError(err, sStartTime + funcStr);
             } else {
                 mMainWindow->addFunction(sStartTime + funcStr);

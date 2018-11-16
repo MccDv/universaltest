@@ -344,16 +344,16 @@ private:
     double mWaitTime;
     DaqEventType mEventTypes;
     unsigned long long mEventParams;
-    bool mTmrEnabled = false;
-    bool mStopOnStart = false;
+    bool mTmrEnabled;
+    bool mStopOnStart;
     int mTmrInterval;
     bool mOneSamplePer;
-    bool mTmrRunning = false;
+    bool mTmrRunning;
     int curFunction;
     int curFunctionGroup;
     Range mRange;
     TempScale mScale;
-    bool mShowPlot = false;
+    bool mShowPlot;
 
     void readWindowPosition();
     void writeWindowPosition();

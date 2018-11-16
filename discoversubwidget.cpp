@@ -184,7 +184,7 @@ void DiscoverSubWidget::on_cmdRelease_clicked()
     ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-    if (!err==ERR_NO_ERROR) {
+    if (err != ERR_NO_ERROR) {
         mMainWindow->setError(err, sStartTime + funcStr);
     } else {
         mMainWindow->removeDeviceFromMenu(mUidString);
@@ -209,7 +209,7 @@ void DiscoverSubWidget::on_cmdDisconnect_clicked()
     ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-    if (!err==ERR_NO_ERROR) {
+    if (err != ERR_NO_ERROR) {
         mMainWindow->setError(err, sStartTime + funcStr);
     } else {
         mMainWindow->addFunction(sStartTime + funcStr);
@@ -233,7 +233,7 @@ void DiscoverSubWidget::on_cmdConnect_clicked()
     ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-    if (!err==ERR_NO_ERROR) {
+    if (err != ERR_NO_ERROR) {
         mMainWindow->setError(err, sStartTime + funcStr);
     } else {
         mMainWindow->addFunction(sStartTime + funcStr);
@@ -261,7 +261,7 @@ void DiscoverSubWidget::updateConnectionStatus()
                 .arg(connected);
 
         funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-        if (!err==ERR_NO_ERROR) {
+        if (err != ERR_NO_ERROR) {
             ErrorDialog errDlg;
             errDlg.setModal(true);
             errDlg.setError(err, funcStr);
@@ -303,7 +303,7 @@ void DiscoverSubWidget::on_actionRefresh_Devices_triggered()
     ui->lblDevicesFound->setText(QString("Found: %1").arg(numDevs));
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-    if (!err==ERR_NO_ERROR) {
+    if (err != ERR_NO_ERROR) {
         mMainWindow->setError(err, sStartTime + funcStr);
     } else {
         mMainWindow->addFunction(sStartTime + funcStr);
@@ -387,7 +387,7 @@ void DiscoverSubWidget::getDescriptor()
     ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-    if (!err==ERR_NO_ERROR) {
+    if (err != ERR_NO_ERROR) {
         mMainWindow->setError(err, sStartTime + funcStr);
     } else {
         mMainWindow->addFunction(sStartTime + funcStr);
@@ -411,7 +411,7 @@ void DiscoverSubWidget::checkConnection()
     ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-    if (!err==ERR_NO_ERROR) {
+    if (err != ERR_NO_ERROR) {
         mMainWindow->setError(err, sStartTime + funcStr);
     } else {
         mMainWindow->addFunction(sStartTime + funcStr);

@@ -330,7 +330,7 @@ void AiSubWidget::setupQueue()
     ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-    if (!err==ERR_NO_ERROR) {
+    if (err != ERR_NO_ERROR) {
         mMainWindow->setError(err, sStartTime + funcStr);
         return;
     } else {
@@ -550,7 +550,7 @@ void AiSubWidget::runSetTriggerFunc()
     ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-    if (!err==ERR_NO_ERROR) {
+    if (err != ERR_NO_ERROR) {
         mMainWindow->setError(err, sStartTime + funcStr);
     } else {
         mMainWindow->addFunction(sStartTime + funcStr);
@@ -665,7 +665,7 @@ void AiSubWidget::runEventEnable(DaqEventType eventType, unsigned long long even
 
     int newEventType = 0;
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-    if (!err==ERR_NO_ERROR) {
+    if (err != ERR_NO_ERROR) {
         mMainWindow->setError(err, sStartTime + funcStr);
     } else {
         mMainWindow->addFunction(sStartTime + funcStr);
@@ -692,7 +692,7 @@ void AiSubWidget::runEventDisable(DaqEventType eventType)
     ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-    if (!err==ERR_NO_ERROR) {
+    if (err != ERR_NO_ERROR) {
         mMainWindow->setError(err, sStartTime + funcStr);
     } else {
         mMainWindow->addFunction(sStartTime + funcStr);
@@ -811,7 +811,7 @@ void AiSubWidget::runAInFunc()
             dataArray[sampleNum][curIndex] = dataVal[curIndex];
 
             funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-            if (!err==ERR_NO_ERROR) {
+            if (err != ERR_NO_ERROR) {
                 mMainWindow->setError(err, sStartTime + funcStr);
                 return;
             } else {
@@ -1025,7 +1025,7 @@ void AiSubWidget::runTInArray()
 
         ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
         funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-        if (!err==ERR_NO_ERROR) {
+        if (err != ERR_NO_ERROR) {
             mUseTimer = false;
             mMainWindow->setError(err, sStartTime + funcStr);
             return;
@@ -1108,7 +1108,7 @@ void AiSubWidget::runAInScanFunc()
                 .arg(mDaqDeviceHandle);
 
         funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-        if (!err==ERR_NO_ERROR) {
+        if (err != ERR_NO_ERROR) {
             mMainWindow->setError(err, sStartTime + funcStr);
         } else {
             mMainWindow->addFunction(sStartTime + funcStr);
@@ -1145,7 +1145,7 @@ void AiSubWidget::runAInScanFunc()
     ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-    if (!err==ERR_NO_ERROR) {
+    if (err != ERR_NO_ERROR) {
         ulAInScanStop(mDaqDeviceHandle);
         mStatusTimerEnabled = false;
         mMainWindow->setError(err, sStartTime + funcStr);
@@ -1167,7 +1167,7 @@ void AiSubWidget::runAInScanFunc()
                     .arg(mWaitTime);
 
             funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-            if (!err==ERR_NO_ERROR) {
+            if (err != ERR_NO_ERROR) {
                 mMainWindow->setError(err, sStartTime + funcStr);
             } else {
                 mMainWindow->addFunction(sStartTime + funcStr);
@@ -1209,7 +1209,7 @@ void AiSubWidget::runDaqInScanFunc()
                 .arg(mDaqDeviceHandle);
 
         funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-        if (!err==ERR_NO_ERROR) {
+        if (err != ERR_NO_ERROR) {
             mMainWindow->setError(err, sStartTime + funcStr);
         } else {
             mMainWindow->addFunction(sStartTime + funcStr);
@@ -1246,7 +1246,7 @@ void AiSubWidget::runDaqInScanFunc()
     ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-    if (!err==ERR_NO_ERROR) {
+    if (err != ERR_NO_ERROR) {
         mMainWindow->setError(err, sStartTime + funcStr);
     } else {
         mMainWindow->addFunction(sStartTime + funcStr);
@@ -1267,7 +1267,7 @@ void AiSubWidget::runDaqInScanFunc()
                     .arg(mWaitTime);
 
             funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-            if (!err==ERR_NO_ERROR) {
+            if (err != ERR_NO_ERROR) {
                 mMainWindow->setError(err, sStartTime + funcStr);
             } else {
                 mMainWindow->addFunction(sStartTime + funcStr);
@@ -1370,7 +1370,7 @@ void AiSubWidget::checkStatus()
     mRunning = (status == SS_RUNNING);
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-    if ((!err==ERR_NO_ERROR) && mStatusTimerEnabled) {
+    if ((err != ERR_NO_ERROR) && mStatusTimerEnabled) {
         mStatusTimerEnabled = false;
         mMainWindow->setError(err, sStartTime + funcStr);
     } else if ((status == SS_RUNNING) && mStatusTimerEnabled) {
@@ -1421,7 +1421,7 @@ UlError AiSubWidget::stopScan(long long perChan, long long curCount, long long c
             .arg(mDaqDeviceHandle);
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-    if (!err==ERR_NO_ERROR) {
+    if (err != ERR_NO_ERROR) {
         mStatusTimerEnabled = false;
         mMainWindow->setError(err, sStartTime + funcStr);
         return err;

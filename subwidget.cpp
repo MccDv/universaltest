@@ -1495,7 +1495,7 @@ QString subWidget::showInfoDbl(int infoType, int infoItem, QString showItem)
     infoDesc = getInfoDescription(infoType, infoItem, infoValue);
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-    if(!err==ERR_NO_ERROR) {
+    if(err != ERR_NO_ERROR) {
         errNumStr = QString("[Error %1: ").arg(err);
         switch (err) {
         case ERR_BAD_DEV_TYPE:

@@ -99,12 +99,7 @@ private:
     DaqEventType mEventType;
     DaqDeviceHandle mDaqDeviceHandle;
     unsigned long long mEventParams;
-    DaqEventType ALL_EVENT_TYPES =
-            (DaqEventType)(DE_ON_DATA_AVAILABLE
-            | DE_ON_END_OF_INPUT_SCAN
-            | DE_ON_END_OF_OUTPUT_SCAN
-            | DE_ON_INPUT_SCAN_ERROR
-            | DE_ON_OUTPUT_SCAN_ERROR);
+    DaqEventType ALL_EVENT_TYPES;
 
     bool mEvtEndInScanExists, mEvtEndInScanChanged;
     bool mEvtEndOutScanExists, mEvtEndOutScanChanged;

@@ -188,6 +188,7 @@ MainWindow::~MainWindow()
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
     ChildWindow *curChild;
+    int lastIndex;
 
     curChild = activeMdiChild();
     if (curChild) {
@@ -200,14 +201,15 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
                 | (keyCode == Qt::Key_Less)) {
             int curFuncIndex = functionGroup->actions().indexOf(functionGroup->checkedAction());
             functionGroup->actions().at(curFuncIndex)->setChecked(false);
+            lastIndex = functionGroup->actions().count() - 1;
             if (keyCode == Qt::Key_Greater) {
-                if (functionGroup->actions().at(curFuncIndex) == functionGroup->actions().constLast())
+                if (functionGroup->actions().at(curFuncIndex) == functionGroup->actions().at(lastIndex))
                     curFuncIndex = 0;
                 else
                     curFuncIndex++;
             } else {
-                if (functionGroup->actions().at(curFuncIndex) == functionGroup->actions().constFirst())
-                    curFuncIndex = functionGroup->actions().indexOf(functionGroup->actions().constLast());
+                if (functionGroup->actions().at(curFuncIndex) == 0)
+                    curFuncIndex = functionGroup->actions().indexOf(functionGroup->actions().at(lastIndex));
                 else
                     curFuncIndex--;
             }
@@ -1405,7 +1407,7 @@ void MainWindow::updateInventory()
     ui->lblAppStatus->setText(funcName + argVals + QString(" [Error = %1]").arg(err));
 
     funcStr = funcName + argString + "Arg vals: " + argVals;
-    if(!err==ERR_NO_ERROR) {
+    if(err != ERR_NO_ERROR) {
         setError(err, sStartTime + funcStr);
         //funcStr = funcName + argString + "\n";
         //QString errStr = funcStr + "Arg vals: " + argVals;
@@ -1443,7 +1445,7 @@ void MainWindow::updateInventory()
                 argVals = QStringLiteral("(%1)")
                         .arg(deviceHandle);
                 funcStr = funcName + argString + "Arg vals: " + argVals;
-                if (!err==ERR_NO_ERROR) {
+                if (err != ERR_NO_ERROR) {
                     setError(err, sStartTime + funcStr);
                 } else {
                     addFunction(sStartTime + funcStr);
@@ -1454,7 +1456,7 @@ void MainWindow::updateInventory()
             ui->lblAppStatus->setText(temp);
 
             //funcStr = funcName + argString + "Arg vals: " + argVals;
-            //if (!err==ERR_NO_ERROR) {
+            //if (err != ERR_NO_ERROR) {
             //    setError(err, sStartTime + funcStr);
             //} else {
             //    addFunction(sStartTime + funcStr);
@@ -1505,7 +1507,7 @@ void MainWindow::removeDeviceFromMenu(QString devUiD)
             .arg(numDevs);
     ui->lblAppStatus->setText(funcName + argVals + QString(" [Error = %1]").arg(err));
 
-    if(!err==ERR_NO_ERROR)
+    if(err != ERR_NO_ERROR)
     {
         funcStr = funcName + argString + "\n";
         QString errStr = funcStr + "Arg vals: " + argVals;
@@ -1561,7 +1563,7 @@ void MainWindow::addDeviceToMenu(QString devName, QString devUiD, DaqDeviceHandl
             .arg(numDevs);
     ui->lblAppStatus->setText(funcName + argVals + QString(" [Error = %1]").arg(err));
 
-    if(!err==ERR_NO_ERROR)
+    if(err != ERR_NO_ERROR)
     {
         funcStr = funcName + argString + "\n";
         QString errStr = funcStr + "Arg vals: " + argVals;

@@ -71,6 +71,10 @@ ChildWindow::ChildWindow(QWidget *parent, UtFunctionGroup funcGroup) : QMdiSubWi
     mTrigVariance = 0.002;
     mScanOptions = SO_DEFAULTIO;
     mScale = TS_CELSIUS;
+    mTmrEnabled = false;
+    mStopOnStart = false;
+    mTmrRunning = false;
+    mShowPlot = false;
 
     connect(this, SIGNAL(refreshData()), subwidget, SLOT(runSelectedFunc()));
     connect(this, SIGNAL(refreshBoads()), subwidget, SLOT(initDeviceParams()));
