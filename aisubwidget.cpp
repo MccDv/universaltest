@@ -99,6 +99,7 @@ void AiSubWidget::updateParameters()
     mDevName = parentWindow->devName();
     mDevUID = parentWindow->devUID();
 
+    showStop = false;
     mUseGetStatus = parentWindow->statusEnabled();
     mUseWait = parentWindow->waitEnabled();
     mWaitTime = parentWindow->waitTime();
@@ -130,7 +131,7 @@ void AiSubWidget::updateParameters()
     }
 
     ui->leBlockSize->setEnabled(mUseGetStatus);
-    //if (!(devUID == mDevUID))
+    //if (devUID != mDevUID)
    //     initDeviceParams();
     this->setWindowTitle(mFuncName + ": " + mDevName + QString(" [%1]").arg(mDaqDeviceHandle));
 }
@@ -440,7 +441,7 @@ void AiSubWidget::runSelectedFunc()
         break;
     case UL_AINSCAN:
         mTriggerType = parentWindow->triggerType();
-        if (!mTriggerType == TRIG_NONE) {
+        if (mTriggerType != TRIG_NONE) {
             mTrigChannel = parentWindow->trigChannel();
             mTrigLevel = parentWindow->trigLevel();
             mTrigVariance = parentWindow->trigVariance();
@@ -460,7 +461,7 @@ void AiSubWidget::runSelectedFunc()
             }
         }
         mTriggerType = parentWindow->triggerType();
-        if (!mTriggerType == TRIG_NONE) {
+        if (mTriggerType != TRIG_NONE) {
             mTrigChannel = parentWindow->trigChannel();
             mTrigChanType = (DaqInChanType)parentWindow->trigChanType();
             mTrigLevel = parentWindow->trigLevel();
@@ -597,7 +598,7 @@ void AiSubWidget::runEventSetup()
                 enableList |= DE_ON_DATA_AVAILABLE;
             }
             getEventParameter(mDaqDeviceHandle, eventParam);
-            if (!(mEventParams == eventParam)) {
+            if (mEventParams != eventParam) {
                 if (reEnable) {
                     mEventParams = eventParam;
                     runEventDisable(DE_ON_DATA_AVAILABLE);
@@ -636,9 +637,9 @@ void AiSubWidget::runEventSetup()
     eventsEnabled = (DaqEventType)enableList;
     eventsDisabled = (DaqEventType)disableList;
 
-    if (!(eventsEnabled == DE_NONE))
+    if (eventsEnabled != DE_NONE)
         runEventEnable(eventsEnabled, eventParam);
-    if (!(eventsDisabled == DE_NONE))
+    if (eventsDisabled != DE_NONE)
         runEventDisable(eventsDisabled);
 }
 
@@ -879,7 +880,7 @@ void AiSubWidget::runTInFunc()
         long long bufSize = mChanCount * mSamplesPerChan;
         mBufSize = bufSize;
         buffer = new double[bufSize];
-        memset(buffer, 0.00000001, mBufSize * sizeof(*buffer));
+        memset(buffer, 0, mBufSize * sizeof(*buffer));
         if(mPlot)
             setupPlot(ui->AiPlot, mChanCount);
     }
@@ -1004,7 +1005,7 @@ void AiSubWidget::runTInArray()
         long long bufSize = mChanCount * mSamplesPerChan;
         mBufSize = bufSize;
         buffer = new double[bufSize];
-        memset(buffer, 0.00000001, mBufSize * sizeof(*buffer));
+        memset(buffer, 0, mBufSize * sizeof(*buffer));
         if(mPlot)
             setupPlot(ui->AiPlot, mChanCount);
     }
@@ -1122,7 +1123,7 @@ void AiSubWidget::runAInScanFunc()
 
     mBufSize = bufSize;
     buffer = new double[bufSize];
-    memset(buffer, 0.00000001, mBufSize * sizeof(*buffer));
+    memset(buffer, 0, mBufSize * sizeof(*buffer));
 
     nameOfFunc = "ulAInScan";
     funcArgs = "(mDaqDeviceHandle, lowChan, highChan, inputMode, "
@@ -1223,7 +1224,7 @@ void AiSubWidget::runDaqInScanFunc()
 
     mBufSize = bufSize;
     buffer = new double[bufSize];
-    memset(buffer, 0.00000001, mBufSize * sizeof(*buffer));
+    memset(buffer, 0, mBufSize * sizeof(*buffer));
 
     nameOfFunc = "ulDaqInScan";
     funcArgs = "(mDaqDeviceHandle, chanDescriptors, numChans, "
@@ -1324,7 +1325,7 @@ void AiSubWidget::onClickCmdStop()
                                    .arg(currentIndex));
 
             funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-            if (!(err == ERR_NO_ERROR)) {
+            if (err != ERR_NO_ERROR) {
                 mMainWindow->setError(err, sStartTime + funcStr);
             } else {
                 mMainWindow->addFunction(sStartTime + funcStr);
@@ -1435,7 +1436,7 @@ UlError AiSubWidget::stopScan(long long perChan, long long curCount, long long c
                                .arg(perChan)
                                .arg(curIndex));
         mRunning = false;
-        if (!(mChanCount == 0)) {
+        if (mChanCount != 0) {
             finalBlockSize = (curCount - mPlotCount) / mChanCount;
             if (finalBlockSize > 1) {
                 if (mPlot) {
@@ -1482,7 +1483,7 @@ void AiSubWidget::printData(unsigned long long currentCount, long long currentIn
     samplesToPrint = blockSize < sampleLimit? blockSize : sampleLimit;
     for (int y = 0; y < samplesToPrint; y++) {
         curScan = currentIndex + increment;
-        if (!(curScan < samplePerChanel)) {
+        if (curScan >= samplePerChanel) {
             currentIndex = 0;
             curScan = 0;
             sampleNum = 0;
@@ -1526,7 +1527,7 @@ void AiSubWidget::plotScan(unsigned long long currentCount, long long currentInd
 
     for (int y = 0; y < blockSize; y++) {
         curScan = currentIndex + increment;
-        if (!(curScan < totalSamples)) {
+        if (curScan >= totalSamples) {
             currentIndex = 0;
             curScan = 0;
             increment = 0;
@@ -1536,7 +1537,7 @@ void AiSubWidget::plotScan(unsigned long long currentCount, long long currentInd
             yChans[chan][y] = buffer[curScan + chan];
             sampleNum++;
             /*if ((chan == mEvalChan) && mEvalData) {
-                if (!(priorSamp == -20)) {
+                if (priorSamp != -20) {
                     sampDiff = fabs(buffer[curScan + chan] - priorSamp);
                 }
                 priorSamp = buffer[curScan + chan];

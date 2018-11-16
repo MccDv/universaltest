@@ -867,7 +867,7 @@ void DioSubWidget::runSelectedFunc()
     case UL_D_INSCAN:
         showStop = true;
         mTriggerType = parentWindow->triggerType();
-        if (!mTriggerType == TRIG_NONE) {
+        if (mTriggerType != TRIG_NONE) {
             mTrigChannel = parentWindow->trigChannel();
             mTrigLevel = parentWindow->trigLevel();
             mTrigVariance = parentWindow->trigVariance();
@@ -881,7 +881,7 @@ void DioSubWidget::runSelectedFunc()
         showStop = true;
         getDataValues();
         mTriggerType = parentWindow->triggerType();
-        if (!mTriggerType == TRIG_NONE) {
+        if (mTriggerType != TRIG_NONE) {
             mTrigChannel = parentWindow->trigChannel();
             mTrigLevel = parentWindow->trigLevel();
             mTrigVariance = parentWindow->trigVariance();
@@ -1068,7 +1068,7 @@ void DioSubWidget::runEventSetup()
                 }
             }
             getEventParameter(mDaqDeviceHandle, eventParam);
-            if (!(mEventParams == eventParam)) {
+            if (mEventParams != eventParam) {
                 if (reEnable) {
                     mEventParams = eventParam;
                     runEventDisable(DE_ON_DATA_AVAILABLE);
@@ -1111,9 +1111,9 @@ void DioSubWidget::runEventSetup()
     eventsEnabled = (DaqEventType)enableList;
     eventsDisabled = (DaqEventType)disableList;
 
-    if (!(eventsEnabled == DE_NONE))
+    if (eventsEnabled != DE_NONE)
         runEventEnable(eventsEnabled, eventParam);
-    if (!(eventsDisabled == DE_NONE))
+    if (eventsDisabled != DE_NONE)
         runEventDisable(eventsDisabled);
 }
 
@@ -1422,7 +1422,7 @@ void DioSubWidget::runDBitInFunc()
     nameOfFunc = "ulDBitIn";
     funcArgs = "(mDaqDeviceHandle, portType, bitNum, data)\n";
     for (int bitCheckBox = 0; bitCheckBox < numBitCheckboxes; bitCheckBox++) {
-        if (!(chkBit[bitCheckBox]->checkState() == Qt::PartiallyChecked)) {
+        if (chkBit[bitCheckBox]->checkState() != Qt::PartiallyChecked) {
             gridIndex = bitCheckBox;
             mapGridToPortBit(gridIndex, portType, bitNum);
             sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
@@ -1442,7 +1442,7 @@ void DioSubWidget::runDBitInFunc()
             } else {
                 mMainWindow->addFunction(sStartTime + funcStr);
             }
-            bool setCheckValue = (!(bitValue == 0));
+            bool setCheckValue = (bitValue != 0);
             chkBit[bitCheckBox]->setChecked(setCheckValue);
         }
     }
@@ -1620,7 +1620,7 @@ void DioSubWidget::runDInScanFunc()
 
     mBufSize = bufSize;
     buffer = new unsigned long long[mBufSize];
-    memset(buffer, 0.00000001, mBufSize * sizeof(*buffer));
+    memset(buffer, 0, mBufSize * sizeof(*buffer));
     nameOfFunc = "ulDInScan";
     funcArgs = "(mDaqDeviceHandle, lowPort, highPort, samplesPerPort, "
                "&rate, mScanOptions, mDInScanFlag, buffer)\n";
@@ -1854,7 +1854,7 @@ UlError DioSubWidget::stopScan(long long perChan, long long curCount, long long 
                            .arg(curIndex));
     mRunning = false;
     if (mUtFunction == UL_D_INSCAN) {
-        if (!(mChanCount == 0)) {
+        if (mChanCount != 0) {
             finalBlockSize = (curCount - mPlotCount) / mChanCount;
             if (finalBlockSize > 1) {
                 if (mPlot) {
@@ -1916,7 +1916,7 @@ void DioSubWidget::onClickCmdStop()
                                .arg(currentIndex));
 
         funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-        if (!(err == ERR_NO_ERROR)) {
+        if (err != ERR_NO_ERROR) {
             mMainWindow->setError(err, sStartTime + funcStr);
         } else {
             // to do - add ability to enable / disable logging this
@@ -1956,7 +1956,7 @@ void DioSubWidget::plotScan(unsigned long long currentCount, long long currentIn
 
     for (int y = 0; y < blockSize; y++) {
         curScan = currentIndex + increment;
-        if (!(curScan < totalSamples)) {
+        if (curScan >= totalSamples) {
             currentIndex = 0;
             curScan = 0;
             increment = 0;
@@ -1966,7 +1966,7 @@ void DioSubWidget::plotScan(unsigned long long currentCount, long long currentIn
             yChans[chan][y] = buffer[curScan + chan];
             sampleNum++;
             /*if ((chan == mEvalChan) && mEvalData) {
-                if (!(priorSamp == -20)) {
+                if (priorSamp != -20) {
                     sampDiff = fabs(buffer[curScan + chan] - priorSamp);
                 }
                 priorSamp = buffer[curScan + chan];
@@ -2013,7 +2013,7 @@ void DioSubWidget::printData(unsigned long long currentCount, long long currentI
     samplesToPrint = blockSize < sampleLimit? blockSize : sampleLimit;
     for (int y = 0; y < blockSize; y++) {
         curScan = currentIndex + increment;
-        if (!(curScan < samplePerChanel)) {
+        if (curScan >= samplePerChanel) {
             currentIndex = 0;
             curScan = 0;
             sampleNum = 0;
@@ -2288,7 +2288,7 @@ DigitalPortType DioSubWidget::parsePortFromBitIndex(DigitalPortType tempPort, in
     testBit = bitNum;
     foreach (portType, validPorts) {
         int bitsInPort = portBits.value(portType);
-        if (!((bitsInPort + totalBits) < testBit)) {
+        if ((bitsInPort + totalBits) >= testBit) {
             bitNum = testBit - totalBits;
             return portType;
         }

@@ -157,7 +157,7 @@ void DiscoverSubWidget::on_cmdCreate_clicked()
         ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
 
         funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-        if (!mDaqDeviceHandle == 0) {
+        if (mDaqDeviceHandle != 0) {
             devList.remove(uidKey);
             devList.insert(uidKey, mDaqDeviceHandle);
             QString devName = devDescriptors[descriptorIndex].productName;
@@ -253,7 +253,7 @@ void DiscoverSubWidget::updateConnectionStatus()
     nameOfFunc = "ulIsDaqDeviceConnected";
     funcArgs = "(mDaqDeviceHandle, &connected)\n";
 
-    if (!mDaqDeviceHandle == 0) {
+    if (mDaqDeviceHandle != 0) {
         sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
         err = ulIsDaqDeviceConnected(mDaqDeviceHandle, &connected);
         argVals = QStringLiteral("(%1, %2)")

@@ -955,7 +955,7 @@ void MainWindow::setBoardMenuSelect(QMdiSubWindow*)
                 }
                 if (menuName.startsWith("FF_")) {
                     long long menuVal = ioMode->data().toLongLong();
-                    if (!menuVal == 0)
+                    if (menuVal != 0)
                         ioMode->setChecked(false);
                     if (menuVal & curFlags) {
                         ioMode->setChecked(true);
@@ -1431,7 +1431,7 @@ void MainWindow::updateInventory()
 
             funcStr = funcName + argString + "Arg vals: " + argVals;
             addFunction(sStartTime + funcStr);
-            if (!deviceHandle == 0) {
+            if (deviceHandle != 0) {
                 uidKey = devDescriptors[i].uniqueId;
                 devList.insert(uidKey, deviceHandle);
             }

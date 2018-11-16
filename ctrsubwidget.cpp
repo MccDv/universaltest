@@ -224,6 +224,7 @@ void CtrSubWidget::updateParameters()
     mUseWait = parentWindow->waitEnabled();
     mWaitTime = parentWindow->waitTime();
 
+    showStop = false;
     mCInFlags = parentWindow->ciFlags();
     mTriggerType = parentWindow->triggerType();
     mTrigChannel = parentWindow->trigChannel();
@@ -517,7 +518,7 @@ void CtrSubWidget::runSelectedFunc()
         break;
     case UL_TMR_OUT:
         mTriggerType = parentWindow->triggerType();
-        if (!mTriggerType == TRIG_NONE) {
+        if (mTriggerType != TRIG_NONE) {
             mTrigChannel = parentWindow->trigChannel();
             mTrigLevel = parentWindow->trigLevel();
             mTrigVariance = parentWindow->trigVariance();
@@ -529,7 +530,7 @@ void CtrSubWidget::runSelectedFunc()
         break;
     case UL_C_INSCAN:
         mTriggerType = parentWindow->triggerType();
-        if (!mTriggerType == TRIG_NONE) {
+        if (mTriggerType != TRIG_NONE) {
             mTrigChannel = parentWindow->trigChannel();
             mTrigLevel = parentWindow->trigLevel();
             mTrigVariance = parentWindow->trigVariance();
@@ -641,7 +642,7 @@ void CtrSubWidget::runEventSetup()
                 enableList |= DE_ON_DATA_AVAILABLE;
             }
             getEventParameter(mDaqDeviceHandle, eventParam);
-            if (!(mEventParams == eventParam)) {
+            if (mEventParams != eventParam) {
                 if (reEnable) {
                     mEventParams = eventParam;
                     runEventDisable(DE_ON_DATA_AVAILABLE);
@@ -670,9 +671,9 @@ void CtrSubWidget::runEventSetup()
     eventsEnabled = (DaqEventType)enableList;
     eventsDisabled = (DaqEventType)disableList;
 
-    if (!(eventsEnabled == DE_NONE))
+    if (eventsEnabled != DE_NONE)
         runEventEnable(eventsEnabled, eventParam);
-    if (!(eventsDisabled == DE_NONE))
+    if (eventsDisabled != DE_NONE)
         runEventDisable(eventsDisabled);
 }
 
@@ -1156,7 +1157,7 @@ void CtrSubWidget::userScanStop()
                                .arg(currentIndex));
 
         funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-        if (!(err == ERR_NO_ERROR)) {
+        if (err != ERR_NO_ERROR) {
             mMainWindow->setError(err, sStartTime + funcStr);
         } else {
             mMainWindow->addFunction(sStartTime + funcStr);
@@ -1340,7 +1341,7 @@ void CtrSubWidget::checkTmrStatus()
             mMainWindow->setError(err, sStartTime + funcStr);
             return;
         } else {
-            if (!(status == TMRS_RUNNING)) {
+            if (status != TMRS_RUNNING) {
                 mMainWindow->addFunction(sStartTime + funcStr);
                 tmrCheckStatus->stop();
                 ui->cmdStop->setEnabled(false);
@@ -1377,7 +1378,7 @@ UlError CtrSubWidget::stopScan(long long perChan, long long curCount, long long 
                            .arg(perChan)
                            .arg(curIndex));
     mRunning = false;
-    if (!(mChanCount == 0)) {
+    if (mChanCount != 0) {
         finalBlockSize = (curCount - mPlotCount) / mChanCount;
         if (finalBlockSize > 1) {
             if (mPlot) {
@@ -1466,7 +1467,7 @@ void CtrSubWidget::plotScan(unsigned long long currentCount, long long currentIn
 
     for (int y = 0; y < blockSize; y++) {
         curScan = currentIndex + increment;
-        if (!(curScan < totalSamples)) {
+        if (curScan >= totalSamples) {
             currentIndex = 0;
             curScan = 0;
             increment = 0;
@@ -1511,7 +1512,7 @@ void CtrSubWidget::printData(unsigned long long currentCount, long long currentI
     samplesToPrint = blockSize < sampleLimit? blockSize : sampleLimit;
     for (int y = 0; y < samplesToPrint; y++) {
         curScan = currentIndex + increment;
-        if (!(curScan < samplePerChanel)) {
+        if (curScan >= samplePerChanel) {
             currentIndex = 0;
             curScan = 0;
             sampleNum = 0;

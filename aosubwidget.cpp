@@ -77,12 +77,12 @@ void AoSubWidget::updateParameters()
     mDaqDeviceHandle = parentWindow->devHandle();
     mDevName = parentWindow->devName();
     mDevUID = parentWindow->devUID();
-    if (!(devID == mDevUID))
+    if (devID != mDevUID)
         initDeviceParams();
 
     AOutFlag tempFlag = mAoFlags;
     mAoFlags = (AOutFlag)parentWindow->aoFlags();
-    if (!(tempFlag == mAoFlags)) {
+    if (tempFlag != mAoFlags) {
         mModeChanged = true;
     }
     mDaqoFlags = (DaqOutScanFlag)parentWindow->daqOutFlag();
@@ -114,9 +114,9 @@ void AoSubWidget::updateParameters()
     }
 
     initDeviceParams();
-    if (!(daqOutFlag == (mDaqoFlags & 1)))
+    if (daqOutFlag != (mDaqoFlags & 1))
             mWaves.clear();
-    if (!(aoFlag == (mAoFlags & 1)))
+    if (aoFlag != (mAoFlags & 1))
         mWaves.clear();
     if (mCancelAOut)
         ui->cmdStop->setVisible(false);
@@ -474,7 +474,7 @@ void AoSubWidget::initDeviceParams()
             mMainWindow->setError(err, sStartTime + funcStr);
             return;
         }
-        //if (!(curRange == mRange)) {
+        //if (curRange != mRange) {
         if (mFixedRange) {
             //report change to parent
             parentWindow->setCurRange(mRange);
@@ -663,7 +663,7 @@ void AoSubWidget::getDataValues()
     } else {
         double rangeVolts = getRangeVolts(mRange);
         truncate = false;
-        if (!(mRange < 100)) {
+        if (mRange >= 100) {
             if (mModeChanged) {
                 mOffset.clear();
                 mAmplitude.clear();
@@ -867,7 +867,7 @@ void AoSubWidget::runSelectedFunc()
     case UL_AOUT_SCAN:
         getDataValues();
         mTriggerType = parentWindow->triggerType();
-        if (!mTriggerType == TRIG_NONE) {
+        if (mTriggerType != TRIG_NONE) {
             mTrigChannel = parentWindow->trigChannel();
             mTrigLevel = parentWindow->trigLevel();
             mTrigVariance = parentWindow->trigVariance();
@@ -880,7 +880,7 @@ void AoSubWidget::runSelectedFunc()
     case UL_DAQ_OUTSCAN:
         getDataValues();
         mTriggerType = parentWindow->triggerType();
-        if (!mTriggerType == TRIG_NONE) {
+        if (mTriggerType != TRIG_NONE) {
             mTrigChannel = parentWindow->trigChannel();
             mTrigLevel = parentWindow->trigLevel();
             mTrigVariance = parentWindow->trigVariance();
@@ -1014,7 +1014,7 @@ void AoSubWidget::runEventSetup()
                 enableList |= DE_ON_DATA_AVAILABLE;
             }
             getEventParameter(mDaqDeviceHandle, eventParam);
-            if (!(mEventParams == eventParam)) {
+            if (mEventParams != eventParam) {
                 if (reEnable) {
                     mEventParams = eventParam;
                     runEventDisable(DE_ON_DATA_AVAILABLE);
@@ -1053,9 +1053,9 @@ void AoSubWidget::runEventSetup()
     eventsEnabled = (DaqEventType)enableList;
     eventsDisabled = (DaqEventType)disableList;
 
-    if (!(eventsEnabled == DE_NONE))
+    if (eventsEnabled != DE_NONE)
         runEventEnable(eventsEnabled, eventParam);
-    if (!(eventsDisabled == DE_NONE))
+    if (eventsDisabled != DE_NONE)
         runEventDisable(eventsDisabled);
 }
 
@@ -1448,7 +1448,7 @@ void AoSubWidget::onClickCmdStop()
                                    .arg(currentIndex));
 
             funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-            if (!(err == ERR_NO_ERROR)) {
+            if (err != ERR_NO_ERROR) {
                 mMainWindow->setError(err, sStartTime + funcStr);
             } else {
                 mMainWindow->addFunction(sStartTime + funcStr);

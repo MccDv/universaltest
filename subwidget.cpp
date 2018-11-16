@@ -69,6 +69,7 @@ void subWidget::setUiForGroup()
     QString cmdLabel;
     //parentWindow = qobject_cast<ChildWindow *>(this->parent());
 
+    configVisible = false;
     disconnect(ui->cmbInfoType, SIGNAL(currentIndexChanged(int)));
     disconnect(ui->cmdSet, SIGNAL(clicked(bool)));
     //disconnect(ui->cmbConfigItem, SIGNAL(currentIndexChanged(int)));
@@ -1262,6 +1263,7 @@ QString subWidget::showInfo(int infoType, int infoItem, QString showItem)
     bool indexInfo;
 
     indexInfo = false;
+    infoValue = 0;
     index = ui->spnIndex->value();
 
     sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
@@ -1421,6 +1423,7 @@ QString subWidget::showInfoDbl(int infoType, int infoItem, QString showItem)
     bool indexInfo;
 
     indexInfo = false;
+    infoValue = 0;
     index = ui->spnIndex->value();
 
     sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";

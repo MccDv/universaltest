@@ -15,7 +15,7 @@ void DataManager::getChannelData(double offset, double amplitude, DMgr::WaveType
     double numSamples = (double)dataSize;
 
     togglePoint = 0;
-    if (!cycles == 0)
+    if (cycles != 0)
         togglePoint = ((dataSize / cycles) / 2) - 1;
 
     element = 0;
@@ -60,7 +60,7 @@ void DataManager::getChannelData(double offset, double amplitude, DMgr::WaveType
                         + ((element * (numCycles / numSamples)) * amplitude)
                         + ((amplitude / numSamples) / 2);
             element++;
-            if (!((element * cycles) < dataSize))
+            if ((element * cycles) >= dataSize)
                 element = 0;
         }
         break;
@@ -76,7 +76,7 @@ void DataManager::getChannelData(double offset, double amplitude, DMgr::WaveType
                     - ((element * (numCycles / numSamples)) * amplitude)
                     - ((amplitude / numSamples) / 2);
             element++;
-            if (!((element * cycles) < dataSize))
+            if ((element * cycles) >= dataSize)
                 element = 0;
         }
         break;
@@ -108,7 +108,7 @@ void DataManager::getChannelData(double offset, double amplitude, DMgr::WaveType
     int direction = 1;
     //int dataSize = countData.size();
     togglePoint = 0;
-    if (!cycles == 0)
+    if (cycles != 0)
         togglePoint = ((dataSize / cycles) / 2) - 1;
     switch (waveType) {
     case DMgr::flatLine:

@@ -72,7 +72,7 @@ private slots:
     void chanTypeSelection(int);
     void autoFill();
     void deleteElement();
-    void done();
+    void dlgDone();
 
 private:
     Ui::QueueDialog *ui;

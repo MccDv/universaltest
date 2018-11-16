@@ -46,7 +46,7 @@ QueueDialog::QueueDialog(QWidget *parent, UtFunctionGroup utFuncGroup) :
     connect(ui->cmbChanType, SIGNAL(currentIndexChanged(int)), this, SLOT(chanTypeSelection(int)));
     connect(ui->cmdAutoFill, SIGNAL(clicked(bool)), this, SLOT(autoFill()));
     connect(ui->cmdDelElement, SIGNAL(clicked(bool)), this, SLOT(deleteElement()));
-    connect(ui->cmdSave, SIGNAL(clicked(QAbstractButton*)), this, SLOT(done()));
+    connect(ui->cmdSave, SIGNAL(clicked(QAbstractButton*)), this, SLOT(dlgDone()));
 
     ui->cmdLoad->setEnabled(false);
     ui->cmdDelElement->setEnabled(false);
@@ -260,7 +260,7 @@ void QueueDialog::deleteElement()
     updateNumElements(elementCount);
 }
 
-void QueueDialog::done()
+void QueueDialog::dlgDone()
 {
     int numSet = ui->spnQElements->value();
     mNumQueueElements = numSet;
