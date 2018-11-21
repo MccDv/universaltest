@@ -198,12 +198,6 @@
              <height>0</height>
             </size>
            </property>
-           <property name="font">
-            <font>
-             <pointsize>11</pointsize>
-             <kerning>false</kerning>
-            </font>
-           </property>
            <property name="text">
             <string>0</string>
            </property>
@@ -239,6 +233,11 @@
    </item>
    <item>
     <widget class="QFrame" name="fraStatus">
+     <property name="font">
+      <font>
+       <pointsize>8</pointsize>
+      </font>
+     </property>
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
      </property>
@@ -265,13 +264,6 @@
           <width>400</width>
           <height>20</height>
          </size>
-        </property>
-        <property name="font">
-         <font>
-          <family>Courier 10 Pitch</family>
-          <pointsize>8</pointsize>
-          <kerning>true</kerning>
-         </font>
         </property>
         <property name="text">
          <string/>

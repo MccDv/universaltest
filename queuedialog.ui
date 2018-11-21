@@ -21,11 +21,6 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QFrame" name="fraElements">
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
      </property>
@@ -96,11 +91,6 @@
    </item>
    <item>
     <widget class="QFrame" name="fraQParams">
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
      </property>
@@ -124,31 +114,13 @@
        <widget class="QSpinBox" name="spnQChan"/>
       </item>
       <item>
-       <widget class="QComboBox" name="cmbMode">
-        <property name="font">
-         <font>
-          <pointsize>9</pointsize>
-         </font>
-        </property>
-       </widget>
+       <widget class="QComboBox" name="cmbMode"/>
       </item>
       <item>
-       <widget class="QComboBox" name="cmbChanType">
-        <property name="font">
-         <font>
-          <pointsize>9</pointsize>
-         </font>
-        </property>
-       </widget>
+       <widget class="QComboBox" name="cmbChanType"/>
       </item>
       <item>
-       <widget class="QComboBox" name="cmbRange">
-        <property name="font">
-         <font>
-          <pointsize>9</pointsize>
-         </font>
-        </property>
-       </widget>
+       <widget class="QComboBox" name="cmbRange"/>
       </item>
       <item>
        <widget class="QPushButton" name="cmdLoad">
@@ -171,11 +143,6 @@
    </item>
    <item>
     <widget class="QDialogButtonBox" name="cmdSave">
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
      <property name="layoutDirection">
       <enum>Qt::LeftToRight</enum>
      </property>

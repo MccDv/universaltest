@@ -6,7 +6,20 @@ QueueDialog::QueueDialog(QWidget *parent, UtFunctionGroup utFuncGroup) :
     ui(new Ui::QueueDialog)
 {
     ui->setupUi(this);
+    //int fontSize;
+    QFont font;
 
+    //fontSize = 8;
+    font.setPointSize(10);
+
+#ifdef Q_OS_MAC
+    //fontSize = 12;
+    font.setPointSize(12);
+    this->setFont(font);
+#endif
+
+    ui->fraElements->setFont(font);
+    ui->fraQParams->setFont(font);
     ui->lstQueue->setStyleSheet("QListWidget { background-color : white; color : blue; }" );
     inputFunctions = (utFuncGroup == FUNC_GROUP_AIN);
     ui->cmbRange->addItem("BIP20VOLTS", BIP20VOLTS);

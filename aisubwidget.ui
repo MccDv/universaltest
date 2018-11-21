@@ -10,6 +10,11 @@
     <height>364</height>
    </rect>
   </property>
+  <property name="font">
+   <font>
+    <pointsize>10</pointsize>
+   </font>
+  </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
@@ -70,18 +75,6 @@
       </property>
       <item>
        <widget class="QLineEdit" name="leNumSamples">
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>22</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <family>Ubuntu</family>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
         <property name="toolTip">
          <string>Samples per channel</string>
         </property>
@@ -92,18 +85,6 @@
       </item>
       <item>
        <widget class="QSpinBox" name="spnLowChan">
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>22</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <family>Ubuntu</family>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
         <property name="toolTip">
          <string>Low channel</string>
         </property>
@@ -114,18 +95,6 @@
       </item>
       <item>
        <widget class="QSpinBox" name="spnHighChan">
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>22</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <family>Ubuntu</family>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
         <property name="toolTip">
          <string>High channel</string>
         </property>
@@ -149,18 +118,6 @@
       </item>
       <item>
        <widget class="QPushButton" name="cmdStop">
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>22</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <family>Ubuntu</family>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
         <property name="text">
          <string>Stop</string>
         </property>
@@ -168,18 +125,6 @@
       </item>
       <item>
        <widget class="QPushButton" name="cmdGo">
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>22</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <family>Ubuntu</family>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
         <property name="text">
          <string>Go</string>
         </property>
@@ -223,18 +168,6 @@
       </property>
       <item>
        <widget class="QLineEdit" name="leRate">
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>22</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <family>Ubuntu</family>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
         <property name="toolTip">
          <string>Rate</string>
         </property>
@@ -256,17 +189,6 @@
           <width>80</width>
           <height>20</height>
          </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>20</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
         </property>
         <property name="toolTip">
          <string>Actual rate returned</string>
@@ -294,18 +216,6 @@
       </item>
       <item>
        <widget class="QLineEdit" name="leBlockSize">
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>22</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <family>Ubuntu</family>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
         <property name="toolTip">
          <string>Block size</string>
         </property>
@@ -344,7 +254,7 @@
          <enum>QFrame::Box</enum>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="pgText">
          <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -374,8 +284,10 @@
             <property name="font">
              <font>
               <family>Courier 10 Pitch</family>
-              <pointsize>10</pointsize>
              </font>
+            </property>
+            <property name="focusPolicy">
+             <enum>Qt::NoFocus</enum>
             </property>
             <property name="frameShape">
              <enum>QFrame::NoFrame</enum>
@@ -644,7 +556,8 @@
     <widget class="QFrame" name="fraInfoStat">
      <property name="font">
       <font>
-       <pointsize>10</pointsize>
+       <family>Courier 10 Pitch</family>
+       <pointsize>8</pointsize>
       </font>
      </property>
      <property name="frameShape">
@@ -689,12 +602,6 @@
           <height>16</height>
          </size>
         </property>
-        <property name="font">
-         <font>
-          <family>Courier 10 Pitch</family>
-          <pointsize>8</pointsize>
-         </font>
-        </property>
         <property name="text">
          <string/>
         </property>
@@ -722,12 +629,6 @@
           <width>16777215</width>
           <height>16</height>
          </size>
-        </property>
-        <property name="font">
-         <font>
-          <family>Courier 10 Pitch</family>
-          <pointsize>8</pointsize>
-         </font>
         </property>
         <property name="text">
          <string/>

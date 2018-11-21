@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>413</width>
-    <height>183</height>
+    <height>158</height>
    </rect>
   </property>
   <property name="font">
@@ -22,7 +22,7 @@
    <item>
     <widget class="QFrame" name="frame">
      <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
+      <enum>QFrame::NoFrame</enum>
      </property>
      <property name="frameShadow">
       <enum>QFrame::Raised</enum>
@@ -89,7 +89,7 @@
    <item>
     <widget class="QFrame" name="frame_2">
      <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
+      <enum>QFrame::NoFrame</enum>
      </property>
      <property name="frameShadow">
       <enum>QFrame::Raised</enum>
@@ -153,37 +153,52 @@
    <item>
     <widget class="QFrame" name="fraChanDesc">
      <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
+      <enum>QFrame::NoFrame</enum>
      </property>
      <property name="frameShadow">
       <enum>QFrame::Raised</enum>
      </property>
-     <widget class="QComboBox" name="cmbChanType">
-      <property name="geometry">
-       <rect>
-        <x>12</x>
-        <y>6</y>
-        <width>121</width>
-        <height>27</height>
-       </rect>
+     <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="2,2,2">
+      <property name="leftMargin">
+       <number>0</number>
       </property>
-      <property name="toolTip">
-       <string>Channel Type</string>
+      <property name="topMargin">
+       <number>2</number>
       </property>
-     </widget>
-     <widget class="QComboBox" name="cmbRange">
-      <property name="geometry">
-       <rect>
-        <x>210</x>
-        <y>6</y>
-        <width>109</width>
-        <height>27</height>
-       </rect>
+      <property name="rightMargin">
+       <number>0</number>
       </property>
-      <property name="toolTip">
-       <string>Range</string>
+      <property name="bottomMargin">
+       <number>2</number>
       </property>
-     </widget>
+      <item>
+       <spacer name="horizontalSpacer_3">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>125</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QComboBox" name="cmbChanType">
+        <property name="toolTip">
+         <string>Channel Type</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="cmbRange">
+        <property name="toolTip">
+         <string>Range</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
    <item>

@@ -36,16 +36,15 @@ private slots:
     void functionChanged(int utFunction);
     void groupChanged(int newGroup);
 
-
     void onClickCmdGo();
     void onClickCmdStop();
-
 
     void runSelectedFunc();
     void checkStatus();
 
     void showPlotWindow(bool);
     void showQueueConfig();
+    void showDataGen();
     void swStopScan();
     void queueDialogResponse();
     void runEventSetup();
@@ -136,7 +135,7 @@ private:
     long long mBufSize;
     long long mFinalCount;
 
-    void setUiForGroup();
+    //void setUiForGroup();
     void setUiForFunction();
     void runSetTriggerFunc();
     void runEventDisable(DaqEventType eventType);

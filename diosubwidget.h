@@ -46,6 +46,7 @@ private slots:
     void checkStatus();
     void stopGoTimer();
     void showPlotWindow(bool);
+    void showQueueConfig();
     void showDataGen();
     void swStopScan();
     void dataDialogResponse();
@@ -132,7 +133,7 @@ private:
     long long mFinalCount;
     int mDioResolution;
 
-    void setUiForGroup();
+    //void setUiForGroup();
     void setUiForFunction();
     void createBitBoxes();
     void runDConfigBit(DigitalPortType portType, int bitNum, DigitalDirection direction);

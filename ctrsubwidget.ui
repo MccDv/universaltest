@@ -18,7 +18,6 @@
   </property>
   <property name="font">
    <font>
-    <family>Courier 10 Pitch</family>
     <pointsize>10</pointsize>
    </font>
   </property>
@@ -82,17 +81,6 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>22</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
         <property name="toolTip">
          <string>Samples per channel</string>
         </property>
@@ -103,17 +91,6 @@
       </item>
       <item>
        <widget class="QSpinBox" name="spnLowChan">
-        <property name="maximumSize">
-         <size>
-          <width>45</width>
-          <height>22</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
         <property name="toolTip">
          <string>Low channel</string>
         </property>
@@ -127,17 +104,6 @@
       </item>
       <item>
        <widget class="QSpinBox" name="spnHighChan">
-        <property name="maximumSize">
-         <size>
-          <width>45</width>
-          <height>22</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
         <property name="toolTip">
          <string>High channel</string>
         </property>
@@ -164,17 +130,6 @@
       </item>
       <item>
        <widget class="QPushButton" name="cmdStop">
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>22</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
         <property name="text">
          <string>Stop</string>
         </property>
@@ -182,17 +137,6 @@
       </item>
       <item>
        <widget class="QPushButton" name="cmdGo">
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>22</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
         <property name="text">
          <string>Go</string>
         </property>
@@ -248,12 +192,6 @@
           <height>22</height>
          </size>
         </property>
-        <property name="font">
-         <font>
-          <family>Ubuntu</family>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
         <property name="toolTip">
          <string>Rate</string>
         </property>
@@ -275,17 +213,6 @@
           <width>80</width>
           <height>20</height>
          </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>20</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
         </property>
         <property name="toolTip">
          <string>Actual rate returned</string>
@@ -325,12 +252,6 @@
           <height>22</height>
          </size>
         </property>
-        <property name="font">
-         <font>
-          <family>Ubuntu</family>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
         <property name="toolTip">
          <string>Block size</string>
         </property>
@@ -349,11 +270,6 @@
        <width>16777215</width>
        <height>50</height>
       </size>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
      </property>
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
@@ -517,7 +433,7 @@
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>2</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="pgText">
       <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -1112,11 +1028,6 @@
           </item>
           <item>
            <widget class="QFrame" name="fraReturns">
-            <property name="font">
-             <font>
-              <family>Courier 10 Pitch</family>
-             </font>
-            </property>
             <property name="frameShape">
              <enum>QFrame::NoFrame</enum>
             </property>
@@ -1399,14 +1310,7 @@
                  <number>0</number>
                 </property>
                 <item>
-                 <widget class="QComboBox" name="cmbTickSize">
-                  <property name="font">
-                   <font>
-                    <family>Ubuntu</family>
-                    <pointsize>10</pointsize>
-                   </font>
-                  </property>
-                 </widget>
+                 <widget class="QComboBox" name="cmbTickSize"/>
                 </item>
                 <item>
                  <spacer name="verticalSpacer_3">
@@ -1422,24 +1326,10 @@
                  </spacer>
                 </item>
                 <item>
-                 <widget class="QComboBox" name="cmbDebounceMode">
-                  <property name="font">
-                   <font>
-                    <family>Ubuntu</family>
-                    <pointsize>10</pointsize>
-                   </font>
-                  </property>
-                 </widget>
+                 <widget class="QComboBox" name="cmbDebounceMode"/>
                 </item>
                 <item>
-                 <widget class="QComboBox" name="cmbDebounce">
-                  <property name="font">
-                   <font>
-                    <family>Ubuntu</family>
-                    <pointsize>10</pointsize>
-                   </font>
-                  </property>
-                 </widget>
+                 <widget class="QComboBox" name="cmbDebounce"/>
                 </item>
                </layout>
               </widget>
@@ -1475,14 +1365,7 @@
               <number>2</number>
              </property>
              <item>
-              <widget class="QComboBox" name="cmbMeasType">
-               <property name="font">
-                <font>
-                 <family>Ubuntu</family>
-                 <pointsize>10</pointsize>
-                </font>
-               </property>
-              </widget>
+              <widget class="QComboBox" name="cmbMeasType"/>
              </item>
              <item>
               <widget class="QFrame" name="fraCtrEdge">
@@ -1491,11 +1374,6 @@
                  <width>16777215</width>
                  <height>30</height>
                 </size>
-               </property>
-               <property name="font">
-                <font>
-                 <family>Ubuntu</family>
-                </font>
                </property>
                <property name="frameShape">
                 <enum>QFrame::StyledPanel</enum>
@@ -1541,12 +1419,6 @@
              </item>
              <item>
               <widget class="QPushButton" name="cmdApplyCCfg">
-               <property name="font">
-                <font>
-                 <family>Ubuntu</family>
-                 <pointsize>10</pointsize>
-                </font>
-               </property>
                <property name="text">
                 <string>Apply</string>
                </property>
@@ -1566,7 +1438,7 @@
     <widget class="QFrame" name="fraInfoStat">
      <property name="font">
       <font>
-       <pointsize>10</pointsize>
+       <pointsize>8</pointsize>
       </font>
      </property>
      <property name="frameShape">
@@ -1611,12 +1483,6 @@
           <height>16</height>
          </size>
         </property>
-        <property name="font">
-         <font>
-          <family>Courier 10 Pitch</family>
-          <pointsize>8</pointsize>
-         </font>
-        </property>
         <property name="text">
          <string/>
         </property>
@@ -1644,12 +1510,6 @@
           <width>16777215</width>
           <height>16</height>
          </size>
-        </property>
-        <property name="font">
-         <font>
-          <family>Courier 10 Pitch</family>
-          <pointsize>8</pointsize>
-         </font>
         </property>
         <property name="text">
          <string/>

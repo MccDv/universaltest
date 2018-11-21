@@ -6,7 +6,7 @@
 #include <QMdiSubWindow>
 #include <QTimer>
 #include "tmrdialog.h"
-//#include "subwidget.h"
+//#include "mainwindow.h"
 #include "unitest.h"
 #include "testutilities.h"
 //#include "plotwindow.h"

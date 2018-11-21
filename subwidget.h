@@ -34,6 +34,14 @@ private slots:
     void memRead();
     void onStopCmd();
 
+    void showPlotWindow(bool);
+    void showQueueConfig();
+    void showDataGen();
+    void initDeviceParams();
+    void updateText(QString infoText);
+    void swStopScan();
+    void runEventSetup();
+
 private:
     Ui::subWidget *ui;
     MainWindow* getMainWindow();

@@ -10,6 +10,11 @@
     <height>262</height>
    </rect>
   </property>
+  <property name="font">
+   <font>
+    <pointsize>10</pointsize>
+   </font>
+  </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
@@ -70,17 +75,6 @@
       </property>
       <item>
        <widget class="QLineEdit" name="leNumSamples">
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>22</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
         <property name="toolTip">
          <string>Samples per channel</string>
         </property>
@@ -91,17 +85,6 @@
       </item>
       <item>
        <widget class="QSpinBox" name="spnLowChan">
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>22</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
         <property name="toolTip">
          <string>Low channel</string>
         </property>
@@ -112,17 +95,6 @@
       </item>
       <item>
        <widget class="QSpinBox" name="spnHighChan">
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>22</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
         <property name="toolTip">
          <string>High channel</string>
         </property>
@@ -146,17 +118,6 @@
       </item>
       <item>
        <widget class="QPushButton" name="cmdStop">
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>22</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
         <property name="text">
          <string>Stop</string>
         </property>
@@ -164,17 +125,6 @@
       </item>
       <item>
        <widget class="QPushButton" name="cmdGo">
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>22</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
         <property name="text">
          <string>Go</string>
         </property>
@@ -224,11 +174,6 @@
           <height>22</height>
          </size>
         </property>
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
         <property name="toolTip">
          <string>Rate</string>
         </property>
@@ -256,12 +201,6 @@
           <width>16777215</width>
           <height>20</height>
          </size>
-        </property>
-        <property name="font">
-         <font>
-          <family>Courier 10 Pitch</family>
-          <pointsize>10</pointsize>
-         </font>
         </property>
         <property name="toolTip">
          <string>Actual rate returned</string>
@@ -294,11 +233,6 @@
           <width>16777215</width>
           <height>22</height>
          </size>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
         </property>
         <property name="toolTip">
          <string>Block size</string>
@@ -349,12 +283,6 @@
           <height>160</height>
          </size>
         </property>
-        <property name="font">
-         <font>
-          <family>Ubuntu</family>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
         <property name="frameShape">
          <enum>QFrame::NoFrame</enum>
         </property>
@@ -380,12 +308,6 @@
           </property>
           <item>
            <widget class="QTextEdit" name="teShowValues">
-            <property name="font">
-             <font>
-              <family>Courier 10 Pitch</family>
-              <pointsize>8</pointsize>
-             </font>
-            </property>
             <property name="frameShape">
              <enum>QFrame::NoFrame</enum>
             </property>
@@ -417,11 +339,6 @@
               <width>120</width>
               <height>16777215</height>
              </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>10</pointsize>
-             </font>
             </property>
             <property name="text">
              <string>0.0</string>
@@ -461,7 +378,7 @@
     <widget class="QFrame" name="fraInfoStat">
      <property name="font">
       <font>
-       <pointsize>10</pointsize>
+       <pointsize>8</pointsize>
       </font>
      </property>
      <property name="frameShape">
@@ -506,12 +423,6 @@
           <height>16</height>
          </size>
         </property>
-        <property name="font">
-         <font>
-          <family>Courier 10 Pitch</family>
-          <pointsize>8</pointsize>
-         </font>
-        </property>
         <property name="text">
          <string/>
         </property>
@@ -539,12 +450,6 @@
           <width>16777215</width>
           <height>16</height>
          </size>
-        </property>
-        <property name="font">
-         <font>
-          <family>Courier 10 Pitch</family>
-          <pointsize>8</pointsize>
-         </font>
         </property>
         <property name="text">
          <string/>

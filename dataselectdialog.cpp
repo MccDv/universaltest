@@ -7,11 +7,21 @@ DataSelectDialog::DataSelectDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    /*mResolution = resolution;
-    mFSRange = fsRange;
-    mDataScale = (DMgr::DataScale)dataScale;
-    mBipolar = bipolar;*/
+    //int fontSize;
+    QFont font;
 
+    //fontSize = 8;
+    font.setPointSize(10);
+
+#ifdef Q_OS_MAC
+    //fontSize = 12;
+    font.setPointSize(12);
+    this->setFont(font);
+#endif
+
+    ui->fraAmplitude->setFont(font);
+    ui->fraDataConfig->setFont(font);
+    ui->fraShowConfig->setFont(font);
     ui->cmbWaveForm->addItem("Flat line", DMgr::flatLine);
     ui->cmbWaveForm->addItem("Square wave", DMgr::squareWave);
     ui->cmbWaveForm->addItem("Sine wave", DMgr::sineWave);

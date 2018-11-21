@@ -9,6 +9,8 @@
 #include "ctrsubwidget.h"
 #include "discoversubwidget.h"
 
+MainWindow* getMainWindow();
+
 ChildWindow::ChildWindow(QWidget *parent, UtFunctionGroup funcGroup) : QMdiSubWindow(parent)
 {
     switch (funcGroup) {
@@ -46,7 +48,7 @@ ChildWindow::ChildWindow(QWidget *parent, UtFunctionGroup funcGroup) : QMdiSubWi
         break;
     }
 
-    MainWindow *mainParent = qobject_cast<MainWindow *>(parent);
+    MainWindow *mainParent = getMainWindow();
     this->setWidget(subwidget);
 
     mStatusEnabled = true;
@@ -134,6 +136,14 @@ void ChildWindow::closeEvent(QCloseEvent *event)
     writeWindowPosition();
     event->accept();
     this->deleteLater();
+}
+
+MainWindow* getMainWindow()
+{
+    foreach (QWidget *w, QApplication::topLevelWidgets())
+        if (QMainWindow* mainWin = qobject_cast<QMainWindow*>(w))
+            return qobject_cast<MainWindow *>(mainWin);
+    return nullptr;
 }
 
 void ChildWindow::goTimerRun(bool enable)

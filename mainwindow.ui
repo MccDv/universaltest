@@ -157,6 +157,11 @@
     <bool>false</bool>
    </property>
    <widget class="QMenu" name="menuFile">
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
     <property name="title">
      <string>File</string>
     </property>
@@ -191,6 +196,11 @@
     <addaction name="actionLoad_Queue"/>
    </widget>
    <widget class="QMenu" name="menuBoards">
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
     <property name="title">
      <string>Boards</string>
     </property>
@@ -222,6 +232,11 @@
     <addaction name="actionAI_PSEUDO_DIFFERENTIAL"/>
    </widget>
    <widget class="QMenu" name="menuFunction">
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
     <property name="title">
      <string>Function</string>
     </property>
@@ -289,6 +304,11 @@
    <property name="text">
     <string>Timer Loop</string>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
   </action>
   <action name="actionBIP10VOLTS">
    <property name="checkable">
@@ -300,6 +320,11 @@
    <property name="text">
     <string>BIP10VOLTS</string>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
    <property name="shortcut">
     <string>F1</string>
    </property>
@@ -310,6 +335,11 @@
    </property>
    <property name="text">
     <string>BIP5VOLTS</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
    </property>
    <property name="shortcut">
     <string>F2</string>
@@ -325,6 +355,11 @@
    <property name="text">
     <string>SO_DEFAULTIO</string>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
    <property name="shortcut">
     <string>Ctrl+R</string>
    </property>
@@ -335,6 +370,11 @@
    </property>
    <property name="text">
     <string>SO_SINGLEIO</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
@@ -347,6 +387,11 @@
    <property name="text">
     <string>SO_BLOCKIO</string>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
    <property name="shortcut">
     <string>Ctrl+L</string>
    </property>
@@ -357,6 +402,11 @@
    </property>
    <property name="text">
     <string>SO_BURSTIO</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
    </property>
    <property name="shortcut">
     <string>Ctrl+I</string>
@@ -369,6 +419,11 @@
    <property name="text">
     <string>SO_CONTINUOUS</string>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
    <property name="shortcut">
     <string>Ctrl+T</string>
    </property>
@@ -379,6 +434,11 @@
    </property>
    <property name="text">
     <string>SO_EXTCLOCK</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+C</string>
@@ -391,6 +451,11 @@
    <property name="text">
     <string>SO_EXTTRIGGER</string>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
    <property name="shortcut">
     <string>Ctrl+G</string>
    </property>
@@ -402,6 +467,11 @@
    <property name="text">
     <string>SO_RETRIGGER</string>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
    <property name="shortcut">
     <string>Ctrl+Y</string>
    </property>
@@ -412,6 +482,11 @@
    </property>
    <property name="text">
     <string>SO_BURSTMODE</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
    </property>
    <property name="shortcut">
     <string>Ctrl+U</string>
@@ -438,6 +513,11 @@
    <property name="text">
     <string>FF_DEFAULT</string>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
   </action>
   <action name="actionFF_NOSCALEDATA">
    <property name="checkable">
@@ -446,6 +526,11 @@
    <property name="text">
     <string>FF_NOSCALEDATA</string>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
   </action>
   <action name="actionFF_NOCALIBRATEDATA">
    <property name="checkable">
@@ -453,6 +538,11 @@
    </property>
    <property name="text">
     <string>FF_NOCALIBRATEDATA</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
    </property>
    <property name="shortcut">
     <string>Ctrl+N</string>
@@ -468,6 +558,11 @@
    <property name="text">
     <string>AI_DIFFERENTIAL</string>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
    <property name="shortcut">
     <string>Ctrl+D</string>
    </property>
@@ -478,6 +573,11 @@
    </property>
    <property name="text">
     <string>AI_SINGLE_ENDED</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
    </property>
    <property name="shortcut">
     <string>Ctrl+E</string>
@@ -490,6 +590,11 @@
    <property name="text">
     <string>AI_PSEUDO_DIFFERENTIAL</string>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
   </action>
   <action name="actionBIP20VOLTS">
    <property name="checkable">
@@ -497,6 +602,11 @@
    </property>
    <property name="text">
     <string>BIP20VOLTS</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
    </property>
   </action>
   <action name="actionBIP4VOLTS">
@@ -506,6 +616,11 @@
    <property name="text">
     <string>BIP4VOLTS</string>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
   </action>
   <action name="actionBIP2PT5VOLTS">
    <property name="checkable">
@@ -513,6 +628,11 @@
    </property>
    <property name="text">
     <string>BIP2PT5VOLTS</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
    </property>
   </action>
   <action name="actionBIP2VOLTS">
@@ -522,6 +642,11 @@
    <property name="text">
     <string>BIP2VOLTS</string>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
   </action>
   <action name="actionBIP1PT25VOLTS">
    <property name="checkable">
@@ -529,6 +654,11 @@
    </property>
    <property name="text">
     <string>BIP1PT25VOLTS</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
    </property>
   </action>
   <action name="actionBIP1VOLTS">
@@ -538,6 +668,11 @@
    <property name="text">
     <string>BIP1VOLTS</string>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
   </action>
   <action name="actionUNI10VOLTS">
    <property name="checkable">
@@ -546,6 +681,11 @@
    <property name="text">
     <string>UNI10VOLTS</string>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
   </action>
   <action name="actionUNI5VOLTS">
    <property name="checkable">
@@ -553,6 +693,11 @@
    </property>
    <property name="text">
     <string>UNI5VOLTS</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
    </property>
   </action>
   <action name="actionRefresh_Devices">
@@ -570,6 +715,11 @@
    <property name="text">
     <string>Volts vs Time</string>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
   </action>
   <action name="actionTRIG_NONE">
    <property name="checkable">
@@ -581,6 +731,11 @@
    <property name="text">
     <string>TRIG_NONE</string>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
   </action>
   <action name="actionTRIG_POS_EDGE">
    <property name="checkable">
@@ -588,6 +743,11 @@
    </property>
    <property name="text">
     <string>TRIG_POS_EDGE</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
    </property>
   </action>
   <action name="actionTRIG_NEG_EDGE">
@@ -597,6 +757,11 @@
    <property name="text">
     <string>TRIG_NEG_EDGE</string>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
   </action>
   <action name="actionTRIG_HIGH">
    <property name="checkable">
@@ -604,6 +769,11 @@
    </property>
    <property name="text">
     <string>TRIG_HIGH</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
    </property>
   </action>
   <action name="actionTRIG_LOW">
@@ -613,6 +783,11 @@
    <property name="text">
     <string>TRIG_LOW</string>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
   </action>
   <action name="actionGATE_HIGH">
    <property name="checkable">
@@ -620,6 +795,11 @@
    </property>
    <property name="text">
     <string>GATE_HIGH</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
    </property>
   </action>
   <action name="actionGATE_LOW">
@@ -629,6 +809,11 @@
    <property name="text">
     <string>GATE_LOW</string>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
   </action>
   <action name="actionTRIG_RISING">
    <property name="checkable">
@@ -636,6 +821,11 @@
    </property>
    <property name="text">
     <string>TRIG_RISING</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
    </property>
   </action>
   <action name="actionTRIG_FALLING">
@@ -645,6 +835,11 @@
    <property name="text">
     <string>TRIG_FALLING</string>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
   </action>
   <action name="actionTRIG_ABOVE">
    <property name="checkable">
@@ -652,6 +847,11 @@
    </property>
    <property name="text">
     <string>TRIG_ABOVE</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
    </property>
   </action>
   <action name="actionTRIG_BELOW">
@@ -661,6 +861,11 @@
    <property name="text">
     <string>TRIG_BELOW</string>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
   </action>
   <action name="actionGATE_ABOVE">
    <property name="checkable">
@@ -668,6 +873,11 @@
    </property>
    <property name="text">
     <string>GATE_ABOVE</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
    </property>
   </action>
   <action name="actionGATE_BELOW">
@@ -677,6 +887,11 @@
    <property name="text">
     <string>GATE_BELOW</string>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
   </action>
   <action name="actionGATE_IN_WINDOW">
    <property name="checkable">
@@ -684,6 +899,11 @@
    </property>
    <property name="text">
     <string>GATE_IN_WINDOW</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
    </property>
   </action>
   <action name="actionGATE_OUT_WINDOW">
@@ -693,6 +913,11 @@
    <property name="text">
     <string>GATE_OUT_WINDOW</string>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
   </action>
   <action name="actionTRIG_PATTERN_EQ">
    <property name="checkable">
@@ -700,6 +925,11 @@
    </property>
    <property name="text">
     <string>TRIG_PATTERN_EQ</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
    </property>
   </action>
   <action name="actionTRIG_PATTERN_NE">
@@ -709,6 +939,11 @@
    <property name="text">
     <string>TRIG_PATTERN_NE</string>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
   </action>
   <action name="actionTRIG_PATTERN_ABOVE">
    <property name="checkable">
@@ -716,6 +951,11 @@
    </property>
    <property name="text">
     <string>TRIG_PATTERN_ABOVE</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
    </property>
   </action>
   <action name="actionTRIG_PATTERN_BELOW">
@@ -725,10 +965,20 @@
    <property name="text">
     <string>TRIG_PATTERN_BELOW</string>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
   </action>
   <action name="actionConfigure_Data">
    <property name="text">
     <string>Configure Data</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
    </property>
   </action>
   <action name="actionLoad_Queue">
@@ -743,6 +993,11 @@
    <property name="text">
     <string>FF_CTR64_BIT</string>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
    <property name="visible">
     <bool>false</bool>
    </property>
@@ -754,6 +1009,11 @@
    <property name="text">
     <string>FF_NOCLEAR</string>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
    <property name="visible">
     <bool>false</bool>
    </property>
@@ -761,6 +1021,11 @@
   <action name="actionEventSetup">
    <property name="text">
     <string>Configure Events</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
    </property>
   </action>
   <action name="actionSO_PACEROUT">
@@ -770,10 +1035,20 @@
    <property name="text">
     <string>SO_PACEROUT</string>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
   </action>
   <action name="actionSet_Trigger">
    <property name="text">
     <string>Set Trigger...</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
    </property>
   </action>
   <action name="actionFF_NOCLEAR_2">
@@ -831,6 +1106,11 @@
    <property name="text">
     <string>BIPPT078VOLTS</string>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
   </action>
   <action name="actionMA0TO20">
    <property name="checkable">
@@ -838,6 +1118,11 @@
    </property>
    <property name="text">
     <string>MA0TO20</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
    </property>
   </action>
   <action name="actionFF_SIMULTANEOUS">
@@ -849,6 +1134,11 @@
    </property>
    <property name="text">
     <string>FF_SIMULTANEOUS</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
    </property>
   </action>
  </widget>

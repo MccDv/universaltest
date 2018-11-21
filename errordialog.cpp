@@ -7,8 +7,21 @@ ErrorDialog::ErrorDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::ErrorDialog)
 {
+    int fontSize;
+    QFont font;
+
     ui->setupUi(this);
-    ui->txtErrList->setFont(QFont ("Courier", 10));
+    fontSize = 10;
+    font.setPointSize(10);
+
+#ifdef Q_OS_MAC
+    fontSize = 12;
+    font.setPointSize(12);
+    this->setFont(font);
+#endif
+
+    ui->txtErrList->setFont(QFont ("Courier", fontSize));
+    ui->frame->setFont(font);
     ui->txtErrList->setStyleSheet("QTextEdit { background-color : white; color : blue; }" );
     connect(ui->cmdClearHistory, SIGNAL(clicked(bool)), this, SLOT(clearHistory()));
     mHistorySize = 50;

@@ -15,7 +15,21 @@ AoSubWidget::AoSubWidget(QWidget *parent) :
     tmrCheckStatus = new QTimer(this);
     mUseGetStatus = true;
     mUseWait = false;
-    ui->lblRateReturned->setFont(QFont ("Courier", 8));
+    int fontSize;
+    QFont font;
+
+    fontSize = 8;
+    font.setPointSize(10);
+
+#ifdef Q_OS_MAC
+    fontSize = 12;
+    font.setPointSize(12);
+    this->setFont(font);
+#endif
+
+    ui->frame->setFont(font);
+    ui->fraScan->setFont(font);
+    ui->teShowValues->setFont(QFont ("Courier", fontSize));
     ui->lblRateReturned->setStyleSheet("QLabel { background-color : white; color : blue; }" );
     ui->teShowValues->setStyleSheet("QTextEdit { background-color : white; color : blue; }" );
     ui->lblStatus->setStyleSheet("QLabel { color : blue; }" );
@@ -128,11 +142,6 @@ void AoSubWidget::updateParameters()
 void AoSubWidget::groupChanged(int newGroup)
 {
     mCurGroup = newGroup;
-}
-
-void AoSubWidget::setUiForGroup()
-{
-    return;
 }
 
 void AoSubWidget::functionChanged(int utFunction)

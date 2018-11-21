@@ -6,7 +6,20 @@ EventsDialog::EventsDialog(QWidget *parent, DaqDeviceHandle devHandle) :
     ui(new Ui::EventsDialog)
 {
     ui->setupUi(this);
+    //int fontSize;
+    QFont font;
 
+    //fontSize = 8;
+    font.setPointSize(10);
+
+#ifdef Q_OS_MAC
+    //fontSize = 12;
+    font.setPointSize(12);
+    this->setFont(font);
+#endif
+
+    ui->fraEvents->setFont(font);
+    ui->fraStatusDone->setFont(font);
     mDaqDeviceHandle = devHandle;
     mEvtEndInScanExists = false;
     mEvtEndInScanChanged = false;

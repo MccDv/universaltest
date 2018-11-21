@@ -9,11 +9,24 @@ DiscoverSubWidget::DiscoverSubWidget(QWidget *parent) :
 {
     ui->setupUi(this);
     QString str;
+    int fontSize;
+    QFont font;
 
-    ui->leNumDevs->setText(str.setNum(MAX_DEV_COUNT));
+    fontSize = 8;
+    font.setPointSize(10);
+
+#ifdef Q_OS_MAC
+    fontSize = 12;
+    font.setPointSize(12);
+    this->setFont(font);
+#endif
+
+    ui->textEdit->setFont(QFont ("Courier", fontSize));
     ui->lblInfo->setStyleSheet("QLabel { color : blue; }" );
     ui->textEdit->setStyleSheet("QTextEdit { background-color : white; color : blue; }");
     ui->lblDevicesFound->setStyleSheet("QLabel { color : blue; }" );
+
+    ui->leNumDevs->setText(str.setNum(MAX_DEV_COUNT));
     connect(ui->listWidget, SIGNAL(itemSelectionChanged()),
                      this, SLOT(on_listWidget_itemSelectionChanged()));
     //connect(ui->cmdCreate, SIGNAL(clicked()), MainWindow, SLOT(());
@@ -38,11 +51,6 @@ MainWindow* DiscoverSubWidget::getMainWindow()
     return nullptr;
 }
 
-void DiscoverSubWidget::updateParameters()
-{
-
-}
-
 void DiscoverSubWidget::functionChanged(int utFunction)
 {
     if (utFunction == UL_DISC) {
@@ -59,21 +67,6 @@ void DiscoverSubWidget::groupChanged(int newGroup)
 void DiscoverSubWidget::on_listWidget_itemSelectionChanged()
 {
     updateList();
-}
-
-void DiscoverSubWidget::runSelectedFunc()
-{
-
-}
-
-void DiscoverSubWidget::setUiForGroup()
-{
-
-}
-
-void DiscoverSubWidget::setUiForFunction()
-{
-
 }
 
 void DiscoverSubWidget::updateList()
@@ -361,7 +354,6 @@ void DiscoverSubWidget::refreshSelDevice()
                 updateList();
                 break;
             }
-
         }
     }
 }
@@ -418,4 +410,26 @@ void DiscoverSubWidget::checkConnection()
         ui->cmdDisconnect->setEnabled(connected);
         ui->cmdConnect->setEnabled(!connected);
     }
+}
+
+//stub slots for childwindow signals
+
+void DiscoverSubWidget::updateParameters()
+{
+    return;
+}
+
+void DiscoverSubWidget::runSelectedFunc()
+{
+    return;
+}
+
+void DiscoverSubWidget::setUiForGroup()
+{
+    return;
+}
+
+void DiscoverSubWidget::setUiForFunction()
+{
+    return;
 }

@@ -13,17 +13,29 @@ DioSubWidget::DioSubWidget(QWidget *parent) :
     ui(new Ui::DioSubWidget)
 {
     ui->setupUi(this);
-    //connect(this, SIGNAL(destroyed(QObject*)), this->parent(), SLOT(deleteLater()));
+    int fontSize;
+    QFont font;
 
     tmrCheckStatus = new QTimer(this);
     mUseGetStatus = true;
     mUseWait = false;
-    ui->teShowValues->setFont(QFont ("Courier", 8));
-    ui->lblRateReturned->setFont(QFont ("Courier", 8));
+    fontSize = 8;
+    font.setPointSize(10);
+
+#ifdef Q_OS_MAC
+    fontSize = 12;
+    font.setPointSize(12);
+    this->setFont(font);
+#endif
+
+    ui->teShowValues->setFont(QFont ("Courier", fontSize));
+    //ui->lblRateReturned->setFont(QFont ("Ubuntu", fontSize));
+    ui->fraInfoStat->setFont(QFont ("Courier", fontSize));
     ui->teShowValues->setStyleSheet("QTextEdit { background-color : white; color : blue; }" );
     ui->lblStatus->setStyleSheet("QLabel { color : blue; } ");
     ui->lblInfo->setStyleSheet("QLabel { color : blue; } ");
     ui->lblRateReturned->setStyleSheet("QLabel { background-color : white; color : blue; }" );
+
     connect(tmrCheckStatus, SIGNAL(timeout()), this, SLOT(checkStatus()));
     connect(ui->cmdToggle, SIGNAL(clicked(bool)), this, SLOT(togglePortSelection()));
     connect(ui->cmdConfigIn, SIGNAL(clicked(bool)), this, SLOT(configureInputs()));
@@ -143,11 +155,6 @@ void DioSubWidget::updateParameters()
 void DioSubWidget::groupChanged(int newGroup)
 {
     mCurGroup = newGroup;
-}
-
-void DioSubWidget::setUiForGroup()
-{
-    return;
 }
 
 void DioSubWidget::functionChanged(int utFunction)
@@ -1006,7 +1013,7 @@ long long DioSubWidget::getIOConfigMask(int portIndex)
     funcArgs = "(mDaqDeviceHandle, configItem, portIndex, &configValue)\n";
     sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
     err = ulDIOGetConfig(mDaqDeviceHandle, configItem, portIndex, &configValue);
-    argVals = QStringLiteral("(%1, %2, %3)")
+    argVals = QStringLiteral("(%1, %2, %3, %4)")
             .arg(mDaqDeviceHandle)
             .arg(configItem)
             .arg(portIndex)
@@ -2348,4 +2355,11 @@ void DioSubWidget::mapGridToPortBit(int gridIndex, DigitalPortType &portType, in
             bitInPort = gridIndex - 48;
         }
     }
+}
+
+//stub slots for childwindow signals
+
+void DioSubWidget::showQueueConfig()
+{
+    return;
 }

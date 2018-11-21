@@ -16,9 +16,23 @@ AiSubWidget::AiSubWidget(QWidget *parent) :
     tmrCheckStatus = new QTimer(this);
     mUseGetStatus = true;
     mUseWait = false;
-    ui->teShowValues->setFont(QFont ("Courier", 8));
+    int fontSize;
+    QFont font;
+
+    fontSize = 8;
+    font.setPointSize(10);
+
+#ifdef Q_OS_MAC
+    fontSize = 12;
+    font.setPointSize(12);
+    this->setFont(font);
+#endif
+
+    ui->teShowValues->setFont(QFont ("Courier", fontSize));
+    ui->lblRateReturned->setFont(QFont ("Courier", fontSize));
+    ui->frame->setFont(QFont ("Ubuntu", fontSize));
+    ui->fraScan->setFont(QFont ("Ubuntu", fontSize));
     ui->teShowValues->setStyleSheet("QTextEdit { background-color : white; color : blue; }" );
-    ui->lblRateReturned->setFont(QFont ("Courier", 8));
     ui->lblRateReturned->setStyleSheet("QLabel { background-color : white; color : blue; }" );
     ui->lblStatus->setStyleSheet("QLabel { color : blue; }" );
     ui->lblInfo->setStyleSheet("QLabel { color : blue; }" );
@@ -172,11 +186,6 @@ void AiSubWidget::groupChanged(int newGroup)
 {
     mCurGroup = newGroup;
     //setUiForGroup();
-}
-
-void AiSubWidget::setUiForGroup()
-{
-    return;
 }
 
 void AiSubWidget::functionChanged(int utFunction)
@@ -397,6 +406,7 @@ void AiSubWidget::setUiForFunction()
     ui->cmdStop->setEnabled(false);
     showPlotWindow(mPlot);
     this->setWindowTitle(mFuncName + ": " + mDevName + QString(" [%1]").arg(mDaqDeviceHandle));
+    ui->cmdGo->setFocus();
 }
 
 void AiSubWidget::updateText(QString infoText)
@@ -1640,3 +1650,11 @@ void AiSubWidget::plotSelect()
     if (!mRunning)
         plotScan(mPlotCount, mPlotIndex, mBlockSize);
 }
+
+//stub slots for childwindow signals
+
+void AiSubWidget::showDataGen()
+{
+    return;
+}
+

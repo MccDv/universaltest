@@ -15,6 +15,37 @@ CtrSubWidget::CtrSubWidget(QWidget *parent) :
     tmrCheckStatus = new QTimer(this);
     mUseGetStatus = true;
     mUseWait = false;
+    int fontSize;
+    QFont font;
+
+    fontSize = 8;
+    font.setPointSize(10);
+
+#ifdef Q_OS_MAC
+    fontSize = 12;
+    font.setPointSize(12);
+    this->setFont(font);
+#endif
+
+    ui->lblDelayReturn->setFont(font);
+    ui->lblDutyReturn->setFont(font);
+    ui->lblFreqReturn->setFont(font);
+    ui->lblRateReturned->setFont(font);
+    ui->teShowValues->setFont(QFont ("Courier", fontSize));
+    ui->lblStatus->setFont(QFont ("Courier", fontSize));
+    ui->lwMeasMode->setFont(QFont ("Ubuntu", fontSize));
+    ui->lwTypeModes->setFont(QFont ("Ubuntu", fontSize));
+    ui->fraScan->setFont(font);
+    ui->fraScanParams->setFont(font);
+
+    ui->lblDelayReturn->setStyleSheet("QLabel { background-color : white; color : blue; } ");
+    ui->lblDutyReturn->setStyleSheet("QLabel { background-color : white; color : blue; }" );
+    ui->lblFreqReturn->setStyleSheet("QLabel { background-color : white; color : blue; }" );
+    ui->lblRateReturned->setStyleSheet("QLabel { background-color : white; color : blue; }" );
+    ui->lblStatus->setStyleSheet("QLabel { color : blue; }" );
+    ui->lblInfo->setStyleSheet("QLabel { color : blue; }" );
+    ui->teShowValues->setStyleSheet("QTextEdit { background-color : white; color : blue; }" );
+
     ui->cmbSelReg->addItem("Load Resister", CRT_LOAD);
     ui->cmbSelReg->addItem("Min Register", CRT_MIN_LIMIT);
     ui->cmbSelReg->addItem("Max Register", CRT_MAX_LIMIT);
@@ -34,21 +65,6 @@ CtrSubWidget::CtrSubWidget(QWidget *parent) :
     ui->cmbOptions->addItem("Retrigger", PO_RETRIGGER);
     ui->cmbIdleState->addItem("Idle Low", TMRIS_LOW);
     ui->cmbIdleState->addItem("Idle High", TMRIS_HIGH);
-
-    ui->lblDelayReturn->setStyleSheet("QLabel { background-color : white; color : blue; } ");
-    ui->lblDutyReturn->setStyleSheet("QLabel { background-color : white; color : blue; }" );
-    ui->lblFreqReturn->setStyleSheet("QLabel { background-color : white; color : blue; }" );
-    ui->lblRateReturned->setStyleSheet("QLabel { background-color : white; color : blue; }" );
-    ui->lblStatus->setStyleSheet("QLabel { color : blue; }" );
-    ui->lblInfo->setStyleSheet("QLabel { color : blue; }" );
-    ui->teShowValues->setStyleSheet("QTextEdit { background-color : white; color : blue; }" );
-
-    ui->lblDelayReturn->setFont(QFont ("Courier", 8));
-    ui->lblDutyReturn->setFont(QFont ("Courier", 8));
-    ui->lblFreqReturn->setFont(QFont ("Courier", 8));
-    ui->lblRateReturned->setFont(QFont ("Courier", 8));
-    ui->teShowValues->setFont(QFont ("Courier", 8));
-    ui->lblStatus->setFont(QFont ("Courier", 8));
 
     connect(tmrCheckStatus, SIGNAL(timeout()), this, SLOT(checkStatus()));
     connect(ui->cmdGo, SIGNAL(clicked(bool)), this, SLOT(onClickCmdGo()));
@@ -254,11 +270,6 @@ void CtrSubWidget::groupChanged(int newGroup)
 {
     mCurGroup = newGroup;
     //setUiForGroup();
-}
-
-void CtrSubWidget::setUiForGroup()
-{
-    return;
 }
 
 void CtrSubWidget::functionChanged(int utFunction)
@@ -1579,4 +1590,16 @@ void CtrSubWidget::plotSelect()
 
     if (!mRunning)
         plotScan(mPlotCount, mPlotIndex, mBlockSize);
+}
+
+//stub slots for childwindow signals
+
+void CtrSubWidget::showDataGen()
+{
+    return;
+}
+
+void CtrSubWidget::showQueueConfig()
+{
+    return;
 }

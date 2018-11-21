@@ -6,6 +6,21 @@ TrigDialog::TrigDialog(QWidget *parent) :
     ui(new Ui::TrigDialog)
 {
     ui->setupUi(this);
+    //int fontSize;
+    QFont font;
+
+    //fontSize = 8;
+    font.setPointSize(10);
+
+#ifdef Q_OS_MAC
+    //fontSize = 12;
+    font.setPointSize(12);
+    this->setFont(font);
+#endif
+
+    ui->frame->setFont(font);
+    ui->fraChanDesc->setFont(font);
+    ui->frame_2->setFont(font);
     ui->cmbChanType->addItem("Standard", DaqInChanType(0));
     ui->cmbChanType->addItem("AnalogDiff", DAQI_ANALOG_DIFF);
     ui->cmbChanType->addItem("AnalogSE", DAQI_ANALOG_SE);

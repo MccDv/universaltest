@@ -49,6 +49,8 @@ private slots:
     void replot();
     void plotSelect();
     void readRegister();
+    void showDataGen();
+    void showQueueConfig();
     void showData(unsigned long long curTotalCount, unsigned long long curIndex, int blockSize);
 
 private:
@@ -112,7 +114,7 @@ private:
     long long mBufSize;
     long long mFinalCount;
 
-    void setUiForGroup();
+    //void setUiForGroup();
     void setUiForFunction();
     void runSetTriggerFunc();
     void runEventDisable(DaqEventType eventType);

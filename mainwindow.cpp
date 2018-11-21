@@ -14,6 +14,18 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    //int fontSize;
+    QFont font;
+
+    //fontSize = 8;
+    font.setPointSize(10);
+
+#ifdef Q_OS_MAC
+    //fontSize = 12;
+    font.setPointSize(12);
+    this->setFont(font);
+#endif
+
     mHistListSize = 50;
     functionGroup = new QActionGroup(this);
 
@@ -197,6 +209,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
             curChild->setTmrRunning(false);
             scanStopRequested(curChild);
         }
+        ui->lblAppStatus->setText(QString("Key code %1").arg(keyCode));
         if ((keyCode == Qt::Key_Greater)
                 | (keyCode == Qt::Key_Less)) {
             int curFuncIndex = functionGroup->actions().indexOf(functionGroup->checkedAction());
@@ -208,7 +221,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
                 else
                     curFuncIndex++;
             } else {
-                if (functionGroup->actions().at(curFuncIndex) == 0)
+                if (functionGroup->actions().at(curFuncIndex) == (functionGroup->actions().at(0)))
                     curFuncIndex = functionGroup->actions().indexOf(functionGroup->actions().at(lastIndex));
                 else
                     curFuncIndex--;

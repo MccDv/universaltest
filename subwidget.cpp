@@ -11,8 +11,21 @@ subWidget::subWidget(QWidget *parent) :
     ui(new Ui::subWidget)
 {
     ui->setupUi(this);
+    int fontSize;
+    QFont font;
 
-    ui->teShowValues->setFont(QFont ("Courier", 8));
+    fontSize = 8;
+    font.setPointSize(10);
+
+#ifdef Q_OS_MAC
+    fontSize = 12;
+    font.setPointSize(12);
+    this->setFont(font);
+#endif
+
+    ui->teShowValues->setFont(QFont ("Courier", fontSize));
+    ui->fraCenter->setFont(font);
+    ui->fraSelector->setFont(font);
     ui->teShowValues->setStyleSheet("QTextEdit { background-color : white; color : blue; }" );
     ui->lblStatus->setStyleSheet("QLabel { background-color : white; color : blue; }" );
     //connect(ui->spnIndex, SIGNAL(valueChanged(int)), SLOT(runSelectedFunc()));
@@ -1947,4 +1960,42 @@ void subWidget::getErrorMessage()
 
     funcStr = nameOfFunc + argVals;
     ui->lblStatus->setText(funcStr + QString(" [Error = %1]").arg(err));
+}
+
+//stub slots for childwindow signals
+
+void subWidget::initDeviceParams()
+{
+    return;
+}
+
+void subWidget::showPlotWindow(bool)
+{
+    return;
+}
+
+void subWidget::runEventSetup()
+{
+    return;
+}
+
+void subWidget::showQueueConfig()
+{
+    return;
+}
+
+void subWidget::showDataGen()
+{
+    return;
+}
+
+void subWidget::updateText(QString infoText)
+{
+    (void)infoText;
+    return;
+}
+
+void subWidget::swStopScan()
+{
+    return;
 }

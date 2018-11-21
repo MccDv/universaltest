@@ -139,7 +139,7 @@ private:
     QHash<int, bool>        mBipolar;
     QHash<int, int>         mDataScale;
 
-    void setUiForGroup();
+    //void setUiForGroup();
     void setUiForFunction();
     void runSetTriggerFunc();
     void runEventDisable(DaqEventType eventType);
