@@ -986,6 +986,7 @@ void AiSubWidget::runTInArray()
     int samplesToRead, curIndex;
     double curSample;
     double *data;
+    QString errNumStr;
     QString nameOfFunc, funcArgs, argVals, funcStr;
     QString showSign = "+";
     int afterDecimal, totalZ, bufIndex;
@@ -1034,12 +1035,25 @@ void AiSubWidget::runTInArray()
                 .arg(mTiArrFlags)
                 .arg(data[0]);
 
+        QString errDesc = "";
         ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
         funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
         if (err != ERR_NO_ERROR) {
-            mUseTimer = false;
-            mMainWindow->setError(err, sStartTime + funcStr);
-            return;
+            errNumStr = QString("[Error %1: ").arg(err);
+            switch (err) {
+            case ERR_OPEN_CONNECTION:
+                errDesc = errNumStr + "Open thermocouple]";
+                break;
+            default:
+                break;
+            }
+            if (errDesc.length()) {
+                mMainWindow->addFunction(sStartTime + funcStr + errDesc);
+            } else {
+                mUseTimer = false;
+                mMainWindow->setError(err, sStartTime + funcStr);
+                return;
+            }
         } else {
             mMainWindow->addFunction(sStartTime + funcStr);
         }
