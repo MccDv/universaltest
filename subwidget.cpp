@@ -1741,6 +1741,7 @@ void subWidget::setConfiguration()
     configType = ui->cmbInfoType->currentData(Qt::UserRole).toInt();
     configItem = ui->cmbConfigItem->currentData(Qt::UserRole).toInt();
     configValue = ui->leSetValue->text().toLongLong();
+    configValueDbl = ui->leSetValue->text().toDouble();
     index = ui->spnIndex->value();
 
     if(configItem == 0)
@@ -1793,7 +1794,6 @@ void subWidget::setConfiguration()
         noConfigItem = true;
         break;
     }
-    ui->lblStatus->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
 
     if (noConfigItem) {
         ui->teShowValues->clear();
@@ -1823,15 +1823,21 @@ void subWidget::setConfiguration()
                 .arg(configValue);
     }
 
+    ui->lblStatus->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
     if (err != ERR_NO_ERROR) {
         //funcStr = nameOfFunc + funcArgs + argVals;
         mMainWindow->setError(err, sStartTime + funcStr);
     } else {
         mMainWindow->addFunction(sStartTime + funcStr);
-        textToAdd = QString("%1 = %2")
-                .arg(showItem)
-                .arg(configValue);
+        if (dblConfigItem)
+            textToAdd = QString("%1 = %2")
+                    .arg(showItem)
+                    .arg(configValueDbl);
+        else
+            textToAdd = QString("%1 = %2")
+                    .arg(showItem)
+                    .arg(configValue);
         if(showIndex) textToAdd += QString(" (index %1)").arg(index) + valueText;
         ui->teShowValues->append(textToAdd);
     }
