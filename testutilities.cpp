@@ -1119,7 +1119,7 @@ QString getRangeName(Range rangeVal)
     case BIPPT1VOLTS:
         return "BipPt1Volts";
     case BIPPT078VOLTS:
-        return "BipPt05Volts";
+        return "BipPt078Volts";
     case BIPPT05VOLTS:
         return "BipPt01Volts";
     case BIPPT01VOLTS:
