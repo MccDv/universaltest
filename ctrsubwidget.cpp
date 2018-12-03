@@ -862,6 +862,7 @@ void CtrSubWidget::readRegister()
     regType = (CounterRegisterType)ui->cmbSelReg->currentData().toInt();
     foreach (int ctrNum, ctrsSelected) {
         sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
+        data = 1100011;
         err = ulCRead(mDaqDeviceHandle, ctrNum, regType, &data);
         regName = QString("%1, ").arg(regType);
         argVals = QStringLiteral("(%1, %2, %3%4)") //intentional missing comma
@@ -924,11 +925,13 @@ void CtrSubWidget::runCInFunc()
                 nameOfFunc = "ulCIn";
                 funcArgs = "(mDaqDeviceHandle, ctrNum, data)\n";
                 sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
+                data = 1100011;
                 err = ulCIn(mDaqDeviceHandle, ctrNum, &data);
             } else {
                 nameOfFunc = "ulCRead";
                 funcArgs = "(mDaqDeviceHandle, ctrNum, regType, data)\n";
                 sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
+                data = 1100011;
                 err = ulCRead(mDaqDeviceHandle, ctrNum, regType, &data);
                 regName = QString("%1, ").arg(regType);
             }

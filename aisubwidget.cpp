@@ -809,6 +809,7 @@ void AiSubWidget::runAInFunc()
         curIndex = 0;
         for (int curChan = aInChan; curChan <= aInLastChan; curChan ++) {
             sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
+            data = -110011;
             err = ulAIn(mDaqDeviceHandle, curChan, mInputMode, mRange, mAiFlags, &data);
             argVals = QStringLiteral("(%1, %2, %3, %4, %5, %6)")
                     .arg(mDaqDeviceHandle)
@@ -907,6 +908,7 @@ void AiSubWidget::runTInFunc()
         //curIndex = 0;
         for (int curChan = tInChan; curChan <= tInLastChan; curChan ++) {
             sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
+            data = -110011;
             err = ulTIn(mDaqDeviceHandle, curChan, mScale, mTiFlags, &data);
             argVals = QStringLiteral("(%1, %2, %3, %4, %5)")
                     .arg(mDaqDeviceHandle)

@@ -1275,6 +1275,7 @@ void DioSubWidget::runDInFunc()
         curIndex = 0;
         foreach (DigitalPortType portType, portsSelected) {
             sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
+            data = 110011;
             err = ulDIn(mDaqDeviceHandle, portType, &data);
             dataVal[curIndex] = data;
             dataArray[sampleNum][curIndex] = dataVal[curIndex];
