@@ -551,6 +551,39 @@ void DioSubWidget::updateControlDefaults(bool setAllValidPorts)
             case SECONDPORTA:
                 ui->chk2ndA->setChecked(true);
                 break;
+            case SECONDPORTB:
+                ui->chk2ndB->setChecked(true);
+                break;
+            case SECONDPORTCL:
+                ui->chk2ndCL->setChecked(true);
+                break;
+            case SECONDPORTCH:
+                ui->chk2ndCH->setChecked(true);
+                break;
+            case THIRDPORTA:
+                ui->chk3rdA->setChecked(true);
+                break;
+            case THIRDPORTB:
+                ui->chk3rdB->setChecked(true);
+                break;
+            case THIRDPORTCL:
+                ui->chk3rdCL->setChecked(true);
+                break;
+            case THIRDPORTCH:
+                ui->chk3rdCH->setChecked(true);
+                break;
+            case FOURTHPORTA:
+                ui->chk4thA->setChecked(true);
+                break;
+            case FOURTHPORTB:
+                ui->chk4thB->setChecked(true);
+                break;
+            case FOURTHPORTCL:
+                ui->chk4thCL->setChecked(true);
+                break;
+            case FOURTHPORTCH:
+                ui->chk4thCH->setChecked(true);
+                break;
             default:
                 break;
             }
@@ -2324,6 +2357,30 @@ int DioSubWidget::getGridOffsetFromPort(DigitalPortType portType)
         return 48;
     case FIRSTPORTCH:
         return 52;
+    case SECONDPORTA:
+        return 56;
+    case SECONDPORTB:
+        return 64;
+    case SECONDPORTCL:
+        return 72;
+    case SECONDPORTCH:
+        return 76;
+    case THIRDPORTA:
+        return 80;
+    case THIRDPORTB:
+        return 88;
+    case THIRDPORTCL:
+        return 96;
+    case THIRDPORTCH:
+        return 100;
+    case FOURTHPORTA:
+        return 104;
+    case FOURTHPORTB:
+        return 112;
+    case FOURTHPORTCL:
+        return 120;
+    case FOURTHPORTCH:
+        return 124;
     default:
         return 0;
         break;
@@ -2355,6 +2412,42 @@ void DioSubWidget::mapGridToPortBit(int gridIndex, DigitalPortType &portType, in
         } else {
             bitInPort = gridIndex - 48;
         }
+    } else if (gridIndex < 64) {
+        portType = SECONDPORTA;
+        bitInPort = gridIndex - 56;
+    } else if (gridIndex < 72) {
+        portType = SECONDPORTB;
+        bitInPort = gridIndex - 64;
+    } else if (gridIndex < 76) {
+        portType = SECONDPORTCL;
+        bitInPort = gridIndex - 72;
+    } else if (gridIndex < 80) {
+        portType = SECONDPORTCH;
+        bitInPort = gridIndex - 76;
+    } else if (gridIndex < 88) {
+        portType = THIRDPORTA;
+        bitInPort = gridIndex - 80;
+    } else if (gridIndex < 96) {
+        portType = THIRDPORTB;
+        bitInPort = gridIndex - 88;
+    } else if (gridIndex < 100) {
+        portType = THIRDPORTCL;
+        bitInPort = gridIndex - 96;
+    } else if (gridIndex < 104) {
+        portType = THIRDPORTCH;
+        bitInPort = gridIndex - 100;
+    } else if (gridIndex < 112) {
+        portType = FOURTHPORTA;
+        bitInPort = gridIndex - 104;
+    } else if (gridIndex < 120) {
+        portType = FOURTHPORTB;
+        bitInPort = gridIndex - 112;
+    } else if (gridIndex < 124) {
+        portType = FOURTHPORTCL;
+        bitInPort = gridIndex - 120;
+    } else if (gridIndex < 128) {
+        portType = FOURTHPORTCH;
+        bitInPort = gridIndex - 124;
     }
 }
 

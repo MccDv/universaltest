@@ -61,8 +61,8 @@ private:
     MainWindow *mMainWindow;
     QTimer *tmrCheckStatus;
     DataSelectDialog *dataSelectDlg;
-    int numBitCheckboxes = 112;
-    QCheckBox *chkBit[112]={};
+    int numBitCheckboxes = 128;
+    QCheckBox *chkBit[128]={};
     QRadioButton *rbPlotSel[8]={};
     QList<QCheckBox*> portCheckBoxes;
     UlError err;
