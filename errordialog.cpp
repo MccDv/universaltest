@@ -67,6 +67,7 @@ void ErrorDialog::showHistory(QStringList historyList)
     QString infoHtml = "<font color=\"Green\">";
     QString endHtml = "</font><br>";
     QString str;
+    int endErr;
 
     ui->txtErrList->clear();
     for (int i = (historyList.size()- 1); i >= 0; i--) {
@@ -76,9 +77,9 @@ void ErrorDialog::showHistory(QStringList historyList)
         errText = "";
         if (aStr.startsWith("Error")) {
             //error occurred
-            eStr = aStr.left(aStr.indexOf("_"));
-            aStr.remove(QRegularExpression(eStr + "_"));
-            eStr.remove(QRegularExpression("Error"));
+            endErr = aStr.indexOf("_") + 1;
+            eStr = aStr.mid(5, endErr - 6);
+            aStr.remove(0, endErr);
             errText = getErrorText(eStr.toInt());
         }
         tStr = aStr.left(aStr.indexOf("~"));
