@@ -170,8 +170,10 @@ void QueueDialog::lstQueueRowSelected(int rowSelected)
                     case 1002:
                         //UNI10VOLTS
                         ui->cmbRange->setCurrentIndex(9);
+                        break;
                     case 1003:
                         ui->cmbRange->setCurrentIndex(10);
+                        break;
                     default:
                         break;
                     }

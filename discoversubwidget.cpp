@@ -30,7 +30,7 @@ DiscoverSubWidget::DiscoverSubWidget(QWidget *parent) :
     connect(ui->listWidget, SIGNAL(itemSelectionChanged()),
                      this, SLOT(on_listWidget_itemSelectionChanged()));
     //connect(ui->cmdCreate, SIGNAL(clicked()), MainWindow, SLOT(());
-    connect(ui->cmdDiscover, SIGNAL(clicked(bool)), this, SLOT(on_actionRefresh_Devices_triggered()));
+    connect(ui->cmdDiscover, SIGNAL(clicked(bool)), this, SLOT(on_cmdDiscover_clicked()));
     connect(ui->cmdDescriptor, SIGNAL(clicked(bool)), this, SLOT(getDescriptor()));
     connect(ui->cmdIsConnected, SIGNAL(clicked(bool)), this, SLOT(checkConnection()));
     ui->textEdit->setTabStopWidth(50);
@@ -55,7 +55,7 @@ void DiscoverSubWidget::functionChanged(int utFunction)
 {
     if (utFunction == UL_DISC) {
         //mDevListCount = MainWindow.devListCount();
-        on_actionRefresh_Devices_triggered();
+        on_cmdDiscover_clicked();
     }
 }
 
@@ -271,7 +271,7 @@ void DiscoverSubWidget::updateConnectionStatus()
     }
 }
 
-void DiscoverSubWidget::on_actionRefresh_Devices_triggered()
+void DiscoverSubWidget::on_cmdDiscover_clicked()
 {
     QString nameOfFunc, funcArgs, argVals, funcStr;
     QTime t;
@@ -414,22 +414,24 @@ void DiscoverSubWidget::checkConnection()
 
 //stub slots for childwindow signals
 
-void DiscoverSubWidget::updateParameters()
-{
-    return;
-}
+void DiscoverSubWidget::updateParameters() { return; }
 
-void DiscoverSubWidget::runSelectedFunc()
-{
-    return;
-}
+void DiscoverSubWidget::runSelectedFunc() { return; }
 
-void DiscoverSubWidget::setUiForGroup()
-{
-    return;
-}
+void DiscoverSubWidget::setUiForGroup() { return; }
 
-void DiscoverSubWidget::setUiForFunction()
-{
-    return;
-}
+void DiscoverSubWidget::setUiForFunction() { return; }
+
+void DiscoverSubWidget::initDeviceParams() { return; }
+
+void DiscoverSubWidget::runEventSetup() { return; }
+
+void DiscoverSubWidget::showPlotWindow(bool) { return; }
+
+void DiscoverSubWidget::updateText(QString) { return; }
+
+void DiscoverSubWidget::showDataGen() { return; }
+
+void DiscoverSubWidget::showQueueConfig() { return; }
+
+void DiscoverSubWidget::swStopScan() { return; }

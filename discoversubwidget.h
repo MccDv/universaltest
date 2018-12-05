@@ -21,6 +21,8 @@ public:
     ~DiscoverSubWidget();
 
 private slots:
+    void initDeviceParams();
+    void runEventSetup();
     void updateParameters();
     void functionChanged(int utFunction);
     void groupChanged(int newGroup);
@@ -30,10 +32,17 @@ private slots:
     void on_cmdRelease_clicked();
     void on_cmdDisconnect_clicked();
     void on_cmdConnect_clicked();
-    void on_actionRefresh_Devices_triggered();
+    //void on_actionRefresh_Devices_triggered();
     void getDescriptor();
     void checkConnection();
+    void showPlotWindow(bool);
+    void updateText(QString infoText);
+    void showDataGen();
+    void showQueueConfig();
+    void swStopScan();
     //void on_listWidget_clicked(const QModelIndex &index);
+
+    void on_cmdDiscover_clicked();
 
 private:
     Ui::DiscoverSubWidget *ui;

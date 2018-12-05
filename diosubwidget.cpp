@@ -1284,11 +1284,15 @@ void DioSubWidget::runDInFunc()
     DigitalPortType portType;
 
     portsSelected.clear();
-    foreach (QCheckBox *chkPort, portCheckBoxes) {
-        if (chkPort->isChecked()) {
+    foreach (DigitalPortType testPort, validPorts) {
+        foreach (QCheckBox *chkPort, portCheckBoxes) {
             int portNum = chkPort->property("portNum").toInt();
             portType = (DigitalPortType)portNum;
-            portsSelected.append(portType);
+            if (portType == testPort) {
+                if (chkPort->isChecked())
+                    portsSelected.append(portType);
+                break;
+            }
         }
     }
     numDigPorts = portsSelected.count();
@@ -1330,6 +1334,7 @@ void DioSubWidget::runDInFunc()
     }
 
     QString temp;
+    int portNum;
     QListIterator<DigitalPortType> i(portsSelected);
     if (mUtFunction == UL_D_CONFIG_PORT) {
         QString portValues = "";
@@ -1345,12 +1350,19 @@ void DioSubWidget::runDInFunc()
     } else {
         ui->teShowValues->clear();
         dataText = "<style> th, td { padding-right: 10px;}</style><tr>";
+        dataText.append("<td></td>");
+        foreach (DigitalPortType portType, portsSelected) {
+            portNum = (int)portType;
+            dataText.append("<td>P" + str.setNum(portNum) + "</td>");
+        }
+        dataText.append("</tr><tr>");
         for (int sampleNum = 0; sampleNum < numSamples; sampleNum++) {
             curIndex = 0;
             dataText.append("<td>" + str.setNum(sampleNum * numDigPorts) + "</td>");
-            foreach (int portNum, portList) {
+            foreach (DigitalPortType portType, portsSelected) {
+                portNum = (int)portType;
                 data = dataArray[sampleNum][curIndex];
-                dataText.append("<td>P" + str.setNum(portNum) + ": " + temp.setNum(data) + "</td>");
+                dataText.append("<td>" + temp.setNum(data) + "</td>");
                 curIndex++;
             }
             dataText.append("</tr><tr>");
