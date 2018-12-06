@@ -32,7 +32,7 @@ The following describes how these prerequisites can be installed.
 ### Build Instructions
 ---------------------
 
-1. Clone the universallibrary repository onto your linux system:
+1. Clone the universaltest repository onto your linux system:
  
 ```sh
   $ cd ~
