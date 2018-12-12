@@ -1619,7 +1619,7 @@ void DioSubWidget::runDInScanFunc()
     QString nameOfFunc, funcArgs, argVals, funcStr;
     QList<int> portsSelected;
     QTime t;
-    QString sStartTime;
+    QString sStartTime, blockStyle;
 
     portsSelected.clear();
     foreach (QCheckBox *chkPort, portCheckBoxes) {
@@ -1643,6 +1643,17 @@ void DioSubWidget::runDInScanFunc()
     mBlockSize = ui->leBlockSize->text().toLongLong();
 
     mSamplesPerChan = samplesPerPort;
+    if(mSamplesPerChan < mBlockSize * 1.8) {
+        QString warnColor;
+        warnColor = "";
+        if(mScanOptions && SO_CONTINUOUS)
+            warnColor = "background-color:yellow;";
+        if(mSamplesPerChan < mBlockSize)
+            warnColor += "color:red;";
+        blockStyle = warnColor;
+    }
+    ui->leBlockSize->setStyleSheet(blockStyle);
+
     long long bufSize = numDigPorts * samplesPerPort;
     if(mPlot)
         setupPlot(ui->plotDigitalData, mChanCount);

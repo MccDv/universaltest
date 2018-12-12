@@ -1106,7 +1106,7 @@ void AiSubWidget::runAInScanFunc()
     int lowChan, highChan;
     QString nameOfFunc, funcArgs, argVals, funcStr;
     QTime t;
-    QString sStartTime;
+    QString sStartTime, blockStyle;
 
     lowChan = ui->spnLowChan->value();
     highChan = ui->spnHighChan->value();
@@ -1116,6 +1116,16 @@ void AiSubWidget::runAInScanFunc()
     mSamplesPerChan = ui->leNumSamples->text().toLong();
     double rate = ui->leRate->text().toDouble();
 
+    if(mSamplesPerChan < mBlockSize * 1.8) {
+        QString warnColor;
+        warnColor = "";
+        if(mScanOptions && SO_CONTINUOUS)
+            warnColor = "background-color:yellow;";
+        if(mSamplesPerChan < mBlockSize)
+            warnColor += "color:red;";
+        blockStyle = warnColor;
+    }
+    ui->leBlockSize->setStyleSheet(blockStyle);
     /*xValues.resize(mBlockSize);
     yChans.resize(mChanCount);
     for (int chan=0; chan<mChanCount; chan++)
@@ -1212,7 +1222,7 @@ void AiSubWidget::runAInScanFunc()
 void AiSubWidget::runDaqInScanFunc()
 {
     QTime t;
-    QString sStartTime;
+    QString sStartTime, blockStyle;
     double rate;
     QString nameOfFunc, funcArgs, argVals, funcStr;
 
@@ -1222,6 +1232,17 @@ void AiSubWidget::runDaqInScanFunc()
     if(mChanCount < 1) mChanCount = 1;
     mSamplesPerChan = ui->leNumSamples->text().toLong();
     rate = ui->leRate->text().toDouble();
+
+    if(mSamplesPerChan < mBlockSize * 1.8) {
+        QString warnColor;
+        warnColor = "";
+        if(mScanOptions && SO_CONTINUOUS)
+            warnColor = "background-color:yellow;";
+        if(mSamplesPerChan < mBlockSize)
+            warnColor += "color:red;";
+        blockStyle = warnColor;
+    }
+    ui->leBlockSize->setStyleSheet(blockStyle);
 
     long long bufSize = mChanCount * mSamplesPerChan;
     if(mPlot)

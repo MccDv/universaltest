@@ -253,7 +253,7 @@
          </size>
         </property>
         <property name="toolTip">
-         <string>Block size</string>
+         <string>Block size (should be &lt; samples per channel)</string>
         </property>
         <property name="text">
          <string>10</string>

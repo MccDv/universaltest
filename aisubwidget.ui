@@ -217,7 +217,7 @@
       <item>
        <widget class="QLineEdit" name="leBlockSize">
         <property name="toolTip">
-         <string>Block size</string>
+         <string>Block size (should be &lt; samples per channel)</string>
         </property>
         <property name="text">
          <string>100</string>

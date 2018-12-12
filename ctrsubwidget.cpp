@@ -1058,6 +1058,7 @@ void CtrSubWidget::runCConfigScan()
 void CtrSubWidget::runCInScan()
 {
     QString nameOfFunc, funcArgs, argVals, funcStr;
+    QString blockStyle;
     int highCtr, lowCtr;
     mSamplesPerChan = ui->leNumSamples->text().toLong();
     QTime t;
@@ -1071,6 +1072,17 @@ void CtrSubWidget::runCInScan()
     mSamplesPerChan = ui->leNumSamples->text().toLong();
     double rate = ui->leRate->text().toDouble();
     //mCInFlags = CINSCAN_FF_DEFAULT;
+    blockStyle = "color:black; background-color:white;";
+    if(mSamplesPerChan < mBlockSize * 1.8) {
+        QString warnColor;
+        warnColor = "";
+        if(mScanOptions && SO_CONTINUOUS)
+            warnColor = "background-color:yellow;";
+        if(mSamplesPerChan < mBlockSize)
+            warnColor += "color:red;";
+        blockStyle = warnColor;
+    }
+    ui->leBlockSize->setStyleSheet(blockStyle);
 
     long long bufSize = mChanCount * mSamplesPerChan;
     if(mPlot)
