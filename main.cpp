@@ -1,6 +1,13 @@
 #include "mainwindow.h"
+#include "qthread.h"
 #include <QApplication>
 #include <QSplashScreen>
+
+class I : public QThread
+{
+public:
+    static void sleep(unsigned long secs) { QThread::sleep(secs); }
+};
 
 int main(int argc, char *argv[])
 {
@@ -9,11 +16,10 @@ int main(int argc, char *argv[])
     QSplashScreen *splash = new QSplashScreen;
     splash->setPixmap(pixmap);
     splash->show();
+    splash->activateWindow();
 
-    Qt::Alignment topRight = Qt::AlignRight | Qt::AlignTop;
-    splash->showMessage(QObject::tr("Setting up the main window..."),
-                           topRight, Qt::white);
     qApp->processEvents();
+    I::sleep(3); // show splash for 3 seconds
     MainWindow w;
     w.show();
     splash->finish(&w);

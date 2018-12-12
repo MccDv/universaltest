@@ -1311,7 +1311,8 @@ void CtrSubWidget::checkScanStatus()
             } else {
                 printData(mPlotCount, mPlotIndex, mBlockSize + blockAppend);
             }
-            mPlotIndex = currentIndex;
+
+            mPlotIndex = currentIndex + mChanCount;
             mPlotCount = currentTotalCount;
         }
     } else {
