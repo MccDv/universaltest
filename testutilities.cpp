@@ -2,9 +2,9 @@
 #include <QtMath>
 #include "aisubwidget.h"
 
-CounterMeasurementMode CMM_LATCH_ON_INDEX = static_cast<CounterMeasurementMode>(1 << 26);
+/*CounterMeasurementMode CMM_LATCH_ON_INDEX = static_cast<CounterMeasurementMode>(1 << 26);
 CounterMeasurementMode CMM_PHB_CONTROLS_DIR = static_cast<CounterMeasurementMode>(1 << 27);
-CounterMeasurementMode CMM_DECREMENT_ON = static_cast<CounterMeasurementMode>(1 << 28);
+CounterMeasurementMode CMM_DECREMENT_ON = static_cast<CounterMeasurementMode>(1 << 28);*/
 
 QHash<long long, bool> endInScanEventList;
 QHash<long long, bool> inScanErrorEventList;
