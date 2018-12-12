@@ -10,6 +10,8 @@ Tests the API (Application Programming Interface) for interacting with MCC data 
 ---------------
 Requires the **uldaq** package.
 
+Download and install the latest version of **uldaq** per instructions on the mccdaq/uldaq GitHub page.
+
 Also requires git, the development package for libusb, and Qt runtime libraries. 
 The following describes how these prerequisites can be installed.
   
@@ -21,20 +23,23 @@ The following describes how these prerequisites can be installed.
      $ sudo apt install qtbase5-dev
      $ sudo apt install qt5-default
 ```
+  - Mac OS
+       >Requires xCode and Homebrew. If you installed the **uldaq** above, these should already be installed. Proceed to the Qt installation below.
+```sh
+     $ brew install qt5
+```
 
 ### Build Instructions
 ---------------------
 
-1. Download and install the latest version of **uldaq** per instructions on the mccdaq/uldaq GitHub page.
-
-2. Clone the universallibrary repository onto your linux system:
+1. Clone the universaltest repository onto your linux system:
  
 ```sh
   $ cd ~
   $ git clone https://github.com/MccDv/universaltest.git
 ```
   
-3. Run the following commands to build the universaltest program:
+2. Run the following commands to build the universaltest program:
 
 ```sh
   $ cd universaltest
