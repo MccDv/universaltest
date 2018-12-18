@@ -491,7 +491,7 @@
              </sizepolicy>
             </property>
             <property name="toolTip">
-             <string>Display resolution: Alt-&quot;+&quot; or Alt-&quot;-&quot;</string>
+             <string>Display resolution: Alt-&quot;+&quot; or Alt-&quot;-&quot;, time calc Alt-&quot;/&quot; or Alt-&quot;.&quot;</string>
             </property>
             <property name="tabStopWidth">
              <number>40</number>
