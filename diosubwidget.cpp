@@ -19,6 +19,8 @@ DioSubWidget::DioSubWidget(QWidget *parent) :
     tmrCheckStatus = new QTimer(this);
     mUseGetStatus = true;
     mUseWait = false;
+    mPrintResolution = 5;
+    mInitPlot = true;
     fontSize = 8;
     font.setPointSize(10);
 
@@ -89,6 +91,21 @@ DioSubWidget::~DioSubWidget()
     if (buffer) {
         delete[] buffer;
         buffer = NULL;
+    }
+}
+
+void DioSubWidget::keyPressEvent(QKeyEvent *event)
+{
+    int keyCode = event->key();
+    if ((keyCode == Qt::Key_Plus)  && (QApplication::keyboardModifiers() & Qt::AltModifier)) {
+        mPrintResolution += 1;
+        ui->lblInfo->setText(QString("Text resolution %1").arg(mPrintResolution));
+    }
+    if ((keyCode == Qt::Key_Minus)  && (QApplication::keyboardModifiers() & Qt::AltModifier)) {
+        mPrintResolution -= 1;
+        if (mPrintResolution < 0)
+            mPrintResolution = 0;
+        ui->lblInfo->setText(QString("Text resolution %1").arg(mPrintResolution));
     }
 }
 
@@ -194,13 +211,14 @@ void DioSubWidget::setUiForFunction()
     QString goText = "Read";
     QString stopText = "Stop";
     QString sampToolTip = "Value read";
-    QString startSample = "7";
-    QString rateVal = "1000";
-    QString blockText = "1000";
+    //QString startSample = "7";
+    //QString rateVal = "1000";
+    //QString blockText = "1000";
     int defPort;
     switch (mUtFunction) {
     case UL_D_CONFIG_PORT:
         mFuncName = "ulDConfigPort";
+        //ui->leNumSamples->setText("7");
         portsVisible = true;
         asyncVisible = true;
         setNumberVisible = true;
@@ -221,44 +239,61 @@ void DioSubWidget::setUiForFunction()
             setDefaultBits(pt);
         }
         defPort = (int)validPorts[0];
-        startSample = QString("0, %1").arg(defPort);
+        //startSample = QString("0, %1").arg(defPort);
+        //ui->leRate->setText(rateVal);
+        ui->leNumSamples->setText(QString("0, %1").arg(defPort));
+        //ui->leBlockSize->setText(blockText);
         break;
     case UL_D_IN:
         mFuncName = "ulDIn";
         asyncVisible = true;
-        startSample = "10";
+        //startSample = "10";
+        //ui->leRate->setText(rateVal);
+        ui->leNumSamples->setText("10");
+        //ui->leBlockSize->setText(blockText);
         sampToolTip = "Samples per channel";
         setNumberVisible = true;
+        mInitPlot = true;
         break;
     case UL_D_OUT:
         portsVisible = true;
         mFuncName = "ulDOut";
         goText = "Write";
+        ui->leNumSamples->setText("7");
         asyncVisible = true;
         setNumberVisible = true;
+        mInitPlot = true;
         break;
     case UL_D_BIT_IN:
         mFuncName = "ulDBitIn";
         asyncVisible = true;
         stackIndex = 1;
+        mInitPlot = true;
         break;
     case UL_D_BIT_OUT:
         mFuncName = "ulDBitOut";
         asyncVisible = true;
         goText = "Read";
         stackIndex = 1;
+        mInitPlot = true;
         break;
     case UL_D_INSCAN:
         mFuncName = "ulDInScan";
         asyncVisible = true;
         goText = "Go";
         sampToolTip = "Samples per channel";
-        startSample = "1000";
+        //startSample = "1000";
         scanVisible = true;
-        mPlot = true;
+        //mPlot = true;
         setNumberVisible = true;
-        mPlot = true;
-        stackIndex = 2;
+        //stackIndex = 2;
+        if (mInitPlot) {
+            ui->leRate->setText("1000");
+            ui->leNumSamples->setText("1000");
+            ui->leBlockSize->setText("1000");
+            mPlot = true;
+            stackIndex = 2;
+        }
         break;
     case UL_D_OUTSCAN:
         mFuncName = "ulDOutScan";
@@ -267,14 +302,22 @@ void DioSubWidget::setUiForFunction()
         setNumberVisible = true;
         goText = "Go";
         sampToolTip = "Samples per channel";
-        startSample = "1000";
-        mPlot = true;
-        stackIndex = 2;
+        //startSample = "1000";
+        if (mInitPlot) {
+            ui->leRate->setText("1000");
+            ui->leNumSamples->setText("1000");
+            ui->leBlockSize->setText("1000");
+            mPlot = true;
+            stackIndex = 2;
+        }
         break;
     case UL_D_INARRAY:
         mFuncName = "ulDInArray";
         asyncVisible = true;
-        startSample = "10";
+        //startSample = "10";
+        //ui->leRate->setText(rateVal);
+        ui->leNumSamples->setText("10");
+        //ui->leBlockSize->setText(blockText);
         sampToolTip = "Samples per channel";
         setNumberVisible = true;
         break;
@@ -296,10 +339,10 @@ void DioSubWidget::setUiForFunction()
     ui->spnLowChan->setVisible(scanParamsVisible);
     ui->spnHighChan->setVisible(scanParamsVisible);
     ui->leNumSamples->setVisible(setNumberVisible);
-    ui->leRate->setText(rateVal);
     ui->leNumSamples->setToolTip(sampToolTip);
-    ui->leNumSamples->setText(startSample);
-    ui->leBlockSize->setText(blockText);
+    //ui->leRate->setText(rateVal);
+    //ui->leNumSamples->setText(startSample);
+    //ui->leBlockSize->setText(blockText);
     ui->cmdGo->setText(goText);
     ui->cmdStop->setVisible(stopVisible);
     ui->cmdStop->setText(stopText);
@@ -307,6 +350,7 @@ void DioSubWidget::setUiForFunction()
     updateControlDefaults(false);
     if (mPlot)
         showPlotWindow(mPlot);
+    parentWindow->setShowPlot(mPlot);
     ui->cmdGo->setFocus();
     this->setWindowTitle(mFuncName + ": " + mDevName + QString(" [%1]").arg(mDaqDeviceHandle));
 }
@@ -394,6 +438,8 @@ void DioSubWidget::showPlotWindow(bool showIt)
         frameShape = QFrame::Box;
     mPlot = showIt;
     int curIndex = 0;
+    if ((mUtFunction == UL_D_INSCAN) | ((mUtFunction == UL_D_OUTSCAN)))
+        mInitPlot = mPlot;
     if (showIt) {
         curIndex = 2;
         frameShape = QFrame::NoFrame;
@@ -1333,7 +1379,7 @@ void DioSubWidget::runDInFunc()
         }
     }
 
-    QString temp;
+    //QString temp;
     int portNum;
     QListIterator<DigitalPortType> i(portsSelected);
     if (mUtFunction == UL_D_CONFIG_PORT) {
@@ -1362,7 +1408,9 @@ void DioSubWidget::runDInFunc()
             foreach (DigitalPortType portType, portsSelected) {
                 portNum = (int)portType;
                 data = dataArray[sampleNum][curIndex];
-                dataText.append("<td>" + temp.setNum(data) + "</td>");
+                //dataText.append("<td>" + temp.setNum(data) + "</td>");
+                dataText.append("<td>" + QString("%1")
+                                .arg(data, 1, 'g', mPrintResolution, '0') + "</td>");
                 curIndex++;
             }
             dataText.append("</tr><tr>");
@@ -1708,7 +1756,7 @@ void DioSubWidget::runDInScanFunc()
         mMainWindow->setError(err, sStartTime + funcStr);
     } else {
         mMainWindow->addFunction(sStartTime + funcStr);
-        ui->lblRateReturned->setText(QString("%1").arg(rate, 1, 'f', 4, '0'));
+        ui->lblRateReturned->setText(QString("%1").arg(rate, 1, 'f', mPrintResolution, '0'));
         if (mUseWait) {
             qApp->processEvents();
             WaitType waitType = WAIT_UNTIL_DONE;
@@ -1791,7 +1839,7 @@ void DioSubWidget::runDOutScanFunc()
         mMainWindow->setError(err, sStartTime + funcStr);
     } else {
         mMainWindow->addFunction(sStartTime + funcStr);
-        ui->lblRateReturned->setText(QString("%1").arg(rate, 1, 'f', 4, '0'));
+        ui->lblRateReturned->setText(QString("%1").arg(rate, 1, 'f', mPrintResolution, '0'));
         if (mUseWait) {
             qApp->processEvents();
             WaitType waitType = WAIT_UNTIL_DONE;
@@ -2091,7 +2139,9 @@ void DioSubWidget::printData(unsigned long long currentCount, long long currentI
             //curCursor.movePosition(QTextCursor::End);
             //ui->teShowValues->textCursor().setPosition(curCursor.position());
             //ui->teShowValues->insertPlainText(QString("%1\t").arg(curSample));
-            dataText.append("<td>" + str.setNum(curSample) + "</td>");
+            //dataText.append("<td>" + str.setNum(curSample) + "</td>");
+            dataText.append("<td>" + QString("%1")
+                            .arg(curSample, 1, 'g', mPrintResolution, '0')) + "</td>";
         }
         dataText.append("</tr><tr>");
         sampleNum = sampleNum + 1;

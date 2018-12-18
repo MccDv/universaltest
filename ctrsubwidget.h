@@ -25,6 +25,7 @@ class CtrSubWidget : public QWidget
 public:
     explicit CtrSubWidget(QWidget *parent = 0);
     ~CtrSubWidget();
+    void keyPressEvent(QKeyEvent *event);
     static void eventCallback(DaqDeviceHandle, DaqEventType, unsigned long long, void*);
     void callbackHandler(DaqEventType eventType, unsigned long long eventData);
 
@@ -74,6 +75,9 @@ private:
     int mSamplesPerChan;
     int mCtrResolution;
     int mChanCount;
+    int mPrintResolution;
+    bool mCalcTime;
+    bool mInitPlot;
     TriggerType mTriggerType;
     int mTrigChannel;
     unsigned int mRetrigCount;

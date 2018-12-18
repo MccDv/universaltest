@@ -67,6 +67,21 @@ AoSubWidget::~AoSubWidget()
     }
 }
 
+void AoSubWidget::keyPressEvent(QKeyEvent *event)
+{
+    int keyCode = event->key();
+    if ((keyCode == Qt::Key_Plus)  && (QApplication::keyboardModifiers() & Qt::AltModifier)) {
+        mPrintResolution += 1;
+        ui->lblInfo->setText(QString("Text resolution %1").arg(mPrintResolution));
+    }
+    if ((keyCode == Qt::Key_Minus)  && (QApplication::keyboardModifiers() & Qt::AltModifier)) {
+        mPrintResolution -= 1;
+        if (mPrintResolution < 0)
+            mPrintResolution = 0;
+        ui->lblInfo->setText(QString("Text resolution %1").arg(mPrintResolution));
+    }
+}
+
 MainWindow *AoSubWidget::getMainWindow()
 {
     foreach (QWidget *w, QApplication::topLevelWidgets())
@@ -1307,7 +1322,7 @@ void AoSubWidget::runAOutScanFunc()
         mMainWindow->setError(err, sStartTime + funcStr);
     } else {
         mMainWindow->addFunction(sStartTime + funcStr);
-        ui->lblRateReturned->setText(QString("%1").arg(rate, 1, 'f', 4, '0'));
+        ui->lblRateReturned->setText(QString("%1").arg(rate, 1, 'f', mPrintResolution, '0'));
         if (mUseWait) {
             qApp->processEvents();
             WaitType waitType = WAIT_UNTIL_DONE;
@@ -1384,7 +1399,7 @@ void AoSubWidget::runDaqOutScanFunc()
         mMainWindow->setError(err, sStartTime + funcStr);
     } else {
         mMainWindow->addFunction(sStartTime + funcStr);
-        ui->lblRateReturned->setText(QString("%1").arg(rate, 1, 'f', 4, '0'));
+        ui->lblRateReturned->setText(QString("%1").arg(rate, 1, 'f', mPrintResolution, '0'));
         if (mUseWait) {
             qApp->processEvents();
             WaitType waitType = WAIT_UNTIL_DONE;

@@ -15,6 +15,9 @@ CtrSubWidget::CtrSubWidget(QWidget *parent) :
     tmrCheckStatus = new QTimer(this);
     mUseGetStatus = true;
     mUseWait = false;
+    mPrintResolution = 5;
+    mInitPlot = true;
+    mCalcTime = true;
     int fontSize;
     QFont font;
 
@@ -108,6 +111,9 @@ CtrSubWidget::CtrSubWidget(QWidget *parent) :
     ui->lwMeasMode->addItem("RangeLimitOn");
     ui->lwMeasMode->addItem("GateOn");
     ui->lwMeasMode->addItem("InvertGate");
+    ui->lwMeasMode->addItem("LatchOnIndex");
+    ui->lwMeasMode->addItem("PhBControlsDir");
+    ui->lwMeasMode->addItem("DecrementOn");
 
     ui->lwTypeModes->addItem("Default");
     ui->lwTypeModes->addItem("PeriodX10");
@@ -125,9 +131,6 @@ CtrSubWidget::CtrSubWidget(QWidget *parent) :
     ui->lwTypeModes->addItem("EncNoRecycle");
     ui->lwTypeModes->addItem("EncRangeLimOn");
     ui->lwTypeModes->addItem("EncZActiveEdge");
-    ui->lwTypeModes->addItem("LatchOnIndex");
-    ui->lwTypeModes->addItem("PhBControlsDir");
-    ui->lwTypeModes->addItem("DecrementOn");
 
     ui->cmbDebounceMode->addItem("Disable", CDM_NONE);
     ui->cmbDebounceMode->addItem("Trig After Stable", CDM_TRIGGER_AFTER_STABLE);
@@ -154,7 +157,7 @@ CtrSubWidget::CtrSubWidget(QWidget *parent) :
     ui->cmbTickSize->addItem("Tick Size 20ns", CTS_TICK_20ns);
     ui->cmbTickSize->addItem("Tick Size 20.83ns", CTS_TICK_20PT83ns);
     ui->cmbTickSize->addItem("Tick Size 200ns", CTS_TICK_200ns);
-    ui->cmbTickSize->addItem("Tick Size 208.3ns", CTS_TICK_208PT3ns);
+    ui->cmbTickSize->addItem("Tick Size 208.83ns", CTS_TICK_208PT3ns);
     ui->cmbTickSize->addItem("Tick Size 2us", CTS_TICK_2000ns);
     ui->cmbTickSize->addItem("Tick Size 2.083us", CTS_TICK_2083PT3ns);
     ui->cmbTickSize->addItem("Tick Size 20us", CTS_TICK_20000ns);
@@ -184,6 +187,29 @@ CtrSubWidget::CtrSubWidget(QWidget *parent) :
 CtrSubWidget::~CtrSubWidget()
 {
     delete ui;
+}
+
+void CtrSubWidget::keyPressEvent(QKeyEvent *event)
+{
+    int keyCode = event->key();
+    if ((keyCode == Qt::Key_Plus)  && (QApplication::keyboardModifiers() & Qt::AltModifier)) {
+        mPrintResolution += 1;
+        ui->lblInfo->setText(QString("Text resolution %1").arg(mPrintResolution));
+    }
+    if ((keyCode == Qt::Key_Minus)  && (QApplication::keyboardModifiers() & Qt::AltModifier)) {
+        mPrintResolution -= 1;
+        if (mPrintResolution < 0)
+            mPrintResolution = 0;
+        ui->lblInfo->setText(QString("Text resolution %1").arg(mPrintResolution));
+    }
+    if ((keyCode == Qt::Key_Period)  && (QApplication::keyboardModifiers() & Qt::AltModifier)) {
+        mCalcTime = true;
+        ui->lblInfo->setText(QString("Enabled pulse/period calculation").arg(mPrintResolution));
+    }
+    if ((keyCode == Qt::Key_Slash)  && (QApplication::keyboardModifiers() & Qt::AltModifier)) {
+        mCalcTime = false;
+        ui->lblInfo->setText(QString("Disabled pulse/period calculation").arg(mPrintResolution));
+    }
 }
 
 MainWindow *CtrSubWidget::getMainWindow()
@@ -354,6 +380,9 @@ void CtrSubWidget::showPlotWindow(bool showIt)
 
     mPlot = showIt;
     int curIndex = 0;
+    if (mUtFunction == UL_C_INSCAN)
+        mInitPlot = mPlot;
+
     //frameShape = QFrame::Box;
     frameShape = QFrame::NoFrame;
 
@@ -385,9 +414,6 @@ void CtrSubWidget::setUiForFunction()
     int stackLevel = 0;
     mPlot = false;
 
-    ui->leRate->setText("1000");
-    ui->leNumSamples->setText("1000");
-    ui->leBlockSize->setText("1000");
     switch (mUtFunction) {
     case UL_C_SELECT:
         mFuncName = "Select Ctr";
@@ -399,6 +425,7 @@ void CtrSubWidget::setUiForFunction()
         regSelectorVisible = true;
         ui->leNumSamples->setText("10");
         scanVisible = true;
+        mInitPlot = true;
         break;
     case UL_C_CLEAR:
         mFuncName = "ulCClear";
@@ -412,13 +439,18 @@ void CtrSubWidget::setUiForFunction()
     case UL_C_INSCAN:
         mFuncName = "ulCInScan";
         textVisible = true;
-        mPlot = true;
-        stackLevel = 2;
-        ctrSelectVisible = false;
-        scanParamsVisible = true;
-        setNumberVisible = true;
-        scanVisible = true;
+        if (mInitPlot) {
+            ui->leRate->setText("1000");
+            ui->leNumSamples->setText("1000");
+            ui->leBlockSize->setText("1000");
+            mPlot = true;
+            stackLevel = 2;
+        }
         stopVisible = true;
+        scanParamsVisible = true;
+        scanVisible = true;
+        ctrSelectVisible = false;
+        setNumberVisible = true;
         break;
     case UL_TMR_OUT:
         mFuncName = "ulTmrPulseOut";
@@ -445,6 +477,7 @@ void CtrSubWidget::setUiForFunction()
     ui->cmdStop->setEnabled(false);
     ui->lblInfo->setText(mFuncName);
     showPlotWindow(mPlot);
+    parentWindow->setShowPlot(mPlot);
     ui->stackedWidget->setCurrentIndex(stackLevel);
     this->setWindowTitle(mFuncName + ": " + mDevName + QString(" [%1]").arg(mDaqDeviceHandle));
     ui->cmdGo->setFocus();
@@ -505,6 +538,8 @@ void CtrSubWidget::onClickCmdGo()
     ui->lblRateReturned->clear();
     ui->lblStatus->clear();
     ui->lblInfo->clear();
+    mMeasType = static_cast<CounterMeasurementType>(ui->cmbMeasType->currentData(Qt::UserRole).toLongLong());
+    mTickSize = static_cast<CounterTickSize>(ui->cmbTickSize->currentData(Qt::UserRole).toLongLong());
     runSelectedFunc();
 }
 
@@ -899,9 +934,9 @@ void CtrSubWidget::runCInFunc()
     double dispData;
 
     tickFactor = 1;
-    if ((mMeasType == CMT_PERIOD)
+    if ( mCalcTime & ((mMeasType == CMT_PERIOD)
             | (mMeasType == CMT_PULSE_WIDTH)
-            | (mMeasType == CMT_TIMING))
+            | (mMeasType == CMT_TIMING)))
         tickFactor = getTickValue(mTickSize);
     ctrsSelected.clear();
     foreach (QCheckBox *chkCtrSel, ctrCheckBoxes) {
@@ -955,7 +990,7 @@ void CtrSubWidget::runCInFunc()
         }
     }
 
-    QString temp;
+    //QString temp;
     ui->teShowValues->clear();
     dataText = "<style> th, td { padding-right: 10px;}</style><tr>";
     for (int sampleNum = 0; sampleNum < numSamples; sampleNum++) {
@@ -963,7 +998,8 @@ void CtrSubWidget::runCInFunc()
         dataText.append("<td>" + str.setNum(sampleNum * numCtrChans) + "</td>");
         foreach (int ctrNum, ctrsSelected) {
             dispData = tickFactor * (double)dataArray[sampleNum][curIndex];
-            dataText.append("<td>C" + str.setNum(ctrNum) + ": " + temp.setNum(dispData) + "</td>");
+            dataText.append("<td>C" + str.setNum(ctrNum) + QString(": %1")
+                            .arg(dispData, 1, 'g', mPrintResolution, '0') + "</td>");
             curIndex++;
         }
         dataText.append("</tr><tr>");
@@ -1015,9 +1051,9 @@ void CtrSubWidget::runCConfigScan()
     QString sStartTime;
 
     mMeasType = static_cast<CounterMeasurementType>(ui->cmbMeasType->currentData(Qt::UserRole).toLongLong());
+    mTickSize = static_cast<CounterTickSize>(ui->cmbTickSize->currentData(Qt::UserRole).toLongLong());
     debounceMode = static_cast<CounterDebounceMode>(ui->cmbDebounceMode->currentData(Qt::UserRole).toLongLong());
     debounceTime = static_cast<CounterDebounceTime>(ui->cmbDebounce->currentData(Qt::UserRole).toLongLong());
-    mTickSize = static_cast<CounterTickSize>(ui->cmbTickSize->currentData(Qt::UserRole).toLongLong());
     edgeDetection = CED_RISING_EDGE;
     if (ui->rdoEdgeNeg->isChecked())
         edgeDetection = CED_FALLING_EDGE;
@@ -1117,7 +1153,7 @@ void CtrSubWidget::runCInScan()
         mMainWindow->setError(err, sStartTime + funcStr);
     } else {
         mMainWindow->addFunction(sStartTime + funcStr);
-        ui->lblRateReturned->setText(QString("%1").arg(rate, 1, 'f', 4, '0'));
+        ui->lblRateReturned->setText(QString("%1").arg(rate, 1, 'f', mPrintResolution, '0'));
         if (mUseWait) {
             qApp->processEvents();
             WaitType waitType = WAIT_UNTIL_DONE;
@@ -1524,14 +1560,21 @@ void CtrSubWidget::plotScan(unsigned long long currentCount, long long currentIn
 
 void CtrSubWidget::printData(unsigned long long currentCount, long long currentIndex, int blockSize)
 {
-    QString dataText, str, val;
+    QString dataText, str;
     QTextCursor curCursor;
-    unsigned long long curSample;
+    double tickFactor;
+    //unsigned long long curSample;
+    double curSample;
     int curScan, samplesToPrint, sampleLimit;
     int sampleNum = 0;
     int increment = 0;
     long long samplePerChanel = mChanCount * ui->leNumSamples->text().toLongLong();;
 
+    tickFactor = 1;
+    if (mCalcTime & ((mMeasType == CMT_PERIOD)
+            | (mMeasType == CMT_PULSE_WIDTH)
+            | (mMeasType == CMT_TIMING)))
+        tickFactor = getTickValue(mTickSize);
     curCursor = QTextCursor(ui->teShowValues->textCursor());
     ui->teShowValues->clear();
     dataText = "<style> th, td { padding-right: 10px;}</style><tr>";
@@ -1548,11 +1591,12 @@ void CtrSubWidget::printData(unsigned long long currentCount, long long currentI
         //                         .arg(currentCount + increment));
         dataText.append("<td>" + str.setNum(currentCount + increment) + "</td>");
         for (int chan = 0; chan < mChanCount; chan++) {
-            curSample = buffer[curScan + chan];
+            curSample = tickFactor * (double)buffer[curScan + chan];
             //curCursor.movePosition(QTextCursor::End);
             //ui->teShowValues->textCursor().setPosition(curCursor.position());
             //ui->teShowValues->insertPlainText(QString("%1\t").arg(curSample));
-            dataText.append("<td>" + str.setNum(curSample) + "</td>");
+            dataText.append("<td>" + QString("%1")
+                            .arg(curSample, 1, 'g', mPrintResolution, '0')) + "</td>";
         }
         dataText.append("</tr><tr>");
         sampleNum = sampleNum + 1;

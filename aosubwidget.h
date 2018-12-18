@@ -29,6 +29,7 @@ class AoSubWidget : public QWidget
 public:
     explicit AoSubWidget(QWidget *parent = 0);
     ~AoSubWidget();
+    void keyPressEvent(QKeyEvent *event);
     static void eventCallback(DaqDeviceHandle, DaqEventType, unsigned long long, void*);
     void callbackHandler(DaqEventType eventType, unsigned long long eventData);
 
@@ -88,6 +89,7 @@ private:
     bool mUseGetStatus;
     bool mUseWait;
     double mWaitTime;
+    int mPrintResolution;
     DaqEventType mEventType;
     unsigned long long mEventParams;
     DaqEventType ALL_EVENT_TYPES =

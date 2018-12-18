@@ -433,7 +433,7 @@
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="pgText">
       <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -489,6 +489,9 @@
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
+            </property>
+            <property name="toolTip">
+             <string>Display resolution: Alt-&quot;+&quot; or Alt-&quot;-&quot;</string>
             </property>
             <property name="tabStopWidth">
              <number>40</number>

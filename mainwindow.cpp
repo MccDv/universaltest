@@ -158,6 +158,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionFF_NOCALIBRATEDATA, SIGNAL(triggered(bool)), this, SLOT(setAiFlags()));
     connect(ui->actionFF_NOSCALEDATA, SIGNAL(triggered(bool)), this, SLOT(setAiFlags()));
     connect(ui->actionFF_SIMULTANEOUS, SIGNAL(triggered(bool)), this, SLOT(setAiFlags()));
+    connect(ui->actionFF_CTR48_BIT, SIGNAL(triggered(bool)), this, SLOT(setAiFlags()));
     connect(ui->actionFF_CTR64_BIT, SIGNAL(triggered(bool)), this, SLOT(setAiFlags()));
     connect(ui->actionFF_NOCLEAR, SIGNAL(triggered(bool)), this, SLOT(setAiFlags()));
 
@@ -454,6 +455,7 @@ void MainWindow::createFuncMenus()
     ui->actionFF_DEFAULT->setText("FF_DEFAULT");
     ui->actionFF_NOCALIBRATEDATA->setText("FF_NOCALIBRATEDATA");
     ui->actionFF_NOSCALEDATA->setText("FF_NOSCALEDATA");
+    ui->actionFF_CTR48_BIT->setVisible(false);
     ui->actionFF_CTR64_BIT->setVisible(false);
     ui->actionFF_NOCLEAR->setVisible(false);
 
@@ -616,7 +618,9 @@ void MainWindow::createFuncMenus()
             ui->actionFF_DEFAULT->setData(CINSCAN_FF_DEFAULT);
             ui->actionFF_NOCALIBRATEDATA->setData(CINSCAN_FF_CTR16_BIT);
             ui->actionFF_NOSCALEDATA->setData(CINSCAN_FF_CTR32_BIT);
+            ui->actionFF_CTR48_BIT->setData(CINSCAN_FF_CTR48_BIT);
             ui->actionFF_CTR64_BIT->setData(CINSCAN_FF_CTR64_BIT);
+            ui->actionFF_CTR48_BIT->setVisible(true);
             ui->actionFF_CTR64_BIT->setVisible(true);
             ui->actionFF_NOCLEAR->setData(CINSCAN_FF_NOCLEAR);
             ui->actionFF_NOCLEAR->setVisible(true);
@@ -1043,6 +1047,8 @@ void MainWindow::curFunctionChanged()
         curFunction = functionGroup->checkedAction()->data().toInt();
         curChild->setCurFunction(curFunction);
         curChild->setTmrEnabled(false);
+        bool showIt = curChild->showPlot();
+        ui->actionVolts_vs_Time->setChecked(showIt);
     }
 }
 
@@ -1130,6 +1136,7 @@ void MainWindow::setAiFlags()
             ui->actionFF_NOCALIBRATEDATA->setChecked(false);
             ui->actionFF_NOSCALEDATA->setChecked(false);
             ui->actionFF_SIMULTANEOUS->setChecked(false);
+            ui->actionFF_CTR48_BIT->setChecked(false);
             ui->actionFF_CTR64_BIT->setChecked(false);
             ui->actionFF_NOCLEAR->setChecked(false);
         }
@@ -1140,6 +1147,8 @@ void MainWindow::setAiFlags()
             tempFlag |= ui->actionFF_NOCALIBRATEDATA->data().toInt();
         if (ui->actionFF_SIMULTANEOUS->isChecked())
             tempFlag |= ui->actionFF_SIMULTANEOUS->data().toInt();
+        if (ui->actionFF_CTR48_BIT->isChecked())
+            tempFlag |= ui->actionFF_CTR48_BIT->data().toInt();
         if (ui->actionFF_CTR64_BIT->isChecked())
             tempFlag |= ui->actionFF_CTR64_BIT->data().toInt();
         if (ui->actionFF_NOCLEAR->isChecked())

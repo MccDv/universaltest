@@ -1219,41 +1219,41 @@ CounterMeasurementMode getMeasModeFromListIndex(int listIndex)
     case 11:
         return CMM_INVERT_GATE;
     case 12:
-        return CMM_PERIOD_X10;
-    case 13:
-        return CMM_PERIOD_X100;
-    case 14:
-        return CMM_PERIOD_X1000;
-    case 15:
-        return CMM_PERIOD_GATING_ON;
-    case 16:
-        return CMM_PERIOD_INVERT_GATE;
-    case 17:
-        return CMM_PULSE_WIDTH_GATING_ON;
-    case 18:
-        return CMM_PULSE_WIDTH_INVERT_GATE;
-    case 19:
-        return CMM_TIMING_MODE_INVERT_GATE;
-    case 20:
-        return CMM_ENCODER_X2;
-    case 21:
-        return CMM_ENCODER_X4;
-    case 22:
-        return CMM_ENCODER_LATCH_ON_Z;
-    case 23:
-        return CMM_ENCODER_CLEAR_ON_Z;
-    case 24:
-        return CMM_ENCODER_NO_RECYCLE;
-    case 25:
-        return CMM_ENCODER_RANGE_LIMIT_ON;
-    case 26:
-        return CMM_ENCODER_Z_ACTIVE_EDGE;
-    case 27:
         return CMM_LATCH_ON_INDEX;
-    case 28:
+    case 13:
         return CMM_PHB_CONTROLS_DIR;
-    case 29:
+    case 14:
         return CMM_DECREMENT_ON;
+    case 15:
+        return CMM_PERIOD_X10;
+    case 16:
+        return CMM_PERIOD_X100;
+    case 17:
+        return CMM_PERIOD_X1000;
+    case 18:
+        return CMM_PERIOD_GATING_ON;
+    case 19:
+        return CMM_PERIOD_INVERT_GATE;
+    case 20:
+        return CMM_PULSE_WIDTH_GATING_ON;
+    case 21:
+        return CMM_PULSE_WIDTH_INVERT_GATE;
+    case 22:
+        return CMM_TIMING_MODE_INVERT_GATE;
+    case 23:
+        return CMM_ENCODER_X2;
+    case 24:
+        return CMM_ENCODER_X4;
+    case 25:
+        return CMM_ENCODER_LATCH_ON_Z;
+    case 26:
+        return CMM_ENCODER_CLEAR_ON_Z;
+    case 27:
+        return CMM_ENCODER_NO_RECYCLE;
+    case 28:
+        return CMM_ENCODER_RANGE_LIMIT_ON;
+    case 29:
+        return CMM_ENCODER_Z_ACTIVE_EDGE;
      default:
         return CMM_DEFAULT;
     }

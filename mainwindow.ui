@@ -222,6 +222,7 @@
     <addaction name="separator"/>
     <addaction name="actionFF_DEFAULT"/>
     <addaction name="actionFF_NOSCALEDATA"/>
+    <addaction name="actionFF_CTR48_BIT"/>
     <addaction name="actionFF_NOCALIBRATEDATA"/>
     <addaction name="actionFF_SIMULTANEOUS"/>
     <addaction name="actionFF_CTR64_BIT"/>
@@ -1139,6 +1140,22 @@
     <font>
      <pointsize>10</pointsize>
     </font>
+   </property>
+  </action>
+  <action name="actionFF_CTR48_BIT">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>FF_CTR48_BIT</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
    </property>
   </action>
  </widget>

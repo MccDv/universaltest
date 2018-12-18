@@ -26,6 +26,7 @@ class DioSubWidget : public QWidget
 public:
     explicit DioSubWidget(QWidget *parent = 0);
     ~DioSubWidget();
+    void keyPressEvent(QKeyEvent *event);
     static void eventCallback(DaqDeviceHandle, DaqEventType, unsigned long long, void*);
     void callbackHandler(DaqEventType eventType, unsigned long long eventData);
 
@@ -110,6 +111,8 @@ private:
     bool mCancelDScan;
     int mChanCount;
     int mTotalSamples;
+    int mPrintResolution;
+    bool mInitPlot;
     QHash<int, bool>            mPlotList;
 
     QList<DigitalPortType>      portList;

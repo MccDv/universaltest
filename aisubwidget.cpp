@@ -16,6 +16,7 @@ AiSubWidget::AiSubWidget(QWidget *parent) :
     tmrCheckStatus = new QTimer(this);
     mUseGetStatus = true;
     mUseWait = false;
+    mInitPlot = true;
     int fontSize;
     QFont font;
 
@@ -80,6 +81,7 @@ AiSubWidget::AiSubWidget(QWidget *parent) :
     mEventType = DE_NONE;
     mGoTmrIsRunning = false;
     mRunning = false;
+    mPrintResolution = 5;
     ui->cmdStop->setEnabled(false);
     setupPlot(ui->AiPlot, 1);
     ui->AiPlot->replot();
@@ -91,6 +93,21 @@ AiSubWidget::AiSubWidget(QWidget *parent) :
 AiSubWidget::~AiSubWidget()
 {
     delete ui;
+}
+
+void AiSubWidget::keyPressEvent(QKeyEvent *event)
+{
+    int keyCode = event->key();
+    if ((keyCode == Qt::Key_Plus)  && (QApplication::keyboardModifiers() & Qt::AltModifier)) {
+        mPrintResolution += 1;
+        ui->lblInfo->setText(QString("Text resolution %1").arg(mPrintResolution));
+    }
+    if ((keyCode == Qt::Key_Minus)  && (QApplication::keyboardModifiers() & Qt::AltModifier)) {
+        mPrintResolution -= 1;
+        if (mPrintResolution < 0)
+            mPrintResolution = 0;
+        ui->lblInfo->setText(QString("Text resolution %1").arg(mPrintResolution));
+    }
 }
 
 MainWindow *AiSubWidget::getMainWindow()
@@ -270,6 +287,8 @@ void AiSubWidget::showPlotWindow(bool showIt)
 
     mPlot = showIt;
     int curIndex = 0;
+    if ((mUtFunction == UL_AINSCAN) | (mUtFunction == UL_DAQ_INSCAN))
+        mInitPlot = mPlot;
     frameShape = QFrame::Box;
 
     if (showIt) {
@@ -370,22 +389,27 @@ void AiSubWidget::setUiForFunction()
     case UL_AIN:
         mFuncName = "ulAIn";
         ui->leNumSamples->setText("10");
+        mInitPlot = true;
         break;
     case UL_AINSCAN:
         mFuncName = "ulAInScan";
         scanVisible = true;
-        mPlot = true;
-        ui->leRate->setText("1000");
-        ui->leNumSamples->setText("1000");
-        ui->leBlockSize->setText("1000");
+        if (mInitPlot) {
+            ui->leRate->setText("1000");
+            ui->leNumSamples->setText("1000");
+            ui->leBlockSize->setText("1000");
+            mPlot = true;
+        }
         break;
     case UL_DAQ_INSCAN:
         mFuncName = "ulDaqInScan";
         scanVisible = true;
-        mPlot = true;
-        ui->leRate->setText("1000");
-        ui->leNumSamples->setText("1000");
-        ui->leBlockSize->setText("1000");
+        if (mInitPlot) {
+            ui->leRate->setText("1000");
+            ui->leNumSamples->setText("1000");
+            ui->leBlockSize->setText("1000");
+            mPlot = true;
+        }
         //set default values for chanDescriptor
         mChanList.insert(0, 0);
         mRangeList.insert(0, mRange);
@@ -405,6 +429,7 @@ void AiSubWidget::setUiForFunction()
     ui->fraScan->setVisible(scanVisible);
     ui->cmdStop->setEnabled(false);
     showPlotWindow(mPlot);
+    parentWindow->setShowPlot(mPlot);
     this->setWindowTitle(mFuncName + ": " + mDevName + QString(" [%1]").arg(mDaqDeviceHandle));
     ui->cmdGo->setFocus();
 }
@@ -833,7 +858,7 @@ void AiSubWidget::runAInFunc()
         }
     }
 
-    afterDecimal = 5;
+    afterDecimal = mPrintResolution;
     if (mAiFlags & AIN_FF_NOSCALEDATA) {
             afterDecimal = 0;
             showSign = "";
@@ -847,7 +872,7 @@ void AiSubWidget::runAInFunc()
         for (curIndex = 0; curIndex < numAinChans; curIndex++) {
             curSample = dataArray[thisSample][curIndex];
             val = QString("%1%2").arg((curSample < 0) ? "" : showSign).arg
-                    (curSample, 2, 'f', afterDecimal, '0');
+                    (curSample, 1, 'f', afterDecimal, '0');
             dataText.append("<td>" + val + "</td>");
         }
         dataText.append("</tr><tr>");
@@ -1188,7 +1213,7 @@ void AiSubWidget::runAInScanFunc()
         mMainWindow->setError(err, sStartTime + funcStr);
     } else {
         mMainWindow->addFunction(sStartTime + funcStr);
-        ui->lblRateReturned->setText(QString("%1").arg(rate, 1, 'f', 4, '0'));
+        ui->lblRateReturned->setText(QString("%1").arg(rate, 1, 'f', mPrintResolution, '0'));
         if (mUseWait) {
             qApp->processEvents();
             WaitType waitType = WAIT_UNTIL_DONE;
@@ -1298,7 +1323,7 @@ void AiSubWidget::runDaqInScanFunc()
         mMainWindow->setError(err, sStartTime + funcStr);
     } else {
         mMainWindow->addFunction(sStartTime + funcStr);
-        ui->lblRateReturned->setText(QString("%1").arg(rate, 1, 'f', 4, '0'));
+        ui->lblRateReturned->setText(QString("%1").arg(rate, 1, 'f', mPrintResolution, '0'));
         if (mUseWait) {
             qApp->processEvents();
             WaitType waitType = WAIT_UNTIL_DONE;
@@ -1540,7 +1565,7 @@ void AiSubWidget::printData(unsigned long long currentCount, long long currentIn
             curSample = buffer[curScan + chan];
             if (floatValue) {
                 val = QString("%1%2").arg((curSample < 0) ? "" : "+")
-                        .arg(curSample, 2, 'f', 5, '0');
+                        .arg(curSample, 1, 'f', mPrintResolution, '0');
             } else {
                 val = QString("%1").arg(curSample);
             }

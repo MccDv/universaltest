@@ -6,7 +6,9 @@
 class I : public QThread
 {
 public:
-    static void sleep(unsigned long secs) { QThread::sleep(secs); }
+    static void sleep(unsigned long secs) {
+        QThread::sleep(secs);
+    }
 };
 
 int main(int argc, char *argv[])
@@ -16,11 +18,12 @@ int main(int argc, char *argv[])
     QSplashScreen *splash = new QSplashScreen;
     splash->setPixmap(pixmap);
     splash->show();
-    splash->activateWindow();
-
-    qApp->processEvents();
-    I::sleep(3); // show splash for 3 seconds
     MainWindow w;
+    //w.setWindowTitle("Universal Test for Linux");
+    qApp->processEvents();
+    splash->activateWindow();
+    I::sleep(3); // show splash for 3 seconds
+
     w.show();
     splash->finish(&w);
 

@@ -26,6 +26,7 @@ class AiSubWidget : public QWidget
 public:
     explicit AiSubWidget(QWidget *parent = 0);
     ~AiSubWidget();
+    void keyPressEvent(QKeyEvent *event);
     static void eventCallback(DaqDeviceHandle, DaqEventType, unsigned long long, void*);
     void callbackHandler(DaqEventType eventType, unsigned long long eventData);
 
@@ -126,6 +127,8 @@ private:
     long long mPlotCount;
     bool mPlot;
     int mPlotChan;
+    int mPrintResolution;
+    bool mInitPlot;
     bool mStatusTimerEnabled;
 
     double *buffer;
