@@ -63,6 +63,7 @@ private:
     QTimer *tmrCheckStatus;
     UlError err;
 
+    int mFontSize;
     QString mFuncName;
     int mUtFunction;
     int mCurGroup;

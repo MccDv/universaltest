@@ -17,22 +17,22 @@ AiSubWidget::AiSubWidget(QWidget *parent) :
     mUseGetStatus = true;
     mUseWait = false;
     mInitPlot = true;
-    int fontSize;
+    //int fontSize;
     QFont font;
 
-    fontSize = 8;
+    mFontSize = 8;
     font.setPointSize(10);
 
 #ifdef Q_OS_MAC
-    fontSize = 12;
+    mFontSize = 12;
     font.setPointSize(12);
     this->setFont(font);
 #endif
 
-    ui->teShowValues->setFont(QFont ("Courier", fontSize));
-    ui->lblRateReturned->setFont(QFont ("Courier", fontSize));
-    ui->frame->setFont(QFont ("Ubuntu", fontSize));
-    ui->fraScan->setFont(QFont ("Ubuntu", fontSize));
+    ui->teShowValues->setFont(QFont ("Courier", mFontSize));
+    ui->lblRateReturned->setFont(QFont ("Courier", mFontSize));
+    ui->frame->setFont(QFont ("Ubuntu", mFontSize));
+    ui->fraScan->setFont(QFont ("Ubuntu", mFontSize));
     ui->teShowValues->setStyleSheet("QTextEdit { background-color : white; color : blue; }" );
     ui->lblRateReturned->setStyleSheet("QLabel { background-color : white; color : blue; }" );
     ui->lblStatus->setStyleSheet("QLabel { color : blue; }" );
@@ -1144,17 +1144,16 @@ void AiSubWidget::runAInScanFunc()
     if(mSamplesPerChan < mBlockSize * 1.8) {
         QString warnColor;
         warnColor = "";
-        if(mScanOptions && SO_CONTINUOUS)
-            warnColor = "background-color:yellow;";
+        QString fsString = "font-size: 8pt; ";
+        if (mFontSize == 12)
+            fsString = "font-size: 12pt; ";
+        if(mScanOptions & SO_CONTINUOUS)
+            warnColor = "background-color:yellow; ";
         if(mSamplesPerChan < mBlockSize)
-            warnColor += "color:red;";
-        blockStyle = warnColor;
+            warnColor += "color:red; ";
+        blockStyle = "QLineEdit {" + warnColor + fsString + "}";
     }
     ui->leBlockSize->setStyleSheet(blockStyle);
-    /*xValues.resize(mBlockSize);
-    yChans.resize(mChanCount);
-    for (int chan=0; chan<mChanCount; chan++)
-        yChans[chan].resize(mBlockSize);*/
 
     long long bufSize = mChanCount * mSamplesPerChan;
     if(mPlot)
@@ -1261,11 +1260,14 @@ void AiSubWidget::runDaqInScanFunc()
     if(mSamplesPerChan < mBlockSize * 1.8) {
         QString warnColor;
         warnColor = "";
-        if(mScanOptions && SO_CONTINUOUS)
-            warnColor = "background-color:yellow;";
+        QString fsString = "font-size: 8pt; ";
+        if (mFontSize == 12)
+            fsString = "font-size: 12pt; ";
+        if(mScanOptions & SO_CONTINUOUS)
+            warnColor = "background-color:yellow; ";
         if(mSamplesPerChan < mBlockSize)
-            warnColor += "color:red;";
-        blockStyle = warnColor;
+            warnColor += "color:red; ";
+        blockStyle = "QLineEdit {" + warnColor + fsString + "}";
     }
     ui->leBlockSize->setStyleSheet(blockStyle);
 

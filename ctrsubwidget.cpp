@@ -18,14 +18,14 @@ CtrSubWidget::CtrSubWidget(QWidget *parent) :
     mPrintResolution = 5;
     mInitPlot = true;
     mCalcTime = true;
-    int fontSize;
+    //int fontSize;
     QFont font;
 
-    fontSize = 8;
+    mFontSize = 8;
     font.setPointSize(10);
 
 #ifdef Q_OS_MAC
-    fontSize = 12;
+    mFontSize = 12;
     font.setPointSize(12);
     this->setFont(font);
 #endif
@@ -34,10 +34,10 @@ CtrSubWidget::CtrSubWidget(QWidget *parent) :
     ui->lblDutyReturn->setFont(font);
     ui->lblFreqReturn->setFont(font);
     ui->lblRateReturned->setFont(font);
-    ui->teShowValues->setFont(QFont ("Courier", fontSize));
-    ui->lblStatus->setFont(QFont ("Courier", fontSize));
-    ui->lwMeasMode->setFont(QFont ("Ubuntu", fontSize));
-    ui->lwTypeModes->setFont(QFont ("Ubuntu", fontSize));
+    ui->teShowValues->setFont(QFont ("Courier", mFontSize));
+    ui->lblStatus->setFont(QFont ("Courier", mFontSize));
+    ui->lwMeasMode->setFont(QFont ("Ubuntu", mFontSize));
+    ui->lwTypeModes->setFont(QFont ("Ubuntu", mFontSize));
     ui->fraScan->setFont(font);
     ui->fraScanParams->setFont(font);
 
@@ -1112,11 +1112,14 @@ void CtrSubWidget::runCInScan()
     if(mSamplesPerChan < mBlockSize * 1.8) {
         QString warnColor;
         warnColor = "";
-        if(mScanOptions && SO_CONTINUOUS)
-            warnColor = "background-color:yellow;";
+        QString fsString = "font-size: 8pt; ";
+        if (mFontSize == 12)
+            fsString = "font-size: 12pt; ";
+        if(mScanOptions & SO_CONTINUOUS)
+            warnColor = "background-color:yellow; ";
         if(mSamplesPerChan < mBlockSize)
-            warnColor += "color:red;";
-        blockStyle = warnColor;
+            warnColor += "color:red; ";
+        blockStyle = "QLineEdit {" + warnColor + fsString + "}";
     }
     ui->leBlockSize->setStyleSheet(blockStyle);
 

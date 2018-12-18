@@ -13,7 +13,7 @@ DioSubWidget::DioSubWidget(QWidget *parent) :
     ui(new Ui::DioSubWidget)
 {
     ui->setupUi(this);
-    int fontSize;
+    //int fontSize;
     QFont font;
 
     tmrCheckStatus = new QTimer(this);
@@ -21,18 +21,18 @@ DioSubWidget::DioSubWidget(QWidget *parent) :
     mUseWait = false;
     mPrintResolution = 5;
     mInitPlot = true;
-    fontSize = 8;
+    mFontSize = 8;
     font.setPointSize(10);
 
 #ifdef Q_OS_MAC
-    fontSize = 12;
+    mFontSize = 12;
     font.setPointSize(12);
     this->setFont(font);
 #endif
 
-    ui->teShowValues->setFont(QFont ("Courier", fontSize));
-    //ui->lblRateReturned->setFont(QFont ("Ubuntu", fontSize));
-    ui->fraInfoStat->setFont(QFont ("Courier", fontSize));
+    ui->teShowValues->setFont(QFont ("Courier", mFontSize));
+    //ui->lblRateReturned->setFont(QFont ("Ubuntu", mFontSize));
+    ui->fraInfoStat->setFont(QFont ("Courier", mFontSize));
     ui->teShowValues->setStyleSheet("QTextEdit { background-color : white; color : blue; }" );
     ui->lblStatus->setStyleSheet("QLabel { color : blue; } ");
     ui->lblInfo->setStyleSheet("QLabel { color : blue; } ");
@@ -1694,11 +1694,14 @@ void DioSubWidget::runDInScanFunc()
     if(mSamplesPerChan < mBlockSize * 1.8) {
         QString warnColor;
         warnColor = "";
-        if(mScanOptions && SO_CONTINUOUS)
-            warnColor = "background-color:yellow;";
+        QString fsString = "font-size: 8pt; ";
+        if (mFontSize == 12)
+            fsString = "font-size: 12pt; ";
+        if(mScanOptions & SO_CONTINUOUS)
+            warnColor = "background-color:yellow; ";
         if(mSamplesPerChan < mBlockSize)
-            warnColor += "color:red;";
-        blockStyle = warnColor;
+            warnColor += "color:red; ";
+        blockStyle = "QLineEdit {" + warnColor + fsString + "}";
     }
     ui->leBlockSize->setStyleSheet(blockStyle);
 
