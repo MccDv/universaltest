@@ -23,6 +23,11 @@ The following describes how these prerequisites can be installed.
      $ sudo apt install qtbase5-dev
      $ sudo apt install qt5-default
 ```
+  - Arch-based Linux distributions such as Manjaro
+  
+```sh
+     $ sudo pacman -S qt5-base
+```
   - Mac OS
        >Requires xCode and Homebrew. If you installed the **uldaq** above, these should already be installed. Proceed to the Qt installation below.
 ```sh
