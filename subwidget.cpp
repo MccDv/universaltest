@@ -176,6 +176,7 @@ void subWidget::setUiForFunction()
             ui->cmbInfoType->addItem("Cal Region", MR_CAL);
             ui->cmbInfoType->addItem("User Region", MR_USER);
             ui->cmbInfoType->addItem("Settings Region", MR_SETTINGS);
+            ui->cmbInfoType->addItem("Reserved Region0", MR_RESERVED0);
             connect(ui->cmdSet, SIGNAL(clicked(bool)), this, SLOT(memRead()));
             infoComboVisible = true;
             break;
@@ -266,6 +267,7 @@ void subWidget::setConfigItemsForType()
         ui->cmbConfigItem->addItem("Chan Slope", AI_CFG_CHAN_SLOPE);
         ui->cmbConfigItem->addItem("Chan Offset", AI_CFG_CHAN_OFFSET);
         ui->cmbConfigItem->addItem("Chan Sensor Sensitivity", AI_CFG_CHAN_SENSOR_SENSITIVITY);
+        ui->cmbConfigItem->addItem("Chan Data Rate", AI_CFG_CHAN_DATA_RATE);
         break;
     case TYPE_AO_INFO:
         ui->cmbConfigItem->addItem("AO Sync Mode", AO_CFG_SYNC_MODE);
@@ -834,6 +836,9 @@ void subWidget::readConfig()
         configItem = AI_CFG_CHAN_SENSOR_CONNECTION_TYPE;
         devConfig = showConfig(configType, configItem, "AI Sensor Connection");
         configText.append(devConfig + "</tr><tr>");
+        configItem = AI_CFG_CHAN_OTD_MODE;
+        devConfig = showConfig(configType, configItem, "AI Sensor Connection");
+        configText.append(devConfig + "</tr><tr>");
         configItem = AI_CFG_CHAN_SLOPE;
         devConfig = showConfigDbl(configType, configItem, "AI Chan Slope");
         configText.append(devConfig + "</tr><tr>");
@@ -842,6 +847,9 @@ void subWidget::readConfig()
         configText.append(devConfig + "</tr><tr>");
         configItem = AI_CFG_CHAN_SENSOR_SENSITIVITY;
         devConfig = showConfigDbl(configType, configItem, "AI Sensor Sensitivity");
+        configText.append(devConfig + "</tr><tr>");
+        configItem = AI_CFG_CHAN_DATA_RATE;
+        devConfig = showConfigDbl(configType, configItem, "AI Data Rate");
         configText.append(devConfig + "</tr><tr>");
         configItem = AI_CFG_CHAN_COEFS_STR;
         devConfig = showConfigStr(configType, configItem, "AI Chan Coeffs");
@@ -877,7 +885,11 @@ void subWidget::readConfig()
         showIndex = false;
         break;
     case TYPE_CTR_INFO:
-        noCfgExists = true;
+        //noCfgExists = true;
+        configItem = CTR_CFG_REG;
+        devConfig = showConfig(configType, configItem, "Ctr Config Reg");
+        configText.append(devConfig + "</tr><tr>");
+        ui->teShowValues->setHtml(configText);
         break;
     case TYPE_TMR_INFO:
         noCfgExists = true;
@@ -910,6 +922,8 @@ void subWidget::readMem()
     infoText.append(memInfo + "</tr><tr>");
     memInfo = showInfoMem(MR_SETTINGS);
     infoText.append(memInfo + "</tr><tr>");
+    memInfo = showInfoMem(MR_RESERVED0);
+    infoText.append(memInfo + "</tr><tr>");
     ui->teShowValues->setHtml(infoText);
 }
 
@@ -920,6 +934,7 @@ QString subWidget::showConfig(int configType, int configItem, QString showItem)
     AiConfigItem aiConfigItem;
     AoConfigItem aoConfigItem;
     DioConfigItem dioConfigItem;
+    CtrConfigItem ctrConfigItem;
     QString nameOfFunc;
     QString argVals, str;
     QString funcStr, funcArgs;
@@ -965,9 +980,10 @@ QString subWidget::showConfig(int configType, int configItem, QString showItem)
         }
         if (aiConfigItem == AI_CFG_CHAN_COUPLING_MODE)
             errDesc = " (" + getChanCouplingModeName((CouplingMode)configValue) + ")";
-        if (aiConfigItem == AI_CFG_CHAN_SENSOR_CONNECTION_TYPE) {
+        if (aiConfigItem == AI_CFG_CHAN_SENSOR_CONNECTION_TYPE)
             errDesc = " (" + getSensorConnectNames((SensorConnectionType)configValue) + ")";
-        }
+        if (aiConfigItem == AI_CFG_CHAN_OTD_MODE)
+            errDesc = " (" + getEnableDisableName((int)configValue) + ")";
         break;
     case TYPE_AO_INFO:
         aoConfigItem = (AoConfigItem)configItem;
@@ -982,7 +998,10 @@ QString subWidget::showConfig(int configType, int configItem, QString showItem)
         err = ulDIOGetConfig(mDaqDeviceHandle, dioConfigItem, index, &configValue);
         break;
     case TYPE_CTR_INFO:
-        noConfigItem = true;
+        //noConfigItem = true;
+        ctrConfigItem = (CtrConfigItem)configItem;
+        nameOfFunc = "ulCtrGetConfig";
+        err = ctrGetConfig(mDaqDeviceHandle, ctrConfigItem, index, configValue);
         break;
     case TYPE_TMR_INFO:
         noConfigItem = true;
@@ -1664,6 +1683,9 @@ QString subWidget::showInfoMem(MemRegion memRegion)
     case MR_SETTINGS:
         showItem = "Settings Region";
         break;
+    case MR_RESERVED0:
+        showItem = "Reserved Region0";
+        break;
     default:
         break;
     }
@@ -2005,3 +2027,39 @@ void subWidget::swStopScan()
 {
     return;
 }
+
+#ifdef UL_1_20
+
+UlError subWidget::ctrGetConfig(DaqDeviceHandle daqDeviceHandle, CtrConfigItem configItem, unsigned int index, long long &configValue)
+{
+    err = ulCtrGetConfig(daqDeviceHandle, configItem, index, &configValue);
+    return err;
+}
+
+UlError subWidget::ctrSetConfig(DaqDeviceHandle daqDeviceHandle, CtrConfigItem configItem, unsigned int index, long long configValue)
+{
+    err = ulCtrSetConfig(daqDeviceHandle, configItem, index, configValue);
+    return err;
+}
+
+#else
+
+UlError subWidget::ctrGetConfig(DaqDeviceHandle daqDeviceHandle, CtrConfigItem configItem, unsigned int index, long long *configValue)
+{
+    (void)daqDeviceHandle;
+    (void)configItem;
+    (void)index;
+    (void)configValue;
+    return ERR_BAD_DEV_TYPE;
+}
+
+UlError subWidget::ctrSetConfig(DaqDeviceHandle daqDeviceHandle, CtrConfigItem configItem, unsigned int index, long long configValue)
+{
+    (void)daqDeviceHandle;
+    (void)configItem;
+    (void)index;
+    (void)configValue;
+    return ERR_BAD_DEV_TYPE;
+}
+
+#endif

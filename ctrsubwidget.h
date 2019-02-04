@@ -91,6 +91,7 @@ private:
     CounterTickSize mTickSize;
 
     bool mUseGetStatus;
+    bool mAutoStop;
     bool mUseWait;
     double mWaitTime;
     DaqEventType mEventType;

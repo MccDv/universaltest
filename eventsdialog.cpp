@@ -36,6 +36,7 @@ EventsDialog::EventsDialog(QWidget *parent, DaqDeviceHandle devHandle) :
 
     connect(this, SIGNAL(accepted()), this, SLOT(syncControls()));
     connect(ui->chkGetStatus, SIGNAL(clicked(bool)), this, SLOT(updateProperties()));
+    connect(ui->chkStopBackground, SIGNAL(clicked(bool)), this, SLOT(updateProperties()));
     connect(ui->chkUseWait, SIGNAL(clicked(bool)), this, SLOT(updateProperties()));
     connect(ui->leWaitTimo, SIGNAL(textChanged(QString)), this, SLOT(updateProperties()));
     connect(ui->chkEndOfScan, SIGNAL(clicked(bool)), this, SLOT(updateEndOfInScan()));
@@ -96,6 +97,7 @@ void EventsDialog::showEvent(QShowEvent *)
     ui->chkUseWait->setChecked(mWaitForDone);
     ui->leWaitTimo->setText(QString("%1").arg(mWaitTime));
     ui->chkGetStatus->setChecked(mCheckStatusEnabled);
+    ui->chkStopBackground->setChecked(mStopBGEnabled);
 }
 
 void EventsDialog::updateEndOfInScan()
@@ -188,6 +190,7 @@ void EventsDialog::syncControls()
 void EventsDialog::updateProperties()
 {
     mCheckStatusEnabled = ui->chkGetStatus->isChecked();
+    mStopBGEnabled = ui->chkStopBackground->isChecked();
     mWaitForDone = ui->chkUseWait->isChecked();
     mWaitTime = ui->leWaitTimo->text().toDouble();
 }

@@ -52,6 +52,7 @@ ChildWindow::ChildWindow(QWidget *parent, UtFunctionGroup funcGroup) : QMdiSubWi
     this->setWidget(subwidget);
 
     mStatusEnabled = true;
+    mStopBGEnabled = true;
     mWaitEnabled = false;
     mWaitTime = 5.5;
     tmrRunFunc = new QTimer(this);

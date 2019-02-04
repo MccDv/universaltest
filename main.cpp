@@ -22,6 +22,9 @@ int main(int argc, char *argv[])
     //w.setWindowTitle("Universal Test for Linux");
     qApp->processEvents();
     splash->activateWindow();
+    QColor textColor;
+    textColor = "royalblue";
+    splash->showMessage("       Version 1.2.0", Qt::AlignCenter, textColor);
     I::sleep(3); // show splash for 3 seconds
 
     w.show();

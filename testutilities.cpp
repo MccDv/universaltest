@@ -160,6 +160,9 @@ double getRangeVolts(Range rangeVal)
     case BIP4VOLTS:
         rangeVolts = 8;
         break;
+    case BIP3VOLTS:
+        rangeVolts = 6;
+        break;
     case BIP2PT5VOLTS:
         rangeVolts = 5;
         break;
@@ -178,6 +181,9 @@ double getRangeVolts(Range rangeVal)
     case BIPPT5VOLTS:
         rangeVolts = 1;
         break;
+    case BIPPT312VOLTS:
+        rangeVolts = 0.624;
+        break;
     case BIPPT25VOLTS:
         rangeVolts = 0.5;
         break;
@@ -186,6 +192,9 @@ double getRangeVolts(Range rangeVal)
         break;
     case BIPPT2VOLTS:
         rangeVolts = 0.4;
+        break;
+    case BIPPT156VOLTS:
+        rangeVolts = 0.312;
         break;
     case BIPPT1VOLTS:
         rangeVolts = 0.2;
@@ -294,6 +303,10 @@ QString getOptionNames(ScanOption curOptions)
             optString += "BurstMode, ";
         if (curOptions & SO_PACEROUT)
             optString += "PacerOut, ";
+        if (curOptions & SO_EXTTIMEBASE)
+            optString += "ExtTimebase, ";
+        if (curOptions & SO_TIMEBASEOUT)
+            optString += "TimebaseOut, ";
         optString = optString.left(optString.length() - 2);
     }
 
@@ -688,6 +701,18 @@ QString getChanCouplingModeName(CouplingMode cplMode)
     }
 }
 
+QString getEnableDisableName(int value)
+{
+    switch (value) {
+    case 1:
+        return "Disabled";
+    case 2:
+        return "Enabled";
+    default:
+        return "Invalid Value";
+    }
+}
+
 QString getSensorConnectNames(SensorConnectionType connType)
 {
     switch (connType) {
@@ -1045,6 +1070,9 @@ QString getChanTypeNames(DaqInChanType typeNum)
         case DAQI_CTR48:
             chanName += "Counter48, ";
             break;
+        case DAQI_DAC:
+            chanName += "DAC, ";
+            break;
         default:
             //chanName += "Invalid ChanType, ";
             break;
@@ -1126,6 +1154,12 @@ QString getRangeName(Range rangeVal)
         return "BipPt005Volts";
     case BIPPT005VOLTS:
         return "Bip1Pt67Volts";
+    case BIP3VOLTS:
+        return "Bip3Volts";
+    case BIPPT312VOLTS:
+        return "BipPt312Volts";
+    case BIPPT156VOLTS:
+        return "BipPt156Volts";
     case UNI60VOLTS:
         return "Uni60Volts";
     case UNI30VOLTS:
@@ -1185,6 +1219,8 @@ QString getRegionNames(MemRegion memRegion)
             regionNames += "User, ";
         if (memRegion & MR_SETTINGS)
             regionNames += "Settings, ";
+        if (memRegion & MR_RESERVED0)
+            regionNames += "Reserved0, ";
         if (regionNames.length())
             return regionNames.left(regionNames.length() - 2);
         return "Invalid Region";

@@ -90,6 +90,7 @@ private:
     double mTrigVariance;
 
     bool mUseGetStatus;
+    bool mAutoStop;
     bool mUseWait;
     double mWaitTime;
     DaqEventType mEventType;

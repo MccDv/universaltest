@@ -123,6 +123,7 @@ private:
     bool mRunning;
     bool mGoTmrIsRunning;
     bool mStopOnStart;
+    bool mAutoStop;
     int mChanCount;
     long long mPlotIndex;
     long long mPlotCount;

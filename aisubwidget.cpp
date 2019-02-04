@@ -14,6 +14,7 @@ AiSubWidget::AiSubWidget(QWidget *parent) :
     ui->setupUi(this);
 
     tmrCheckStatus = new QTimer(this);
+    mAutoStop  = true;
     mUseGetStatus = true;
     mUseWait = false;
     mInitPlot = true;
@@ -98,6 +99,9 @@ AiSubWidget::~AiSubWidget()
 void AiSubWidget::keyPressEvent(QKeyEvent *event)
 {
     int keyCode = event->key();
+    if (keyCode == Qt::Key_Escape) {
+        onClickCmdStop();
+    }
     if ((keyCode == Qt::Key_Plus)  && (QApplication::keyboardModifiers() & Qt::AltModifier)) {
         mPrintResolution += 1;
         ui->lblInfo->setText(QString("Text resolution %1").arg(mPrintResolution));
@@ -155,6 +159,7 @@ void AiSubWidget::updateParameters()
     mUseTimer = parentWindow->tmrEnabled();
     mOneSampPerForTotalSamps = parentWindow->tmrSampPerInterval();
     mStopOnStart = parentWindow->tmrStopOnStart();
+    mAutoStop = parentWindow->stopBGEnabled();
     mGoTmrIsRunning = parentWindow->tmrRunning();
     if (mUseTimer | showStop) {
         ui->cmdStop->setVisible(true);
@@ -1160,7 +1165,7 @@ void AiSubWidget::runAInScanFunc()
         setupPlot(ui->AiPlot, mChanCount);
 
     mFunctionFlag = (AInScanFlag)mAiFlags;
-    if (mStopOnStart) {
+    if (mStopOnStart && mAutoStop) {
         nameOfFunc = "ulAInScanStop";
         funcArgs = "(mDaqDeviceHandle)";
         sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
@@ -1207,7 +1212,8 @@ void AiSubWidget::runAInScanFunc()
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
     if (err != ERR_NO_ERROR) {
-        ulAInScanStop(mDaqDeviceHandle);
+        if (mAutoStop)
+            ulAInScanStop(mDaqDeviceHandle);
         mStatusTimerEnabled = false;
         mMainWindow->setError(err, sStartTime + funcStr);
     } else {
@@ -1275,7 +1281,7 @@ void AiSubWidget::runDaqInScanFunc()
     if(mPlot)
         setupPlot(ui->AiPlot, mChanCount);
 
-    if (mStopOnStart) {
+    if (mStopOnStart && mAutoStop) {
         nameOfFunc = "ulDaqInScanStop";
         funcArgs = "(mDaqDeviceHandle)";
         sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
@@ -1481,29 +1487,30 @@ UlError AiSubWidget::stopScan(long long perChan, long long curCount, long long c
     QString sStartTime;
 
     tmrCheckStatus->stop();
-    nameOfFunc = "ulAInScanStop";
-    funcArgs = "(mDaqDeviceHandle)\n";
-    if (mUtFunction == UL_DAQ_INSCAN) {
-        nameOfFunc = "ulDaqInScanStop";
-        sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
-        err = ulDaqInScanStop(mDaqDeviceHandle);
-    } else {
+    if(mAutoStop) {
         nameOfFunc = "ulAInScanStop";
-        sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
-        err = ulAInScanStop(mDaqDeviceHandle);
-    }
-    argVals = QStringLiteral("(%1)")
-            .arg(mDaqDeviceHandle);
+        funcArgs = "(mDaqDeviceHandle)\n";
+        if (mUtFunction == UL_DAQ_INSCAN) {
+            nameOfFunc = "ulDaqInScanStop";
+            sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
+            err = ulDaqInScanStop(mDaqDeviceHandle);
+        } else {
+            nameOfFunc = "ulAInScanStop";
+            sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
+            err = ulAInScanStop(mDaqDeviceHandle);
+        }
+        argVals = QStringLiteral("(%1)")
+                .arg(mDaqDeviceHandle);
 
-    funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-    if (err != ERR_NO_ERROR) {
-        mStatusTimerEnabled = false;
-        mMainWindow->setError(err, sStartTime + funcStr);
-        return err;
-    } else {
-        mMainWindow->addFunction(sStartTime + funcStr);
+        funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
+        if (err != ERR_NO_ERROR) {
+            mStatusTimerEnabled = false;
+            mMainWindow->setError(err, sStartTime + funcStr);
+            return err;
+        } else {
+            mMainWindow->addFunction(sStartTime + funcStr);
+        }
     }
-
     if(mUseGetStatus) {
         ui->lblStatus->setText(QStringLiteral("IDLE Count = %1 (%2 perChan), index: %3")
                                .arg(curCount)

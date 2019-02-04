@@ -14,6 +14,7 @@ AoSubWidget::AoSubWidget(QWidget *parent) :
 
     tmrCheckStatus = new QTimer(this);
     mUseGetStatus = true;
+    mAutoStop = true;
     mUseWait = false;
     int fontSize;
     QFont font;
@@ -70,6 +71,8 @@ AoSubWidget::~AoSubWidget()
 void AoSubWidget::keyPressEvent(QKeyEvent *event)
 {
     int keyCode = event->key();
+    if (keyCode == Qt::Key_Escape)
+        onClickCmdStop();
     if ((keyCode == Qt::Key_Plus)  && (QApplication::keyboardModifiers() & Qt::AltModifier)) {
         mPrintResolution += 1;
         ui->lblInfo->setText(QString("Text resolution %1").arg(mPrintResolution));
@@ -117,6 +120,7 @@ void AoSubWidget::updateParameters()
     mDaqoFlags = (DaqOutScanFlag)parentWindow->daqOutFlag();
 
     mUseGetStatus = parentWindow->statusEnabled();
+    mAutoStop = parentWindow->stopBGEnabled();
     mUseWait = parentWindow->waitEnabled();
     mWaitTime = parentWindow->waitTime();
 
@@ -401,6 +405,8 @@ void AoSubWidget::dataDialogResponse()
 
     disconnect(dataSelectDlg);
     delete dataSelectDlg;
+    if (mRunning)
+        getDataValues(false);
     //unsigned int numElements = mWaves.count();
     //ui->spnLowChan->setValue(0);
     //ui->spnHighChan->setValue(numElements - 1);
@@ -611,7 +617,7 @@ void AoSubWidget::onClickCmdGo()
     runSelectedFunc();
 }
 
-void AoSubWidget::getDataValues()
+void AoSubWidget::getDataValues(bool newBuffer)
 {
     QTextCursor curCursor;
     DataManager *genData = new DataManager();
@@ -660,16 +666,18 @@ void AoSubWidget::getDataValues()
         }
     }
 
-    //delete existing buffer
-    if (buffer) {
-        delete[] buffer;
-        buffer = NULL;
-    }
-
     //setup the buffer
     DMgr::WaveType defaultWave = DMgr::sineWave;
     int dataSetSize = mSamplesPerChan * mChanCount;
-    buffer = new double [dataSetSize];
+
+    //delete existing buffer
+    if(newBuffer) {
+        if (buffer) {
+            delete[] buffer;
+            buffer = NULL;
+        }
+        buffer = new double [dataSetSize];
+    }
 
     //setup the plot data
     xValues.resize(mSamplesPerChan);
@@ -885,11 +893,11 @@ void AoSubWidget::runSelectedFunc()
     //mRange = (Range)curRange;
     switch (mUtFunction) {
     case UL_AOUT:
-        getDataValues();
+        getDataValues(true);
         runAOutFunc();
         break;
     case UL_AOUT_SCAN:
-        getDataValues();
+        getDataValues(true);
         mTriggerType = parentWindow->triggerType();
         if (mTriggerType != TRIG_NONE) {
             mTrigChannel = parentWindow->trigChannel();
@@ -902,7 +910,7 @@ void AoSubWidget::runSelectedFunc()
         runAOutScanFunc();
         break;
     case UL_DAQ_OUTSCAN:
-        getDataValues();
+        getDataValues(true);
         mTriggerType = parentWindow->triggerType();
         if (mTriggerType != TRIG_NONE) {
             mTrigChannel = parentWindow->trigChannel();
@@ -915,7 +923,7 @@ void AoSubWidget::runSelectedFunc()
         runDaqOutScanFunc();
         break;
     case UL_AOUTARRAY:
-        getDataValues();
+        getDataValues(true);
         runAOutArray();
         break;
     default:
@@ -1283,7 +1291,7 @@ void AoSubWidget::runAOutScanFunc()
     QString sStartTime;
 
     mFunctionFlag = (AOutScanFlag)mAoFlags;
-    if (mStopOnStart) {
+    if (mStopOnStart && mAutoStop) {
         nameOfFunc = "ulAOutScanStop";
         funcArgs = "(mDaqDeviceHandle)\n";
         sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
@@ -1547,25 +1555,27 @@ UlError AoSubWidget::stopScan(long long curCount, long long curIndex)
     QString sStartTime;
 
     tmrCheckStatus->stop();
-    if (mUtFunction == UL_DAQ_OUTSCAN) {
-        nameOfFunc = "ulDaqOutScanStop";
-        sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
-        err = ulDaqOutScanStop(mDaqDeviceHandle);
-    } else {
-        nameOfFunc = "ulAOutScanStop";
-        sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
-        err = ulAOutScanStop(mDaqDeviceHandle);
-    }
-    argVals = QStringLiteral("(%1)")
-            .arg(mDaqDeviceHandle);
+    if(mAutoStop) {
+        if (mUtFunction == UL_DAQ_OUTSCAN) {
+            nameOfFunc = "ulDaqOutScanStop";
+            sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
+            err = ulDaqOutScanStop(mDaqDeviceHandle);
+        } else {
+            nameOfFunc = "ulAOutScanStop";
+            sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
+            err = ulAOutScanStop(mDaqDeviceHandle);
+        }
+        argVals = QStringLiteral("(%1)")
+                .arg(mDaqDeviceHandle);
 
-    funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-    if (err != ERR_NO_ERROR) {
-        mStatusTimerEnabled = false;
-        mMainWindow->setError(err, sStartTime + funcStr);
-        return err;
-    } else {
-        mMainWindow->addFunction(sStartTime + funcStr);
+        funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
+        if (err != ERR_NO_ERROR) {
+            mStatusTimerEnabled = false;
+            mMainWindow->setError(err, sStartTime + funcStr);
+            return err;
+        } else {
+            mMainWindow->addFunction(sStartTime + funcStr);
+        }
     }
     if(mUseGetStatus) {
         ui->lblStatus->setText(QStringLiteral("Idle at    count:  %1,   index:  %2")

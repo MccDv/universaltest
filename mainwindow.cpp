@@ -55,16 +55,22 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->actionSO_RETRIGGER->setData(SO_RETRIGGER);
     ui->actionSO_BURSTMODE->setData(SO_BURSTMODE);
     ui->actionSO_PACEROUT->setData(SO_PACEROUT);
+    ui->actionSO_EXTTIMEBASE->setData(SO_EXTTIMEBASE);
+    ui->actionSO_TIMEBASEOUT->setData(SO_TIMEBASEOUT);
 
     rangeGroup = new QActionGroup(this);
     rangeGroup->addAction(ui->actionBIP20VOLTS);
     rangeGroup->addAction(ui->actionBIP10VOLTS);
     rangeGroup->addAction(ui->actionBIP5VOLTS);
     rangeGroup->addAction(ui->actionBIP4VOLTS);
+    rangeGroup->addAction(ui->actionBIP3VOLTS);
     rangeGroup->addAction(ui->actionBIP2PT5VOLTS);
     rangeGroup->addAction(ui->actionBIP2VOLTS);
     rangeGroup->addAction(ui->actionBIP1PT25VOLTS);
     rangeGroup->addAction(ui->actionBIP1VOLTS);
+    rangeGroup->addAction(ui->actionBIPPT625VOLTS);
+    rangeGroup->addAction(ui->actionBIPPT312VOLTS);
+    rangeGroup->addAction(ui->actionBIPPT156VOLTS);
     rangeGroup->addAction(ui->actionBIPPT078VOLTS);
     rangeGroup->addAction(ui->actionUNI10VOLTS);
     rangeGroup->addAction(ui->actionUNI5VOLTS);
@@ -74,10 +80,14 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->actionBIP10VOLTS->setData(BIP10VOLTS);
     ui->actionBIP5VOLTS->setData(BIP5VOLTS);
     ui->actionBIP4VOLTS->setData(BIP4VOLTS);
+    ui->actionBIP4VOLTS->setData(BIP3VOLTS);
     ui->actionBIP2PT5VOLTS->setData(BIP2PT5VOLTS);
     ui->actionBIP2VOLTS->setData(BIP2VOLTS);
     ui->actionBIP1PT25VOLTS->setData(BIP1PT25VOLTS);
     ui->actionBIP1VOLTS->setData(BIP1VOLTS);
+    ui->actionBIPPT625VOLTS->setData(BIPPT625VOLTS);
+    ui->actionBIPPT312VOLTS->setData(BIPPT312VOLTS);
+    ui->actionBIPPT156VOLTS->setData(BIPPT156VOLTS);
     ui->actionBIPPT078VOLTS->setData(BIPPT078VOLTS);
     ui->actionUNI10VOLTS->setData(UNI10VOLTS);
     ui->actionUNI5VOLTS->setData(UNI5VOLTS);
@@ -147,6 +157,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionSO_RETRIGGER, SIGNAL(triggered(bool)), this, SLOT(curOptionChanged()));
     connect(ui->actionSO_BURSTMODE, SIGNAL(triggered(bool)), this, SLOT(curOptionChanged()));
     connect(ui->actionSO_PACEROUT, SIGNAL(triggered(bool)), this, SLOT(curOptionChanged()));
+    connect(ui->actionSO_EXTTIMEBASE, SIGNAL(triggered(bool)), this, SLOT(curOptionChanged()));
+    connect(ui->actionSO_TIMEBASEOUT, SIGNAL(triggered(bool)), this, SLOT(curOptionChanged()));
 
     connect(rangeGroup, SIGNAL(triggered(QAction*)), this, SLOT(curRangeChanged()));
     connect(inputModeGroup, SIGNAL(triggered(QAction*)), this, SLOT(curInputModeChanged()));
@@ -1250,7 +1262,7 @@ void MainWindow::configureData()
 void MainWindow::showEventSetup()
 {
     ChildWindow *curChild = activeMdiChild();
-    bool status, waitEnabled;
+    bool status, waitEnabled, stopBG;
     double waitTime;
 
     if (curChild) {
@@ -1266,9 +1278,11 @@ void MainWindow::showEventSetup()
         DaqDeviceHandle devHandle = curChild->devHandle();
         eventSetup = new EventsDialog(this, devHandle);
         status = curChild->statusEnabled();
+        stopBG = curChild->stopBGEnabled();
         waitEnabled = curChild->waitEnabled();
         waitTime = curChild->waitTime();
         eventSetup->setCheckStatusEnabled(status);
+        eventSetup->setStopBGEnabled(stopBG);
         eventSetup->setWaitForDone(waitEnabled);
         eventSetup->setWaitTime(waitTime);
         connect(eventSetup, SIGNAL(accepted()), this, SLOT(eventDialogResponse()));
@@ -1284,11 +1298,13 @@ void MainWindow::eventDialogResponse()
     ChildWindow *curChild = activeMdiChild();
 
     bool statusEnabled = eventSetup->checkStatusEnabled();
+    bool stopBGEnabled = eventSetup->stopBGEnabled();
     bool waitEnabled = eventSetup->waitForDone();
     double waitTime = eventSetup->waitTime();
 
     if (curChild) {
         curChild->setStatusEnabled(statusEnabled);
+        curChild->setStopBGEnabled(stopBGEnabled);
         curChild->setWaitEnabled(waitEnabled);
         curChild->setWaitTime(waitTime);
         curChild->updateEventSetup();
@@ -1357,7 +1373,8 @@ ScanOption MainWindow::getSoMask(ScanOption optSelected)
     ScanOption allOpts = (ScanOption)(
                 SO_BLOCKIO | SO_CONTINUOUS | SO_EXTCLOCK |
                 SO_SINGLEIO | SO_EXTTRIGGER | SO_RETRIGGER |
-                SO_BURSTMODE | SO_BURSTIO | SO_PACEROUT);
+                SO_BURSTMODE | SO_BURSTIO | SO_PACEROUT |
+                SO_EXTTIMEBASE | SO_TIMEBASEOUT);
     ScanOption maskVal = (ScanOption)(allOpts ^ optSelected);
     return maskVal;
 }

@@ -14,6 +14,7 @@ class EventsDialog : public QDialog
     Q_OBJECT
     Q_PROPERTY(bool eventsEnabled READ eventsEnabled WRITE setEventsEnabled NOTIFY eventsEnabledChanged)
     Q_PROPERTY(bool checkStatusEnabled READ checkStatusEnabled WRITE setCheckStatusEnabled NOTIFY checkStatusEnabledChanged)
+    Q_PROPERTY(bool stopBGEnabled READ stopBGEnabled WRITE setStopBGEnabled NOTIFY stopBGEnabledChanged)
     Q_PROPERTY(bool waitForDone READ waitForDone WRITE setWaitForDone NOTIFY waitForDoneChanged)
     Q_PROPERTY(double waitTime READ waitTime WRITE setWaitTime NOTIFY waitTimeChanged)
     Q_PROPERTY(DaqEventType eventType READ eventType WRITE setEventType NOTIFY eventTypeChanged)
@@ -52,6 +53,12 @@ public:
         emit checkStatusEnabledChanged(enable);
     }
 
+    void setStopBGEnabled(bool enable)
+    {
+        mStopBGEnabled = enable;
+        emit stopBGEnabledChanged(enable);
+    }
+
     void setEventType(DaqEventType eventType)
     {
         mEventType = eventType;
@@ -75,6 +82,7 @@ public:
     bool waitForDone() { return mWaitForDone; }
     double waitTime() { return mWaitTime; }
     bool checkStatusEnabled() { return mCheckStatusEnabled; }
+    bool stopBGEnabled() { return mStopBGEnabled; }
     DaqEventType eventType() { return mEventType; }
     unsigned long long eventParams() { return mEventParams; }
 
@@ -96,6 +104,7 @@ private:
     bool mWaitForDone;
     double mWaitTime;
     bool mCheckStatusEnabled;
+    bool mStopBGEnabled;
     DaqEventType mEventType;
     DaqDeviceHandle mDaqDeviceHandle;
     unsigned long long mEventParams;
@@ -112,6 +121,7 @@ signals:
     void functionTypeChanged(int);
     void eventsEnabledChanged(bool);
     void checkStatusEnabledChanged(bool);
+    void stopBGEnabledChanged(bool);
     void eventTypeChanged(DaqEventType);
     void eventParamsChanged(unsigned long long);
     void waitForDoneChanged(bool);

@@ -13,6 +13,8 @@ TEMPLATE = app
 #CONFIG += static
 CONFIG += c++11
 
+DEFINES += UL_1_20
+
 SOURCES += main.cpp\
         mainwindow.cpp \
     subwidget.cpp \

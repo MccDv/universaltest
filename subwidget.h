@@ -70,6 +70,8 @@ private:
     void setUiForGroup();
     void setUiForFunction();
     void getErrorMessage();
+    UlError ctrGetConfig(DaqDeviceHandle daqDeviceHandle, CtrConfigItem configItem, unsigned int index, long long &configValue);
+    UlError ctrSetConfig(DaqDeviceHandle daqDeviceHandle, CtrConfigItem configItem, unsigned int index, long long configValue);
 };
 
 #endif // SUBWIDGET_H

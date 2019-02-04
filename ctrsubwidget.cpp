@@ -14,6 +14,7 @@ CtrSubWidget::CtrSubWidget(QWidget *parent) :
 
     tmrCheckStatus = new QTimer(this);
     mUseGetStatus = true;
+    mAutoStop = true;
     mUseWait = false;
     mPrintResolution = 5;
     mInitPlot = true;
@@ -192,6 +193,8 @@ CtrSubWidget::~CtrSubWidget()
 void CtrSubWidget::keyPressEvent(QKeyEvent *event)
 {
     int keyCode = event->key();
+    if (keyCode == Qt::Key_Escape)
+        swStopScan();
     if ((keyCode == Qt::Key_Plus)  && (QApplication::keyboardModifiers() & Qt::AltModifier)) {
         mPrintResolution += 1;
         ui->lblInfo->setText(QString("Text resolution %1").arg(mPrintResolution));
@@ -263,6 +266,7 @@ void CtrSubWidget::updateParameters()
     mDevUID = parentWindow->devUID();
 
     mUseGetStatus = parentWindow->statusEnabled();
+    mAutoStop = parentWindow->stopBGEnabled();
     mUseWait = parentWindow->waitEnabled();
     mWaitTime = parentWindow->waitTime();
 

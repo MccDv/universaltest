@@ -87,6 +87,7 @@ private:
     double mTrigVariance;
 
     bool mUseGetStatus;
+    bool mAutoStop;
     bool mUseWait;
     double mWaitTime;
     int mPrintResolution;
@@ -155,7 +156,7 @@ private:
     void plotScan(unsigned long long currentCount, long long currentIndex, int blockSize);
     void updatePlot();
 
-    void getDataValues();
+    void getDataValues(bool newBuffer);
 
 signals:
     //void dataReady(unsigned long long dataCount, unsigned long long eventParam);

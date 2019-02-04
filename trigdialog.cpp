@@ -28,15 +28,20 @@ TrigDialog::TrigDialog(QWidget *parent) :
     ui->cmbChanType->addItem("Counter16", DAQI_CTR16);
     ui->cmbChanType->addItem("Counter32", DAQI_CTR32);
     ui->cmbChanType->addItem("Counter48", DAQI_CTR48);
+    ui->cmbChanType->addItem("DAC", DAQI_DAC);
 
     ui->cmbRange->addItem("BIP20VOLTS", BIP20VOLTS);
     ui->cmbRange->addItem("BIP10VOLTS", BIP10VOLTS);
     ui->cmbRange->addItem("BIPPT5VOLTS", BIP5VOLTS);
     ui->cmbRange->addItem("BIP4VOLTS", BIP4VOLTS);
+    ui->cmbRange->addItem("BIP3VOLTS", BIP3VOLTS);
     ui->cmbRange->addItem("BIP2PT5VOLTS", BIP2PT5VOLTS);
     ui->cmbRange->addItem("BIP2VOLTS", BIP2VOLTS);
     ui->cmbRange->addItem("BIP1PT25VOLTS", BIP1PT25VOLTS);
     ui->cmbRange->addItem("BIP1VOLTS", BIP1VOLTS);
+    ui->cmbRange->addItem("BIPPT625VOLTS", BIPPT625VOLTS);
+    ui->cmbRange->addItem("BIPPT312VOLTS", BIPPT312VOLTS);
+    ui->cmbRange->addItem("BIPPT156VOLTS", BIPPT156VOLTS);
     ui->cmbRange->addItem("BIPPT078VOLTS", BIPPT078VOLTS);
     ui->cmbRange->addItem("UNI10VOLTS", UNI10VOLTS);
     ui->cmbRange->addItem("UNI5VOLTS", UNI5VOLTS);

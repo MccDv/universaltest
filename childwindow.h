@@ -47,6 +47,7 @@ class ChildWindow : public QMdiSubWindow
     Q_PROPERTY(bool tmrRunning READ tmrRunning WRITE setTmrRunning NOTIFY tmrRunningChanged)
     Q_PROPERTY(bool showPlot READ showPlot WRITE setShowPlot NOTIFY showPlotChanged)
     Q_PROPERTY(bool statusEnabled READ statusEnabled WRITE setStatusEnabled NOTIFY statusEnabledChanged)
+    Q_PROPERTY(bool stopBGEnabled READ stopBGEnabled WRITE setStopBGEnabled NOTIFY stopBGEnabledChanged)
     Q_PROPERTY(bool waitEnabled READ waitEnabled WRITE setWaitEnabled NOTIFY waitEnabledChanged)
     Q_PROPERTY(double waitTime READ waitTime WRITE setWaitTime NOTIFY waitTimeChanged)
 
@@ -64,6 +65,12 @@ public:
     {
         mStatusEnabled = statusEnabled;
         emit statusEnabledChanged(statusEnabled);
+    }
+
+    void setStopBGEnabled(bool stopBGEnabled)
+    {
+        mStopBGEnabled = stopBGEnabled;
+        emit stopBGEnabledChanged(stopBGEnabled);
     }
 
     void setWaitEnabled(bool waitIsEnabled)
@@ -262,6 +269,7 @@ public:
     //property gets:
 
     bool statusEnabled() { return mStatusEnabled; }
+    bool stopBGEnabled() { return mStopBGEnabled; }
     bool waitEnabled() { return mWaitEnabled; }
     double waitTime() { return mWaitTime; }
 
@@ -340,6 +348,7 @@ private:
     double mTrigLevel;
 
     bool mStatusEnabled;
+    bool mStopBGEnabled;
     bool mWaitEnabled;
     double mWaitTime;
     DaqEventType mEventTypes;
@@ -362,6 +371,7 @@ signals:
     void refreshBoads();
     void refreshData();
     void statusEnabledChanged(bool);
+    void stopBGEnabledChanged(bool);
     void waitEnabledChanged(bool);
     void waitTimeChanged(double);
     void eventTypesChanged(DaqEventType);

@@ -56,5 +56,6 @@ QString getQueueLimitNames(AiChanQueueLimitation typeNum);
 QString getRangeName(Range rangeVal);
 QString getAccessTypes(MemAccessType memAccess);
 QString getRegionNames(MemRegion memRegion);
+QString getEnableDisableName(int value);
 CounterMeasurementMode getMeasModeFromListIndex(int listIndex);
 #endif // TESTUTILITIES_H

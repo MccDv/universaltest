@@ -18,6 +18,7 @@ DioSubWidget::DioSubWidget(QWidget *parent) :
 
     tmrCheckStatus = new QTimer(this);
     mUseGetStatus = true;
+    mAutoStop = true;
     mUseWait = false;
     mPrintResolution = 5;
     mInitPlot = true;
@@ -97,6 +98,8 @@ DioSubWidget::~DioSubWidget()
 void DioSubWidget::keyPressEvent(QKeyEvent *event)
 {
     int keyCode = event->key();
+    if (keyCode == Qt::Key_Escape)
+        onClickCmdStop();
     if ((keyCode == Qt::Key_Plus)  && (QApplication::keyboardModifiers() & Qt::AltModifier)) {
         mPrintResolution += 1;
         ui->lblInfo->setText(QString("Text resolution %1").arg(mPrintResolution));
@@ -129,6 +132,7 @@ void DioSubWidget::updateParameters()
     mDevUID = parentWindow->devUID();
 
     mUseGetStatus = parentWindow->statusEnabled();
+    mAutoStop = parentWindow->stopBGEnabled();
     mUseWait = parentWindow->waitEnabled();
     mWaitTime = parentWindow->waitTime();
 
@@ -1711,7 +1715,7 @@ void DioSubWidget::runDInScanFunc()
 
     //only default flag (0) exists currently
     mDInScanFlag = DINSCAN_FF_DEFAULT;
-    if (mStopOnStart) {
+    if (mStopOnStart && mAutoStop) {
         nameOfFunc = "ulDInScanStop";
         funcArgs = "(mDaqDeviceHandle)\n";
         sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
@@ -1942,40 +1946,42 @@ UlError DioSubWidget::stopScan(long long perChan, long long curCount, long long 
 
     funcArgs = "(mDaqDeviceHandle)";
     tmrCheckStatus->stop();
-    if (mUtFunction == UL_D_INSCAN) {
-        nameOfFunc = "ulDInScanStop";
-        sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
-        err = ulDInScanStop(mDaqDeviceHandle);
-    } else {
-        nameOfFunc = "ulDOutScanStop";
-        sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
-        err = ulDOutScanStop(mDaqDeviceHandle);
-    }
-    argVals = QStringLiteral("(%1)")
-            .arg(mDaqDeviceHandle);
-    ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
+    if(mAutoStop) {
+        if (mUtFunction == UL_D_INSCAN) {
+            nameOfFunc = "ulDInScanStop";
+            sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
+            err = ulDInScanStop(mDaqDeviceHandle);
+        } else {
+            nameOfFunc = "ulDOutScanStop";
+            sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
+            err = ulDOutScanStop(mDaqDeviceHandle);
+        }
+        argVals = QStringLiteral("(%1)")
+                .arg(mDaqDeviceHandle);
+        ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
 
-    funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-    if (err != ERR_NO_ERROR) {
-        mStatusTimerEnabled = false;
-        mMainWindow->setError(err, sStartTime + funcStr);
-        return err;
-    } else {
-        mMainWindow->addFunction(sStartTime + funcStr);
-    }
-    ui->lblStatus->setText(QStringLiteral("IDLE Count = %1 (%2 perChan), index: %3")
-                           .arg(curCount)
-                           .arg(perChan)
-                           .arg(curIndex));
-    mRunning = false;
-    if (mUtFunction == UL_D_INSCAN) {
-        if (mChanCount != 0) {
-            finalBlockSize = (curCount - mPlotCount) / mChanCount;
-            if (finalBlockSize > 1) {
-                if (mPlot) {
-                    plotScan(mPlotCount, mPlotIndex, finalBlockSize);
-                } else {
-                    printData(mPlotCount, mPlotIndex, finalBlockSize);
+        funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
+        if (err != ERR_NO_ERROR) {
+            mStatusTimerEnabled = false;
+            mMainWindow->setError(err, sStartTime + funcStr);
+            return err;
+        } else {
+            mMainWindow->addFunction(sStartTime + funcStr);
+        }
+        ui->lblStatus->setText(QStringLiteral("IDLE Count = %1 (%2 perChan), index: %3")
+                               .arg(curCount)
+                               .arg(perChan)
+                               .arg(curIndex));
+        mRunning = false;
+        if (mUtFunction == UL_D_INSCAN) {
+            if (mChanCount != 0) {
+                finalBlockSize = (curCount - mPlotCount) / mChanCount;
+                if (finalBlockSize > 1) {
+                    if (mPlot) {
+                        plotScan(mPlotCount, mPlotIndex, finalBlockSize);
+                    } else {
+                        printData(mPlotCount, mPlotIndex, finalBlockSize);
+                    }
                 }
             }
         }

@@ -176,10 +176,14 @@
     <addaction name="actionBIP10VOLTS"/>
     <addaction name="actionBIP5VOLTS"/>
     <addaction name="actionBIP4VOLTS"/>
+    <addaction name="actionBIP3VOLTS"/>
     <addaction name="actionBIP2PT5VOLTS"/>
     <addaction name="actionBIP2VOLTS"/>
     <addaction name="actionBIP1PT25VOLTS"/>
     <addaction name="actionBIP1VOLTS"/>
+    <addaction name="actionBIPPT625VOLTS"/>
+    <addaction name="actionBIPPT312VOLTS"/>
+    <addaction name="actionBIPPT156VOLTS"/>
     <addaction name="actionBIPPT078VOLTS"/>
     <addaction name="separator"/>
     <addaction name="actionUNI10VOLTS"/>
@@ -219,6 +223,8 @@
     <addaction name="actionSO_RETRIGGER"/>
     <addaction name="actionSO_BURSTMODE"/>
     <addaction name="actionSO_PACEROUT"/>
+    <addaction name="actionSO_EXTTIMEBASE"/>
+    <addaction name="actionSO_TIMEBASEOUT"/>
     <addaction name="separator"/>
     <addaction name="actionFF_DEFAULT"/>
     <addaction name="actionFF_NOSCALEDATA"/>
@@ -1156,6 +1162,84 @@
    </property>
    <property name="visible">
     <bool>false</bool>
+   </property>
+  </action>
+  <action name="actionSO_EXTTIMEBASE">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>SO_EXTTIMEBASE</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionSO_TIMEBASEOUT">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>SO_TIMEBASEOUT</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionBIP3VOLTS">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>BIP3VOLTS</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionBIPPT312VOLTS">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>BIPPT312VOLTS</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionBIPPT156VOLTS">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>BIPPT156VOLTS</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionBIPPT625VOLTS">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>BIPPT625VOLTS</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
    </property>
   </action>
  </widget>
