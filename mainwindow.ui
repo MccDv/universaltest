@@ -294,6 +294,12 @@
     </property>
     <addaction name="actionEventSetup"/>
    </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionAbout"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuBoards"/>
    <addaction name="menuFunction"/>
@@ -303,6 +309,7 @@
    <addaction name="menuTriggering"/>
    <addaction name="menuData_Generator"/>
    <addaction name="menuPlot"/>
+   <addaction name="menuHelp"/>
   </widget>
   <action name="actionTmrLoop">
    <property name="checkable">
@@ -1240,6 +1247,11 @@
     <font>
      <pointsize>10</pointsize>
     </font>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About</string>
    </property>
   </action>
  </widget>

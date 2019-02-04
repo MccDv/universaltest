@@ -9,10 +9,15 @@ QT       += core gui
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
 TARGET = universaltest
+
 TEMPLATE = app
 #CONFIG += static
 CONFIG += c++11
 
+VERSION = 1.2.0.0
+
+DEFINES += VERSION_STRING=\\\"$${VERSION}\\\"
+#DEFINES += APP_VERSION ="$${VERSTR}"
 DEFINES += UL_1_20
 
 SOURCES += main.cpp\

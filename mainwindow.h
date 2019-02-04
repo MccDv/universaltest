@@ -5,6 +5,8 @@
 #include <QMenu>
 #include <QKeyEvent>
 #include <QMessageBox>
+#include <QSplashScreen>
+#include <QTimer>
 #include "childwindow.h"
 #include "unitest.h"
 #include <QHash>
@@ -69,10 +71,14 @@ private slots:
     void showEventSetup();
     void eventDialogResponse();
     void showHistory();
+    void showAbout();
+    void delayTimer();
 
 private:
     Ui::MainWindow *ui;
     ChildWindow *activeMdiChild() const;
+    QSplashScreen *mSplash;
+    QTimer *tmrDelay;
     void updateInventory();
     void createChild(UtFunctionGroup, int);
     void createMenus();
@@ -108,6 +114,7 @@ private:
     void readWindowPosition();
     void writeWindowPosition();
     bool mAutoConnect;
+    bool mTimesUp;
 
 signals:
     void devListCountChanged(int);

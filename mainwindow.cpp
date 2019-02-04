@@ -27,6 +27,7 @@ MainWindow::MainWindow(QWidget *parent) :
 #endif
 
     mHistListSize = 50;
+    tmrDelay = new QTimer(this);
     functionGroup = new QActionGroup(this);
 
     inputModeGroup = new QActionGroup(this);
@@ -187,6 +188,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionVolts_vs_Time, SIGNAL(triggered(bool)), this, SLOT(showPlot(bool)));
     connect(ui->actionConfigure_Data, SIGNAL(triggered(bool)), this, SLOT(configureData()));
     connect(ui->actionLoad_Queue, SIGNAL(triggered(bool)), this, SLOT(configureQueue()));
+    connect(ui->actionAbout, SIGNAL(triggered(bool)), this, SLOT(showAbout()));
+    connect(tmrDelay, SIGNAL(timeout()), this, SLOT(delayTimer()));
     readWindowPosition();
     ui->chkAutoDetect->setChecked(mAutoConnect);
 
@@ -262,6 +265,41 @@ ChildWindow *MainWindow::activeMdiChild() const
     if (QMdiSubWindow *activeSubWindow = ui->mdiArea->activeSubWindow())
         return qobject_cast<ChildWindow *>(activeSubWindow);
     return 0;
+}
+
+void MainWindow::showAbout()
+{
+    mTimesUp = false;
+    tmrDelay->setInterval(100);
+    tmrDelay->start();
+}
+
+void MainWindow::delayTimer()
+{
+    MainWindow w;
+    tmrDelay->setInterval(3000);
+    if(!mTimesUp) {
+        QPixmap pixmap(":/images/UtLnxSplash.png");
+        mSplash = new QSplashScreen;
+        mSplash->setPixmap(pixmap);
+        mSplash->show();
+        //w.setWindowTitle("Universal Test for Linux");
+        qApp->processEvents();
+        mSplash->activateWindow();
+        QColor textColor;
+        QString appVer;
+        appVer = "Version " + QApplication::applicationVersion() + "            ";
+        textColor = "royalblue";
+        mSplash->showMessage(appVer, Qt::AlignVCenter | Qt::AlignRight, textColor);
+        //I::sleep(3); // show splash for 3 seconds
+
+        //w.show();
+        //for(int dly = 0; dly < 100000; dly++)
+        //    qApp->processEvents();
+    } else {
+        mSplash->finish(&w);
+    }
+    mTimesUp = true;
 }
 
 void MainWindow::setTimer()
