@@ -167,7 +167,7 @@ private:
     void mapGridToPortBit(int gridIndex, DigitalPortType &portType, int &bitInPort);
     long long getIOConfigMask(int portIndex);
 
-    void getDataValues();
+    void getDataValues(bool newBuffer);
 
 signals:
     void dataReady(unsigned long long curTotalCount, unsigned long long curIndex, int blockSize);

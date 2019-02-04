@@ -447,9 +447,9 @@ void DioSubWidget::showPlotWindow(bool showIt)
     if (showIt) {
         curIndex = 2;
         frameShape = QFrame::NoFrame;
+        ui->stackedWidget->setFrameShape(frameShape);
+        ui->stackedWidget->setCurrentIndex(curIndex);
     }
-    ui->stackedWidget->setFrameShape(frameShape);
-    ui->stackedWidget->setCurrentIndex(curIndex);
 }
 
 void DioSubWidget::showDataGen()
@@ -485,6 +485,8 @@ void DioSubWidget::dataDialogResponse()
     unsigned int numElements = mWaves.count();
     ui->spnLowChan->setValue(0);
     ui->spnHighChan->setValue(numElements - 1);
+    if(mRunning)
+        getDataValues(false);
 }
 
 void DioSubWidget::initDeviceParams()
@@ -753,7 +755,7 @@ void DioSubWidget::onClickCmdGo()
     runSelectedFunc();
 }
 
-void DioSubWidget::getDataValues()
+void DioSubWidget::getDataValues(bool newBuffer)
 {
     QTextCursor curCursor;
     DataManager *genData = new DataManager();
@@ -774,15 +776,17 @@ void DioSubWidget::getDataValues()
     defaultOffset = defaultAmplitude / 2;
 
     //setup the buffer
-    if (buffer) {
-        delete[] buffer;
-        buffer = NULL;
-    }
-
     DMgr::WaveType defaultWave = DMgr::sineWave;
     int dataSetSize = mTotalSamples * mChanCount;
     mBufSize = dataSetSize;
-    buffer = new unsigned long long[dataSetSize];
+
+    if(newBuffer) {
+        if (buffer) {
+            delete[] buffer;
+            buffer = NULL;
+        }
+        buffer = new unsigned long long[dataSetSize];
+    }
 
     //setup the plot data
     xValues.resize(mTotalSamples);
@@ -969,7 +973,7 @@ void DioSubWidget::runSelectedFunc()
         break;
     case UL_D_OUTSCAN:
         showStop = true;
-        getDataValues();
+        getDataValues(true);
         mTriggerType = parentWindow->triggerType();
         if (mTriggerType != TRIG_NONE) {
             mTrigChannel = parentWindow->trigChannel();
