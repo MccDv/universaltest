@@ -605,6 +605,7 @@ void AoSubWidget::onClickCmdGo()
 
     tmrIsEnabled = parentWindow->tmrEnabled();
     mUseTimer = tmrIsEnabled;
+    mCancelAOut = false;
     //ui->teShowValues->clear();
     ui->lblRateReturned->clear();
     ui->lblStatus->clear();

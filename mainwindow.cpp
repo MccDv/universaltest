@@ -291,11 +291,6 @@ void MainWindow::delayTimer()
         appVer = "Version " + QApplication::applicationVersion() + "            ";
         textColor = "royalblue";
         mSplash->showMessage(appVer, Qt::AlignVCenter | Qt::AlignRight, textColor);
-        //I::sleep(3); // show splash for 3 seconds
-
-        //w.show();
-        //for(int dly = 0; dly < 100000; dly++)
-        //    qApp->processEvents();
     } else {
         mSplash->finish(&w);
     }
