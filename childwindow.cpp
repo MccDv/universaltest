@@ -61,9 +61,9 @@ ChildWindow::ChildWindow(QWidget *parent, UtFunctionGroup funcGroup) : QMdiSubWi
     mOneSamplePer = false;
     mRange = BIP10VOLTS;
     mInputMode = AI_DIFFERENTIAL;
-    mAiFlags = (AInFlag)0;
-    mAoFlags = (AOutFlag)0;
-    mDaqiFlags = (DaqInScanFlag)0;
+    mAiFlags = AIN_FF_DEFAULT;
+    mAoFlags = AOUT_FF_DEFAULT;
+    mDaqiFlags = DAQINSCAN_FF_DEFAULT;
     mCiFlags = CINSCAN_FF_DEFAULT;
     mTriggerType = TRIG_NONE;
     mRetrigCount = 0;

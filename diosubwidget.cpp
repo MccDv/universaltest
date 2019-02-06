@@ -485,8 +485,7 @@ void DioSubWidget::dataDialogResponse()
     unsigned int numElements = mWaves.count();
     ui->spnLowChan->setValue(0);
     ui->spnHighChan->setValue(numElements - 1);
-    if(mRunning)
-        getDataValues(false);
+    getDataValues(!mRunning);
 }
 
 void DioSubWidget::initDeviceParams()
@@ -780,7 +779,7 @@ void DioSubWidget::getDataValues(bool newBuffer)
     int dataSetSize = mTotalSamples * mChanCount;
     mBufSize = dataSetSize;
 
-    if(newBuffer) {
+    if(newBuffer && !mRunning) {
         if (buffer) {
             delete[] buffer;
             buffer = NULL;

@@ -73,6 +73,9 @@ void AoSubWidget::keyPressEvent(QKeyEvent *event)
     int keyCode = event->key();
     if (keyCode == Qt::Key_Escape)
         onClickCmdStop();
+    if (keyCode == Qt::Key_F6)
+        if (!mPlot)
+            updateData();
     if ((keyCode == Qt::Key_Plus)  && (QApplication::keyboardModifiers() & Qt::AltModifier)) {
         mPrintResolution += 1;
         ui->lblInfo->setText(QString("Text resolution %1").arg(mPrintResolution));
@@ -196,6 +199,7 @@ void AoSubWidget::setUiForFunction()
         mFuncName = "ulAOut";
         break;
     case UL_AOUT_SCAN:
+        mPlot = true;
     case UL_DAQ_OUTSCAN:
         mFuncName = "ulAOutScan";
         if (mUtFunction == UL_DAQ_OUTSCAN) {
@@ -220,6 +224,7 @@ void AoSubWidget::setUiForFunction()
     ui->fraScan->setVisible(scanVisible);
     ui->cmdStop->setEnabled(false);
     showPlotWindow(mPlot);
+    parentWindow->setShowPlot(mPlot);
     ui->spnHighChan->setEnabled(showChanSelect);
     ui->spnLowChan->setEnabled(showChanSelect);
     ui->fraScan->setVisible(scanVisible);
@@ -330,7 +335,9 @@ void AoSubWidget::showPlotWindow(bool showIt)
     if (showIt) {
         curIndex = 1;
         //frameShape = QFrame::NoFrame;
-    }
+    } else
+        updateData();
+
     ui->stackedWidget->setFrameShape(frameShape);
     ui->stackedWidget->setCurrentIndex(curIndex);
 }
@@ -378,6 +385,7 @@ void AoSubWidget::queueDialogResponse()
 void AoSubWidget::showDataGen()
 {
     dataSelectDlg = new DataSelectDialog(this);
+    configWaves();
     if (mWaves.count()) {
         dataSelectDlg->setAmplitude(mAmplitude);
         dataSelectDlg->setNumCycles(mCycles);
@@ -405,8 +413,7 @@ void AoSubWidget::dataDialogResponse()
 
     disconnect(dataSelectDlg);
     delete dataSelectDlg;
-    if (mRunning)
-        getDataValues(false);
+    getDataValues(!mRunning);
     //unsigned int numElements = mWaves.count();
     //ui->spnLowChan->setValue(0);
     //ui->spnHighChan->setValue(numElements - 1);
@@ -637,6 +644,7 @@ void AoSubWidget::getDataValues(bool newBuffer)
     QString dataText, str, val;
 
     floatValue = false;
+    mTextIndex = 0;
     //following sets up daqscan value ranges
     if (mUtFunction == UL_DAQ_OUTSCAN) {
         int daqList = mChanList.count();
@@ -672,7 +680,7 @@ void AoSubWidget::getDataValues(bool newBuffer)
     int dataSetSize = mSamplesPerChan * mChanCount;
 
     //delete existing buffer
-    if(newBuffer) {
+    if(newBuffer && !mRunning) {
         if (buffer) {
             delete[] buffer;
             buffer = NULL;
@@ -747,7 +755,7 @@ void AoSubWidget::getDataValues(bool newBuffer)
 
     if (mUtFunction == UL_DAQ_OUTSCAN)
         floatValue = (!(mDaqoFlags & DAQOUTSCAN_FF_NOSCALEDATA));
-    if (mUtFunction == UL_AOUT_SCAN)
+    else
         floatValue = (!(mAoFlags & AOUTSCAN_FF_NOSCALEDATA));
 
     if (mPlot) {
@@ -783,34 +791,81 @@ void AoSubWidget::getDataValues(bool newBuffer)
         ui->teShowValues->clear();
         dataText = "<style> th, td { padding-right: 10px;}</style><tr>";
         for (int y = 0; y < samplesToPrint; y++) {
-            //ui->teShowValues->append
-            //        (QString("%1\t").arg(increment));
             dataText.append("<td>" + str.setNum(increment) + "</td>");
             for (int chan = 0; chan < mChanCount; chan++) {
                 curSample = buffer[increment + chan];
-                //curCursor.movePosition(QTextCursor::End);
-                //ui->teShowValues->textCursor().setPosition(curCursor.position());
                 if (floatValue)
                     val = QString("%1%2").arg((curSample < 0) ? "" : "+")
                             .arg(curSample, 2, 'f', 5, '0');
-                    //ui->teShowValues->insertPlainText(QString("%1%2\t")
-                    //                         .arg((curSample < 0) ? "" : "+")
-                    //                         .arg(curSample, 2, 'f', 5, '0'));
                 else
                     val = QString("%1").arg(curSample);
-                    //ui->teShowValues->insertPlainText(
-                    //            QString("%1  \t").arg(curSample));
                 dataText.append("<td>" + val + "</td>");
             }
             dataText.append("</tr><tr>");
-            increment +=mChanCount;
+            increment += mChanCount;
+            mTextIndex = increment;
         }
         dataText.append("</td></tr>");
         ui->teShowValues->setHtml(dataText);
         if (samplesToPrint < mSamplesPerChan)
-            ui->teShowValues->append("...");
+            ui->teShowValues->append("... (F6)");
     }
     delete genData;
+}
+
+void AoSubWidget::updateData()
+{
+    /*int defaultCycles = 1;
+    int cycles;
+    bool floatValue, chanFloat;
+    bool truncate;
+    double offset, amplitude;
+    double defaultOffset, defaultAmplitude;
+    long curSample;
+    int chanScale;
+    DMgr::WaveType waveType;*/
+    QString dataText, str, val;
+    bool floatValue;
+
+    floatValue = false;
+    int increment = mTextIndex;
+    int samplesToPrint;
+    double curSample;
+
+    if (mUtFunction == UL_DAQ_OUTSCAN)
+        floatValue = (!(mDaqoFlags & DAQOUTSCAN_FF_NOSCALEDATA));
+    if (mUtFunction == UL_AOUT_SCAN)
+        floatValue = (!(mAoFlags & AOUTSCAN_FF_NOSCALEDATA));
+    //print only 500
+    samplesToPrint = mSamplesPerChan < 500? mSamplesPerChan : 500;
+    if ((samplesToPrint + mTextIndex) > (mSamplesPerChan * mChanCount))
+        samplesToPrint = (mSamplesPerChan * mChanCount) - mTextIndex;
+    //curCursor = QTextCursor(ui->teShowValues->textCursor());
+    ui->teShowValues->clear();
+    dataText = "<style> th, td { padding-right: 10px;}</style><tr>";
+    for (int y = 0; y < samplesToPrint; y++) {
+        dataText.append("<td>" + str.setNum(increment) + "</td>");
+        for (int chan = 0; chan < mChanCount; chan++) {
+            curSample = buffer[increment + chan];
+            if (floatValue)
+                val = QString("%1%2").arg((curSample < 0) ? "" : "+")
+                        .arg(curSample, 2, 'f', 5, '0');
+            else
+                val = QString("%1").arg(curSample);
+            dataText.append("<td>" + val + "</td>");
+        }
+        dataText.append("</tr><tr>");
+        increment += mChanCount;
+        mTextIndex = increment;
+    }
+    dataText.append("</td></tr>");
+    ui->teShowValues->setHtml(dataText);
+    //mTextIndex++;
+    if (mTextIndex >= (mSamplesPerChan * mChanCount))
+        mTextIndex = 0;
+    else
+        ui->teShowValues->append("... (F6)");
+
 }
 
 void AoSubWidget::runSelectedFunc()
@@ -818,9 +873,9 @@ void AoSubWidget::runSelectedFunc()
     ChildWindow *parentWindow;
     QFont goFont = ui->cmdGo->font();
     bool makeBold, tmrIsEnabled, tmrIsRunning;
-    bool showStop, isBipolar, noScale;
-    int chanScale;
-    double defaultRange, offset;
+    bool showStop;//, isBipolar, noScale;
+    //int chanScale;
+    //double defaultRange, offset;
 
     mLowChan = ui->spnLowChan->value();
     mHighChan = ui->spnHighChan->value();
@@ -833,7 +888,8 @@ void AoSubWidget::runSelectedFunc()
     mPlotCount = 0;
     parentWindow = qobject_cast<ChildWindow *>(this->parent());
 
-    noScale = false;
+    configWaves();
+    /*noScale = false;
     noScale = (mAoFlags == AOUT_FF_NOSCALEDATA);
     if (mUtFunction == UL_DAQ_OUTSCAN) {
         mChanCount = mChanList.count();
@@ -889,7 +945,8 @@ void AoSubWidget::runSelectedFunc()
                 mBipolar.insert(i, isBipolar);
             }
         }
-    }
+    }*/
+
     //int curRange = parentWindow->getCurrentRange();
     //mRange = (Range)curRange;
     switch (mUtFunction) {
@@ -959,6 +1016,71 @@ void AoSubWidget::runSelectedFunc()
             }
             goFont.setBold(false);
             ui->cmdGo->setFont(goFont);
+        }
+    }
+}
+
+void AoSubWidget::configWaves()
+{
+    bool isBipolar, noScale;
+    int chanScale;
+    double defaultRange, offset;
+
+    noScale = false;
+    noScale = (mAoFlags == AOUT_FF_NOSCALEDATA);
+    if (mUtFunction == UL_DAQ_OUTSCAN) {
+        mChanCount = mChanList.count();
+        if (mChanCount) {
+            for (int i = 0; i < mChanCount; i++) {
+                int numWaves = mWaves.count() - 1;
+                if (i > numWaves) {
+                    //if data hasn't been defined set default data
+                    noScale = ((mChanTypeList.value(i) == DAQO_DIGITAL)
+                               | (mDaqoFlags == DAQOUTSCAN_FF_NOSCALEDATA));
+                    defaultRange = mDefaultFSRange;
+                    isBipolar = (mDefaultFSRange < 100);
+                    offset = 0;
+                    if (noScale) {
+                        chanScale = DMgr::counts;
+                        defaultRange = (pow(2, mAoResolution)) - 1;
+                        if (mChanTypeList.value(i) == DAQO_DIGITAL)
+                            defaultRange = (pow(2, mDioResolution)) - 1;
+                        offset = defaultRange / 2;
+                        isBipolar = false;
+                    }
+                    mWaves.insert(i, DMgr::sineWave);
+                    mCycles.insert(i, 1);
+                    mAmplitude.insert(i, defaultRange);
+                    mOffset.insert(i, offset);
+                    mDataScale.insert(i, chanScale);
+                    mBipolar.insert(i, isBipolar);
+                }
+                //if chans haven't been defined, set default channels
+                chanDescriptors[i].channel = mChanList.value(i);
+                chanDescriptors[i].range = mRangeList.value(i);
+                chanDescriptors[i].type = mChanTypeList.value(i);
+            }
+        }
+    } else {
+        int numWaves = mWaves.count() - 1;
+        defaultRange = mDefaultFSRange;
+        isBipolar = (mDefaultFSRange < 100);
+        offset = 0;
+        if (noScale) {
+            chanScale = DMgr::counts;
+            defaultRange = pow(2, mAoResolution);
+            offset = defaultRange / 2;
+            isBipolar = false;
+        }
+        for (int i = 0; i < mChanCount; i++) {
+            if (i > numWaves) {
+                mWaves.insert(i, DMgr::sineWave);
+                mCycles.insert(i, 1);
+                mAmplitude.insert(i, defaultRange);
+                mOffset.insert(i, offset);
+                mDataScale.insert(i, chanScale);
+                mBipolar.insert(i, isBipolar);
+            }
         }
     }
 }

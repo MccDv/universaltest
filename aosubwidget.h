@@ -112,6 +112,7 @@ private:
     int mPlotChan;
     int mLowChan, mHighChan;
     int mSamplesPerChan;
+    int mTextIndex;
     bool mStatusTimerEnabled;
     bool mCancelAOut;
 
@@ -156,6 +157,8 @@ private:
     void plotScan(unsigned long long currentCount, long long currentIndex, int blockSize);
     void updatePlot();
 
+    void configWaves();
+    void updateData();
     void getDataValues(bool newBuffer);
 
 signals:
