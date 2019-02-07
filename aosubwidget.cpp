@@ -51,9 +51,12 @@ AoSubWidget::AoSubWidget(QWidget *parent) :
     buffer = NULL;
     mPlot = false;
     mPlotChan = -1;
+    mSamplesPerChan = 0;
+    mTextIndex = 0;
     mEventType = DE_NONE;
     mCancelAOut = false;
     mModeChanged = false;
+    mPrintResolution = 3;
     setupPlot(ui->plotOutData, 1);
     ui->plotOutData->replot();
     mMainWindow = getMainWindow();
@@ -815,15 +818,6 @@ void AoSubWidget::getDataValues(bool newBuffer)
 
 void AoSubWidget::updateData()
 {
-    /*int defaultCycles = 1;
-    int cycles;
-    bool floatValue, chanFloat;
-    bool truncate;
-    double offset, amplitude;
-    double defaultOffset, defaultAmplitude;
-    long curSample;
-    int chanScale;
-    DMgr::WaveType waveType;*/
     QString dataText, str, val;
     bool floatValue;
 
@@ -840,7 +834,6 @@ void AoSubWidget::updateData()
     samplesToPrint = mSamplesPerChan < 500? mSamplesPerChan : 500;
     if ((samplesToPrint + mTextIndex) > (mSamplesPerChan * mChanCount))
         samplesToPrint = (mSamplesPerChan * mChanCount) - mTextIndex;
-    //curCursor = QTextCursor(ui->teShowValues->textCursor());
     ui->teShowValues->clear();
     dataText = "<style> th, td { padding-right: 10px;}</style><tr>";
     for (int y = 0; y < samplesToPrint; y++) {
@@ -860,12 +853,10 @@ void AoSubWidget::updateData()
     }
     dataText.append("</td></tr>");
     ui->teShowValues->setHtml(dataText);
-    //mTextIndex++;
     if (mTextIndex >= (mSamplesPerChan * mChanCount))
         mTextIndex = 0;
     else
         ui->teShowValues->append("... (F6)");
-
 }
 
 void AoSubWidget::runSelectedFunc()

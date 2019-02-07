@@ -72,6 +72,8 @@ DioSubWidget::DioSubWidget(QWidget *parent) :
     mPlot = false;
     mPlotChan = -1;
     mChanCount = 1;
+    mSamplesPerChan = 0;
+    mTextIndex = 0;
     mEventType = DE_NONE;
     ui->cmdStop->setEnabled(false);
     setupPlot(ui->plotDigitalData, 1);
@@ -100,6 +102,9 @@ void DioSubWidget::keyPressEvent(QKeyEvent *event)
     int keyCode = event->key();
     if (keyCode == Qt::Key_Escape)
         onClickCmdStop();
+    if (keyCode == Qt::Key_F6)
+        if (!mPlot)
+            updateData();
     if ((keyCode == Qt::Key_Plus)  && (QApplication::keyboardModifiers() & Qt::AltModifier)) {
         mPrintResolution += 1;
         ui->lblInfo->setText(QString("Text resolution %1").arg(mPrintResolution));
@@ -447,9 +452,10 @@ void DioSubWidget::showPlotWindow(bool showIt)
     if (showIt) {
         curIndex = 2;
         frameShape = QFrame::NoFrame;
-        ui->stackedWidget->setFrameShape(frameShape);
-        ui->stackedWidget->setCurrentIndex(curIndex);
-    }
+    } else
+        updateData();
+    ui->stackedWidget->setFrameShape(frameShape);
+    ui->stackedWidget->setCurrentIndex(curIndex);
 }
 
 void DioSubWidget::showDataGen()
@@ -736,7 +742,7 @@ void DioSubWidget::onClickCmdGo()
     mPlotCount = 0;
     if (mChanCount < 1)
         mChanCount = 1;
-    mTotalSamples = ui->leNumSamples->text().toLong();
+    mSamplesPerChan = ui->leNumSamples->text().toLong();
 
     //if (mUtFunction == UL_D_OUTSCAN)
     //    getDataValues();
@@ -767,6 +773,7 @@ void DioSubWidget::getDataValues(bool newBuffer)
     double defaultOffset, defaultAmplitude;
     long curSample;
     DMgr::WaveType waveType;
+    QString dataText, str, val;
 
     //set default wave parameters - half scale, sine wave
     //set default wave parameters - half scale, sine wave
@@ -776,7 +783,7 @@ void DioSubWidget::getDataValues(bool newBuffer)
 
     //setup the buffer
     DMgr::WaveType defaultWave = DMgr::sineWave;
-    int dataSetSize = mTotalSamples * mChanCount;
+    int dataSetSize = mSamplesPerChan * mChanCount;
     mBufSize = dataSetSize;
 
     if(newBuffer && !mRunning) {
@@ -788,11 +795,11 @@ void DioSubWidget::getDataValues(bool newBuffer)
     }
 
     //setup the plot data
-    xValues.resize(mTotalSamples);
-    chanValues.resize(mTotalSamples);
+    xValues.resize(mSamplesPerChan);
+    chanValues.resize(mSamplesPerChan);
     yChans.resize(mChanCount);
     for (int chan=0; chan<mChanCount; chan++)
-        yChans[chan].resize(mTotalSamples);
+        yChans[chan].resize(mSamplesPerChan);
 
     //get the data - populated in plot vectors
     for (int chan = 0; chan < mChanCount; chan++) {
@@ -807,7 +814,7 @@ void DioSubWidget::getDataValues(bool newBuffer)
 
     //transfer the data to the buffer from the plot vectors
     curSample = 0;
-    for (long sample = 0; sample < mTotalSamples; sample++) {
+    for (long sample = 0; sample < mSamplesPerChan; sample++) {
         for (int chan = 0; chan < mChanCount; chan++) {
             buffer[curSample] = yChans[chan][sample];
             curSample +=1;
@@ -817,7 +824,7 @@ void DioSubWidget::getDataValues(bool newBuffer)
     if (mPlot) {
         int increment = 0;
         setupPlot(ui->plotDigitalData, mChanCount);
-        for (int y = 0; y < mTotalSamples; y++) {
+        for (int y = 0; y < mSamplesPerChan; y++) {
             xValues[y] = y;
             for (int chan = 0; chan < mChanCount; chan++) {
                 yChans[chan][y] = buffer[chan + increment];
@@ -839,23 +846,63 @@ void DioSubWidget::getDataValues(bool newBuffer)
         updatePlot();
     } else {
         int increment = 0;
+        int samplesToPrint;
         double curSample;
+        //print only 500
+        samplesToPrint = mSamplesPerChan < 500? mSamplesPerChan : 500;
         curCursor = QTextCursor(ui->teShowValues->textCursor());
         ui->teShowValues->clear();
-        for (int y = 0; y < mTotalSamples; y++) {
-            ui->teShowValues->append
-                    (QString("%1\t")
-                     .arg(increment));
+        dataText = "<style> th, td { padding-right: 10px;}</style><tr>";
+        for (int y = 0; y < samplesToPrint; y++) {
+            dataText.append("<td>" + str.setNum(increment) + "</td>");
             for (int chan = 0; chan < mChanCount; chan++) {
                 curSample = buffer[increment + chan];
-                curCursor.movePosition(QTextCursor::End);
-                ui->teShowValues->textCursor().setPosition(curCursor.position());
-                ui->teShowValues->insertPlainText(QString("%1\t").arg(curSample));
+                val = QString("%1").arg(curSample);
+                dataText.append("<td>" + val + "</td>");
             }
-            increment +=mChanCount;
+            dataText.append("</tr><tr>");
+            increment += mChanCount;
+            mTextIndex = increment;
         }
+        dataText.append("</td></tr>");
+        ui->teShowValues->setHtml(dataText);
+        if (samplesToPrint < mSamplesPerChan)
+            ui->teShowValues->append("... (F6)");
     }
     delete genData;
+}
+
+void DioSubWidget::updateData()
+{
+    QString dataText, str, val;
+
+    int increment = mTextIndex;
+    int samplesToPrint;
+    double curSample;
+
+    //print only 500
+    samplesToPrint = mSamplesPerChan < 500? mSamplesPerChan : 500;
+    if ((samplesToPrint + mTextIndex) > (mSamplesPerChan * mChanCount))
+        samplesToPrint = (mSamplesPerChan * mChanCount) - mTextIndex;
+    ui->teShowValues->clear();
+    dataText = "<style> th, td { padding-right: 10px;}</style><tr>";
+    for (int y = 0; y < samplesToPrint; y++) {
+        dataText.append("<td>" + str.setNum(increment) + "</td>");
+        for (int chan = 0; chan < mChanCount; chan++) {
+            curSample = buffer[increment + chan];
+            val = QString("%1").arg(curSample);
+            dataText.append("<td>" + val + "</td>");
+        }
+        dataText.append("</tr><tr>");
+        increment += mChanCount;
+        mTextIndex = increment;
+    }
+    dataText.append("</td></tr>");
+    ui->teShowValues->setHtml(dataText);
+    if (mTextIndex >= (mSamplesPerChan * mChanCount))
+        mTextIndex = 0;
+    else
+        ui->teShowValues->append("... (F6)");
 }
 
 void DioSubWidget::bitToggled(int bitNumber)
@@ -1749,12 +1796,12 @@ void DioSubWidget::runDInScanFunc()
 
     sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
     err = ulDInScan(mDaqDeviceHandle, lowPort, highPort,
-                        mTotalSamples, &rate, mScanOptions, mDInScanFlag, buffer);
+                        mSamplesPerChan, &rate, mScanOptions, mDInScanFlag, buffer);
     argVals = QString("(%1, %2, %3, %4, %5, %6, %7, buffer)")
             .arg(mDaqDeviceHandle)
             .arg(lowPort)
             .arg(highPort)
-            .arg(mTotalSamples)
+            .arg(mSamplesPerChan)
             .arg(rate)
             .arg(mScanOptions)
             .arg(mDInScanFlag);
@@ -1832,12 +1879,12 @@ void DioSubWidget::runDOutScanFunc()
 
     sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
     err = ulDOutScan(mDaqDeviceHandle, lowPort, highPort,
-                        mTotalSamples, &rate, mScanOptions, mDOutScanFlag, buffer);
+                        mSamplesPerChan, &rate, mScanOptions, mDOutScanFlag, buffer);
     argVals = QString("(%1, %2, %3, %4, %5, %6, %7, buffer)")
             .arg(mDaqDeviceHandle)
             .arg(lowPort)
             .arg(highPort)
-            .arg(mTotalSamples)
+            .arg(mSamplesPerChan)
             .arg(rate)
             .arg(mScanOptions)
             .arg(mDInScanFlag);

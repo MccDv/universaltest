@@ -112,7 +112,8 @@ private:
     bool mStatusTimerEnabled;
     bool mCancelDScan;
     int mChanCount;
-    int mTotalSamples;
+    //int mTotalSamples;
+    int mTextIndex;
     int mPrintResolution;
     bool mInitPlot;
     QHash<int, bool>            mPlotList;
@@ -168,6 +169,8 @@ private:
     long long getIOConfigMask(int portIndex);
 
     void getDataValues(bool newBuffer);
+    void configWaves();
+    void updateData();
 
 signals:
     void dataReady(unsigned long long curTotalCount, unsigned long long curIndex, int blockSize);
