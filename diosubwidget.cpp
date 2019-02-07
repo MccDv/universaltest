@@ -452,8 +452,14 @@ void DioSubWidget::showPlotWindow(bool showIt)
     if (showIt) {
         curIndex = 2;
         frameShape = QFrame::NoFrame;
-    } else
-        updateData();
+    } else {
+        if ((mUtFunction == UL_D_BIT_IN) |
+                (mUtFunction == UL_D_BIT_OUT) |
+                (mUtFunction == UL_D_CONFIG_BIT))
+            curIndex = 1;
+        else
+            updateData();
+    }
     ui->stackedWidget->setFrameShape(frameShape);
     ui->stackedWidget->setCurrentIndex(curIndex);
 }
