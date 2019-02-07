@@ -825,11 +825,19 @@ void AoSubWidget::updateData()
     int increment = mTextIndex;
     int samplesToPrint;
     double curSample;
+    bool leave;
 
-    if (mUtFunction == UL_DAQ_OUTSCAN)
+    leave = true;
+    if (mUtFunction == UL_DAQ_OUTSCAN) {
+        leave = false;
         floatValue = (!(mDaqoFlags & DAQOUTSCAN_FF_NOSCALEDATA));
-    if (mUtFunction == UL_AOUT_SCAN)
+    }
+    if (mUtFunction == UL_AOUT_SCAN) {
+        leave = false;
         floatValue = (!(mAoFlags & AOUTSCAN_FF_NOSCALEDATA));
+    }
+    if(leave)
+        return;
     //print only 500
     samplesToPrint = mSamplesPerChan < 500? mSamplesPerChan : 500;
     if ((samplesToPrint + mTextIndex) > (mSamplesPerChan * mChanCount))

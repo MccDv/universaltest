@@ -458,7 +458,8 @@ void DioSubWidget::showPlotWindow(bool showIt)
                 (mUtFunction == UL_D_CONFIG_BIT))
             curIndex = 1;
         else
-            updateData();
+            if ((mUtFunction == UL_D_OUTSCAN) | (mUtFunction == UL_DAQ_OUTSCAN))
+                updateData();
     }
     ui->stackedWidget->setFrameShape(frameShape);
     ui->stackedWidget->setCurrentIndex(curIndex);
@@ -886,29 +887,31 @@ void DioSubWidget::updateData()
     int samplesToPrint;
     double curSample;
 
-    //print only 500
-    samplesToPrint = mSamplesPerChan < 500? mSamplesPerChan : 500;
-    if ((samplesToPrint + mTextIndex) > (mSamplesPerChan * mChanCount))
-        samplesToPrint = (mSamplesPerChan * mChanCount) - mTextIndex;
-    ui->teShowValues->clear();
-    dataText = "<style> th, td { padding-right: 10px;}</style><tr>";
-    for (int y = 0; y < samplesToPrint; y++) {
-        dataText.append("<td>" + str.setNum(increment) + "</td>");
-        for (int chan = 0; chan < mChanCount; chan++) {
-            curSample = buffer[increment + chan];
-            val = QString("%1").arg(curSample);
-            dataText.append("<td>" + val + "</td>");
+    if (mUtFunction == UL_D_OUTSCAN) {
+        //print only 500
+        samplesToPrint = mSamplesPerChan < 500? mSamplesPerChan : 500;
+        if ((samplesToPrint + mTextIndex) > (mSamplesPerChan * mChanCount))
+            samplesToPrint = (mSamplesPerChan * mChanCount) - mTextIndex;
+        ui->teShowValues->clear();
+        dataText = "<style> th, td { padding-right: 10px;}</style><tr>";
+        for (int y = 0; y < samplesToPrint; y++) {
+            dataText.append("<td>" + str.setNum(increment) + "</td>");
+            for (int chan = 0; chan < mChanCount; chan++) {
+                curSample = buffer[increment + chan];
+                val = QString("%1").arg(curSample);
+                dataText.append("<td>" + val + "</td>");
+            }
+            dataText.append("</tr><tr>");
+            increment += mChanCount;
+            mTextIndex = increment;
         }
-        dataText.append("</tr><tr>");
-        increment += mChanCount;
-        mTextIndex = increment;
+        dataText.append("</td></tr>");
+        ui->teShowValues->setHtml(dataText);
+        if (mTextIndex >= (mSamplesPerChan * mChanCount))
+            mTextIndex = 0;
+        else
+            ui->teShowValues->append("... (F6)");
     }
-    dataText.append("</td></tr>");
-    ui->teShowValues->setHtml(dataText);
-    if (mTextIndex >= (mSamplesPerChan * mChanCount))
-        mTextIndex = 0;
-    else
-        ui->teShowValues->append("... (F6)");
 }
 
 void DioSubWidget::bitToggled(int bitNumber)
@@ -1390,17 +1393,17 @@ void DioSubWidget::runDInFunc()
     DigitalPortType portType;
 
     portsSelected.clear();
-    foreach (DigitalPortType testPort, validPorts) {
-        foreach (QCheckBox *chkPort, portCheckBoxes) {
-            int portNum = chkPort->property("portNum").toInt();
-            portType = (DigitalPortType)portNum;
-            if (portType == testPort) {
-                if (chkPort->isChecked())
-                    portsSelected.append(portType);
-                break;
-            }
+    //foreach (DigitalPortType testPort, validPorts) {
+    foreach (QCheckBox *chkPort, portCheckBoxes) {
+        int portNum = chkPort->property("portNum").toInt();
+        portType = (DigitalPortType)portNum;
+    //        if (portType == testPort) {
+        if (chkPort->isChecked())
+            portsSelected.append(portType);
+                //break;
+    //        }
         }
-    }
+    //}
     numDigPorts = portsSelected.count();
     if (mUtFunction == UL_D_CONFIG_PORT) {
         numSamples = 1;
