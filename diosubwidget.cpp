@@ -17,6 +17,7 @@ DioSubWidget::DioSubWidget(QWidget *parent) :
     QFont font;
 
     tmrCheckStatus = new QTimer(this);
+    mRunning = false;
     mUseGetStatus = true;
     mAutoStop = true;
     mUseWait = false;

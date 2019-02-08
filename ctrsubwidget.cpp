@@ -13,6 +13,7 @@ CtrSubWidget::CtrSubWidget(QWidget *parent) :
     ui->setupUi(this);
 
     tmrCheckStatus = new QTimer(this);
+    mRunning = false;
     mUseGetStatus = true;
     mAutoStop = true;
     mUseWait = false;

@@ -12,6 +12,7 @@ AoSubWidget::AoSubWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    mRunning = false;
     tmrCheckStatus = new QTimer(this);
     mUseGetStatus = true;
     mAutoStop = true;
