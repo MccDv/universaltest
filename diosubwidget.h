@@ -69,32 +69,32 @@ private:
     UlError err;
 
     int mFontSize;
-    QString mFuncName;
-    int mUtFunction;
-    int mCurGroup;
-    bool mUseTimer;
+    QString mFuncName = "";
+    int mUtFunction = 0;
+    int mCurGroup = 0;
+    bool mUseTimer = false;
 
-    DaqDeviceHandle mDaqDeviceHandle;
-    QString mDevUID;
-    QString mDevName;
+    DaqDeviceHandle mDaqDeviceHandle = 0;
+    QString mDevUID = "";
+    QString mDevName = "";
 
-    int mSamplesPerChan;
-    DInScanFlag mDInScanFlag;
-    DOutScanFlag mDOutScanFlag;
-    ScanOption mScanOptions;
+    int mSamplesPerChan = 0;
+    DInScanFlag mDInScanFlag = DINSCAN_FF_DEFAULT;
+    DOutScanFlag mDOutScanFlag = DOUTSCAN_FF_DEFAULT;
+    ScanOption mScanOptions = SO_DEFAULTIO;
 
-    TriggerType mTriggerType;
-    int mTrigChannel;
-    unsigned int mRetrigCount;
-    double mTrigLevel;
-    double mTrigVariance;
+    TriggerType mTriggerType = TRIG_NONE;
+    int mTrigChannel = 0;
+    unsigned int mRetrigCount = 0;
+    double mTrigLevel = 0.0;
+    double mTrigVariance = 0.0;
 
-    bool mUseGetStatus;
-    bool mAutoStop;
-    bool mUseWait;
-    double mWaitTime;
-    DaqEventType mEventType;
-    unsigned long long mEventParams;
+    bool mUseGetStatus = true;
+    bool mAutoStop = true;
+    bool mUseWait = false;
+    double mWaitTime = 0.0;
+    DaqEventType mEventType = DE_NONE;
+    unsigned long long mEventParams = 0;
     DaqEventType ALL_EVENT_TYPES =
             (DaqEventType)(DE_ON_DATA_AVAILABLE
             | DE_ON_END_OF_INPUT_SCAN
@@ -102,20 +102,20 @@ private:
             | DE_ON_INPUT_SCAN_ERROR
             | DE_ON_OUTPUT_SCAN_ERROR);
 
-    bool mRunning;
-    bool mGoTmrIsRunning;
-    bool mStopOnStart;
-    long long mPlotIndex;
-    long long mPlotCount;
-    bool mPlot;
-    int mPlotChan;
-    bool mStatusTimerEnabled;
-    bool mCancelDScan;
-    int mChanCount;
+    bool mRunning = false;
+    bool mGoTmrIsRunning = false;
+    bool mStopOnStart = false;
+    long long mPlotIndex = 0;
+    long long mPlotCount = 0;
+    bool mPlot = false;
+    int mPlotChan = 0;
+    bool mStatusTimerEnabled = false;
+    bool mCancelDScan = false;
+    int mChanCount = 0;
     //int mTotalSamples;
-    int mTextIndex;
-    int mPrintResolution;
-    bool mInitPlot;
+    int mTextIndex = 0;
+    int mPrintResolution = 0;
+    bool mInitPlot = false;
     QHash<int, bool>            mPlotList;
 
     QList<DigitalPortType>      portList;
@@ -134,10 +134,10 @@ private:
     QHash<int, bool>        mBipolar;
     QHash<int, int>         mDataScale;
 
-    int mBlockSize;
-    long long mBufSize;
-    long long mFinalCount;
-    int mDioResolution;
+    int mBlockSize = 0;
+    long long mBufSize = 0;
+    long long mFinalCount = 0;
+    int mDioResolution = 0;
 
     //void setUiForGroup();
     void setUiForFunction();

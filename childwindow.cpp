@@ -13,6 +13,7 @@ MainWindow* getMainWindow();
 
 ChildWindow::ChildWindow(QWidget *parent, UtFunctionGroup funcGroup) : QMdiSubWindow(parent)
 {
+    subwidget = NULL;
     switch (funcGroup) {
     case FUNC_GROUP_AIN:
         subwidget = new AiSubWidget(this);
@@ -155,24 +156,6 @@ void ChildWindow::goTimerRun(bool enable)
         tmrRunFunc->stop();
     }
     emit tmrEnabledChanged(true);
-}
-
-void ChildWindow::setCurFunction(int utFunction)
-{
-    curFunction = utFunction;
-    emit funcChanged(utFunction);
-}
-
-void ChildWindow::setCurRange(Range curRange)
-{
-    mRange = curRange;
-    emit rangeChanged(curRange);
-}
-
-void ChildWindow::setCurScale(TempScale curScale)
-{
-    mScale = curScale;
-    emit scaleChanged(curScale);
 }
 
 void ChildWindow::updateEventSetup()

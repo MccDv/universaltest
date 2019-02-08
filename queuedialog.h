@@ -82,10 +82,10 @@ private:
     QHash<int, Range>         mRangeList;
     QHash<int, DaqInChanType> mChanTypeList;
     QHash<int, DaqOutChanType> mChanOutTypeList;
-    int mCurElement;
-    int mNumQueueElements;
-    bool inputFunctions;
-    bool isAutoSet;
+    int mCurElement = 0;
+    int mNumQueueElements = 0;
+    bool inputFunctions = false;
+    bool isAutoSet = false;
 
     void updateQueueList(int newNumElements);
 

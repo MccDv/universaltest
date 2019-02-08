@@ -69,16 +69,16 @@ private:
     bool mUseTimer;
     bool mModeChanged;
 
-    DaqDeviceHandle mDaqDeviceHandle;
-    QString mDevUID;
-    QString mDevName;
+    DaqDeviceHandle mDaqDeviceHandle = 0;
+    QString mDevUID = "";
+    QString mDevName = "";
 
     DaqOutChanDescriptor chanDescriptors[32];
-    AOutFlag mAoFlags;
-    DaqOutScanFlag mDaqoFlags;
-    ScanOption mScanOptions;
-    AOutScanFlag mFunctionFlag;
-    Range mRange;
+    AOutFlag mAoFlags = AOUT_FF_DEFAULT;
+    DaqOutScanFlag mDaqoFlags = DAQOUTSCAN_FF_DEFAULT;
+    ScanOption mScanOptions = SO_DEFAULTIO;
+    AOutScanFlag mFunctionFlag = AOUTSCAN_FF_DEFAULT;
+    Range mRange = BIP5VOLTS;
 
     TriggerType mTriggerType;
     int mTrigChannel;

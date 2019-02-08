@@ -99,15 +99,15 @@ private slots:
 private:
     Ui::EventsDialog *ui;
 
-    int mFuncType;
-    bool mEventsEnabled;
-    bool mWaitForDone;
-    double mWaitTime;
-    bool mCheckStatusEnabled;
-    bool mStopBGEnabled;
-    DaqEventType mEventType;
-    DaqDeviceHandle mDaqDeviceHandle;
-    unsigned long long mEventParams;
+    int mFuncType = 0;
+    bool mEventsEnabled = false;
+    bool mWaitForDone = false;
+    double mWaitTime = 0.0;
+    bool mCheckStatusEnabled = true;
+    bool mStopBGEnabled = true;
+    DaqEventType mEventType = DE_NONE;
+    DaqDeviceHandle mDaqDeviceHandle = 0;
+    unsigned long long mEventParams = 0;
     DaqEventType ALL_EVENT_TYPES;
 
     bool mEvtEndInScanExists, mEvtEndInScanChanged;

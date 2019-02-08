@@ -48,20 +48,20 @@ private:
     Ui::DiscoverSubWidget *ui;
     MainWindow* getMainWindow();
     MainWindow *mMainWindow;
-    UlError err;
-    DaqDeviceHandle mDaqDeviceHandle;
-    QString mDevUID;
-    QString mDevName;
+    UlError err = ERR_NO_ERROR;
+    DaqDeviceHandle mDaqDeviceHandle = 0;
+    QString mDevUID = "";
+    QString mDevName = "";
 
     QHash<QString, DaqDeviceHandle> devList;
     struct DaqDeviceDescriptor devDescriptors[MAX_DEV_COUNT];
-    QString mUidString;
-    int mDevListCount;
+    QString mUidString = "";
+    int mDevListCount = 0;
 
-    QString mFuncName;
-    int mUtFunction;
-    int mCurGroup;
-    bool mUseTimer;
+    QString mFuncName = "";
+    int mUtFunction = 0;
+    int mCurGroup = 0;
+    bool mUseTimer = false;
 
     void setUiForGroup();
     void setUiForFunction();

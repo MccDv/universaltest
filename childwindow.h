@@ -259,11 +259,23 @@ public:
         emit showPlotChanged(showIt);
     }
 
-    void setCurFunction(int utFunction);
+    void setCurFunction(int utFunction)
+    {
+        curFunction = utFunction;
+        emit funcChanged(utFunction);
+    }
 
-    void setCurRange(Range curRange);
+    void setCurRange(Range curRange)
+    {
+        mRange = curRange;
+        emit rangeChanged(curRange);
+    }
 
-    void setCurScale(TempScale curScale);
+    void setCurScale(TempScale curScale)
+    {
+        mScale = curScale;
+        emit scaleChanged(curScale);
+    }
 
     //PlotWindow *plotWindow
     //property gets:
@@ -328,41 +340,41 @@ private:
     QTimer *tmrRunFunc;
     TmrDialog *tmrDialog;
 
-    DaqDeviceHandle mDevHandle;
-    QString mDevName;
-    QString mDevUID;
+    DaqDeviceHandle mDevHandle = 0;
+    QString mDevName = "";
+    QString mDevUID = "";
 
-    AiInputMode mInputMode;
-    AInFlag mAiFlags;
-    AOutFlag mAoFlags;
-    DaqOutScanFlag mDaqOutFlags;
-    DaqInScanFlag mDaqiFlags;
-    CInScanFlag mCiFlags;
-    ScanOption mScanOptions;
-    TriggerType mTriggerType;
-    int mTrigChannel;
-    int mTrigChanType;
-    Range mTrigRange;
-    unsigned int mRetrigCount;
-    double mTrigVariance;
-    double mTrigLevel;
+    AiInputMode mInputMode = AI_DIFFERENTIAL;
+    AInFlag mAiFlags = AIN_FF_DEFAULT;
+    AOutFlag mAoFlags = AOUT_FF_DEFAULT;
+    DaqOutScanFlag mDaqOutFlags = DAQOUTSCAN_FF_DEFAULT;
+    DaqInScanFlag mDaqiFlags = DAQINSCAN_FF_DEFAULT;
+    CInScanFlag mCiFlags = CINSCAN_FF_DEFAULT;
+    ScanOption mScanOptions = SO_DEFAULTIO;
+    TriggerType mTriggerType = TRIG_NONE;
+    int mTrigChannel = 0;
+    int mTrigChanType = 0;
+    Range mTrigRange = BIP5VOLTS;
+    unsigned int mRetrigCount = 0;
+    double mTrigVariance = 0.0;
+    double mTrigLevel = 0.0;
 
-    bool mStatusEnabled;
-    bool mStopBGEnabled;
-    bool mWaitEnabled;
-    double mWaitTime;
-    DaqEventType mEventTypes;
-    unsigned long long mEventParams;
-    bool mTmrEnabled;
-    bool mStopOnStart;
-    int mTmrInterval;
-    bool mOneSamplePer;
-    bool mTmrRunning;
-    int curFunction;
-    int curFunctionGroup;
-    Range mRange;
-    TempScale mScale;
-    bool mShowPlot;
+    bool mStatusEnabled = true;
+    bool mStopBGEnabled = true;
+    bool mWaitEnabled = false;
+    double mWaitTime = 0.0;
+    DaqEventType mEventTypes = DE_NONE;
+    unsigned long long mEventParams = 0;
+    bool mTmrEnabled = false;
+    bool mStopOnStart = false;
+    int mTmrInterval = 200;
+    bool mOneSamplePer = false;
+    bool mTmrRunning = false;
+    int curFunction = 0;
+    int curFunctionGroup = 0;
+    Range mRange = BIP5VOLTS;
+    TempScale mScale = TS_CELSIUS;
+    bool mShowPlot = false;
 
     void readWindowPosition();
     void writeWindowPosition();

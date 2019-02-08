@@ -193,10 +193,12 @@ MainWindow::MainWindow(QWidget *parent) :
     readWindowPosition();
     ui->chkAutoDetect->setChecked(mAutoConnect);
 
+    //devDescriptors[0] = {0, 0, USB_IFC, 0, 0, 0};
+    memset(&devDescriptors, 0, sizeof(devDescriptors));
     qApp->processEvents();
-    this->updateInventory();
-    this->createMenus();
-    this->createFuncMenus();
+    updateInventory();
+    createMenus();
+    createFuncMenus();
 
     mTrigChannel = 0;
     mTrigChanType = 0;
@@ -419,6 +421,7 @@ void MainWindow::createChild(UtFunctionGroup utFuncGroup, int defaultFunction)
 
     devHandle = 0;
     descriptorIndex = 0;
+    displayIDString = "";
     foreach (QAction *devAct, ui->menuBoards->actions()) {
         if (devAct->isChecked()) {
             uidKey = devAct->data().toString();

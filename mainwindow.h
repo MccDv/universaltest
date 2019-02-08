@@ -94,27 +94,27 @@ private:
     QActionGroup *inputModeGroup;
     QActionGroup *trigTypeGroup;
 
-    QString curFunctionGroupName;
-    QString curBoardName;
-    QString curUniqueID;
+    QString curFunctionGroupName = "";
+    QString curBoardName = "";
+    QString curUniqueID = "";
 
-    ScanOption mScanOptions;
+    ScanOption mScanOptions = SO_DEFAULTIO;
 
     //PlotWindow *plotWindow;
     TrigDialog *trigDialog;
     EventsDialog *eventSetup;
-    int mHistListSize;
-    int mTrigChannel;
-    int mTrigChanType;
-    Range mTrigRange;
-    double mTrigLevel;
-    double mTrigVariance;
-    unsigned int mRetrigCount;
+    int mHistListSize = 50;
+    int mTrigChannel = 0;
+    int mTrigChanType = 0;
+    Range mTrigRange = BIP5VOLTS;
+    double mTrigLevel = 0.0;
+    double mTrigVariance = 0.0;
+    unsigned int mRetrigCount = 0;
     void scanStopRequested(ChildWindow *curChild);
     void readWindowPosition();
     void writeWindowPosition();
-    bool mAutoConnect;
-    bool mTimesUp;
+    bool mAutoConnect = true;
+    bool mTimesUp = false;
 
 signals:
     void devListCountChanged(int);

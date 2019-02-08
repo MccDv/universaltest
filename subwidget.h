@@ -47,16 +47,16 @@ private:
     MainWindow* getMainWindow();
     MainWindow *mMainWindow;
     DaqDeviceHandle mDaqDeviceHandle;
-    UlError err;
-    QString mDevUID;
-    QString mDevName;
-    QString mFuncName;
-    bool mUseTimer;
-    bool mGoTmrIsRunning;
+    UlError err = ERR_NO_ERROR;
+    QString mDevUID = "";
+    QString mDevName = "";
+    QString mFuncName = "";
+    bool mUseTimer = false;
+    bool mGoTmrIsRunning = false;
 
-    int mUtFunction;
-    bool showIndex;
-    int mCurGroup;
+    int mUtFunction = 0;
+    bool showIndex = false;
+    int mCurGroup = 0;
     QString showInfo(int InfoType, int infoItem, QString showItem);
     QString showInfoDbl(int infoType, int infoItem, QString showItem);
     QString showInfoStr(int infoType, int infoItem, QString showItem);

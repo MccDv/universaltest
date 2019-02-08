@@ -12,6 +12,7 @@ AoSubWidget::AoSubWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    mDaqDeviceHandle = 0;
     mRunning = false;
     tmrCheckStatus = new QTimer(this);
     mUseGetStatus = true;
@@ -61,6 +62,8 @@ AoSubWidget::AoSubWidget(QWidget *parent) :
     setupPlot(ui->plotOutData, 1);
     ui->plotOutData->replot();
     mMainWindow = getMainWindow();
+    mFuncName = "ulAOut";
+    mDevName = "";
 }
 
 AoSubWidget::~AoSubWidget()
@@ -154,6 +157,7 @@ void AoSubWidget::updateParameters()
     }
 
     initDeviceParams();
+    //if FF_NOSCALEDATA has changed, clear waves
     if (daqOutFlag != (mDaqoFlags & 1))
             mWaves.clear();
     if (aoFlag != (mAoFlags & 1))
@@ -203,9 +207,9 @@ void AoSubWidget::setUiForFunction()
         mFuncName = "ulAOut";
         break;
     case UL_AOUT_SCAN:
+        mFuncName = "ulAOutScan";
         mPlot = true;
     case UL_DAQ_OUTSCAN:
-        mFuncName = "ulAOutScan";
         if (mUtFunction == UL_DAQ_OUTSCAN) {
             mFuncName = "ulDaqOutScan";
             showChanSelect = false;

@@ -77,12 +77,12 @@ private slots:
 private:
     Ui::TrigDialog *ui;
 
-    int mTrigChannel;
-    int mTrigChanType;
-    Range mTrigRange;
-    double mTrigVariance;
-    double mTrigLevel;
-    unsigned int mRetrigCount;
+    int mTrigChannel = 0;
+    int mTrigChanType = 0;
+    Range mTrigRange = BIP5VOLTS;
+    double mTrigVariance = 0.0;
+    double mTrigLevel = 0.0;
+    unsigned int mRetrigCount = 0;
 
 signals:
     void trigChannelChanged(int);

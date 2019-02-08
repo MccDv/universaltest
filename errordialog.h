@@ -39,8 +39,8 @@ private:
     Ui::ErrorDialog *ui;
     QStringList mFuncHistoryList;
     QString getErrorText(int errorNumber);
-    int mHistorySize;
-    bool mHistoryCleared;
+    int mHistorySize = 0;
+    bool mHistoryCleared = false;
 
 signals:
     void historyClearedChanged(bool);

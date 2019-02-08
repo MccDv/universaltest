@@ -64,15 +64,15 @@ private:
     UlError err;
 
     int mFontSize;
-    QString mFuncName;
-    int mUtFunction;
+    QString mFuncName = "";
+    int mUtFunction = 0;
     int mCurGroup;
     bool mUseTimer;
     bool mOneSampPerForTotalSamps;
 
-    DaqDeviceHandle mDaqDeviceHandle;
+    DaqDeviceHandle mDaqDeviceHandle = 0;
     QString mDevUID;
-    QString mDevName;
+    QString mDevName = "";
 
     int mSamplesPerChan;
     long mTotalRead;

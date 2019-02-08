@@ -58,10 +58,10 @@ private slots:
 private:
     Ui::TmrDialog *ui;
 
-    bool mEnabled;
-    bool mStopOnStart;
-    bool mOneSamplePer;
-    int mInterval;
+    bool mEnabled = false;
+    bool mStopOnStart = false;
+    bool mOneSamplePer = false;
+    int mInterval = 1000;
 
 signals:
     void intervalChanged(int);
