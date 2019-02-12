@@ -46,7 +46,7 @@ QueueDialog::QueueDialog(QWidget *parent, UtFunctionGroup utFuncGroup) :
         ui->cmbChanType->addItem("Counter16", DAQI_CTR16);
         ui->cmbChanType->addItem("Counter32", DAQI_CTR32);
         ui->cmbChanType->addItem("Counter48", DAQI_CTR48);
-        ui->cmbChanType->addItem("Counter48", DAQI_DAC);
+        ui->cmbChanType->addItem("Dac", DAQI_DAC);
 
         ui->cmbMode->setVisible(true);
         ui->cmbMode->addItem("Differential", AI_DIFFERENTIAL);

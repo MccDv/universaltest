@@ -35,6 +35,7 @@ public:
     QHash<QString, DaqDeviceHandle> getListedDevices();
     void addDeviceToMenu(QString devName, QString devUiD, DaqDeviceHandle devHandle);
     void removeDeviceFromMenu(QString devUiD);
+    bool isAutoConnect() { return mAutoConnect; }
 
     ErrorDialog errDlg;
 

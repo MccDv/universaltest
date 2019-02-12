@@ -279,10 +279,33 @@ void DiscoverSubWidget::on_cmdDiscover_clicked()
     unsigned int numDevs;   // = MAX_DEV_COUNT
     QString uidKey;
     DaqDeviceHandle existingDevHandle;
+    bool autoConnect;
 
+    autoConnect = mMainWindow->isAutoConnect();
     numDevs = ui->leNumDevs->text().toUInt();
     QHash<QString, DaqDeviceHandle> existingList = mMainWindow->getListedDevices();
     DaqDeviceInterface interfaceType = ANY_IFC;
+
+    //because of DT implementation, must disconnect before discovery
+    if (existingList.count()) {
+        foreach (QString key, existingList.keys()) {
+            existingDevHandle = existingList.value(key);
+            nameOfFunc = "ulDisconnectDaqDevice";
+            funcArgs = "(deviceHandle)\n";
+            sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
+            qApp->processEvents();
+            err = ulDisconnectDaqDevice(existingDevHandle);
+            argVals = QStringLiteral("(%1)")
+                    .arg(existingDevHandle);
+            funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
+            if (err != ERR_NO_ERROR) {
+                mMainWindow->setError(err, sStartTime + funcStr);
+            } else {
+                mMainWindow->addFunction(sStartTime + funcStr);
+            }
+        }
+    }
+
 
     nameOfFunc = "ulGetDaqDeviceInventory";
     funcArgs = "(interfaceType, devDescriptors, &numDevs)\n";
@@ -321,6 +344,21 @@ void DiscoverSubWidget::on_cmdDiscover_clicked()
                 }
                 mDaqDeviceHandle = existingDevHandle;
                 devList.insert(uidKey, mDaqDeviceHandle);
+                if(autoConnect) {
+                    nameOfFunc = "ulConnectDaqDevice";
+                    funcArgs = "(deviceHandle)\n";
+                    sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
+                    qApp->processEvents();
+                    err = ulConnectDaqDevice(mDaqDeviceHandle);
+                    argVals = QStringLiteral("(%1)")
+                            .arg(mDaqDeviceHandle);
+                    funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
+                    if (err != ERR_NO_ERROR) {
+                        mMainWindow->setError(err, sStartTime + funcStr);
+                    } else {
+                        mMainWindow->addFunction(sStartTime + funcStr);
+                    }
+                }
                 updateList();
             }
         } else
