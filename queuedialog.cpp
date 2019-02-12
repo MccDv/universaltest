@@ -112,7 +112,7 @@ void QueueDialog::updateQueueList(int newNumElements)
             if (mChanList.value(i) < 0)
                 elementDescription = QString("%1: chan -1, mode, range").arg(i);
             else {
-                if (inputFunctions)
+                if (inputFunctions && !daqParams)
                     modeArg = getAiInputModeName(mModeList.value(i));
                 else if (daqParams) {
                     if (inputFunctions)
