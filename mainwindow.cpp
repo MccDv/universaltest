@@ -81,7 +81,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->actionBIP10VOLTS->setData(BIP10VOLTS);
     ui->actionBIP5VOLTS->setData(BIP5VOLTS);
     ui->actionBIP4VOLTS->setData(BIP4VOLTS);
-    ui->actionBIP4VOLTS->setData(BIP3VOLTS);
+    ui->actionBIP3VOLTS->setData(BIP3VOLTS);
     ui->actionBIP2PT5VOLTS->setData(BIP2PT5VOLTS);
     ui->actionBIP2VOLTS->setData(BIP2VOLTS);
     ui->actionBIP1PT25VOLTS->setData(BIP1PT25VOLTS);
