@@ -16,6 +16,7 @@ DioSubWidget::DioSubWidget(QWidget *parent) :
     //int fontSize;
     QFont font;
 
+    buffer = NULL;
     tmrCheckStatus = new QTimer(this);
     mRunning = false;
     mUseGetStatus = true;
@@ -69,7 +70,6 @@ DioSubWidget::DioSubWidget(QWidget *parent) :
             SLOT(showData(unsigned long long, unsigned long long, int)));
 
     //ui->cmdStop->setVisible(false);
-    buffer = NULL;
     mPlot = false;
     mPlotChan = -1;
     mChanCount = 1;
@@ -890,6 +890,8 @@ void DioSubWidget::updateData()
     int samplesToPrint;
     double curSample;
 
+    if (!buffer)
+        return;
     if (mUtFunction == UL_D_OUTSCAN) {
         //print only 500
         samplesToPrint = mSamplesPerChan < 500? mSamplesPerChan : 500;
