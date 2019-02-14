@@ -13,6 +13,7 @@ AiSubWidget::AiSubWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    buffer = NULL;
     tmrCheckStatus = new QTimer(this);
     mAutoStop  = true;
     mUseGetStatus = true;
@@ -73,7 +74,6 @@ AiSubWidget::AiSubWidget(QWidget *parent) :
             SLOT(showData(unsigned long long, unsigned long long, int)));
 
     ui->cmdStop->setVisible(false);
-    buffer = NULL;
     mOneSampPerForTotalSamps = false;
     mTotalRead = 0;
     mPlot = false;

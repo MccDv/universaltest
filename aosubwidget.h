@@ -61,13 +61,13 @@ private:
     QTimer *tmrCheckStatus;
     QueueDialog *queueSetup;
     DataSelectDialog *dataSelectDlg;
-    UlError err;
+    UlError err = ERR_NO_ERROR;
 
-    QString mFuncName;
-    int mUtFunction;
-    int mCurGroup;
-    bool mUseTimer;
-    bool mModeChanged;
+    QString mFuncName = "";
+    int mUtFunction = 0;
+    int mCurGroup = 0;
+    bool mUseTimer = false;
+    bool mModeChanged = false;
 
     DaqDeviceHandle mDaqDeviceHandle = 0;
     QString mDevUID = "";
@@ -80,19 +80,19 @@ private:
     AOutScanFlag mFunctionFlag = AOUTSCAN_FF_DEFAULT;
     Range mRange = BIP5VOLTS;
 
-    TriggerType mTriggerType;
-    int mTrigChannel;
-    unsigned int mRetrigCount;
-    double mTrigLevel;
-    double mTrigVariance;
+    TriggerType mTriggerType = TRIG_NONE;
+    int mTrigChannel = 0;
+    unsigned int mRetrigCount = 0;
+    double mTrigLevel = 0.0;
+    double mTrigVariance = 0.0;
 
-    bool mUseGetStatus;
-    bool mAutoStop;
-    bool mUseWait;
-    double mWaitTime;
-    int mPrintResolution;
-    DaqEventType mEventType;
-    unsigned long long mEventParams;
+    bool mUseGetStatus = true;
+    bool mAutoStop = true;
+    bool mUseWait = false;
+    double mWaitTime = 0.0;
+    int mPrintResolution = 4;
+    DaqEventType mEventType = DE_NONE;
+    unsigned long long mEventParams = 0;
     DaqEventType ALL_EVENT_TYPES =
             (DaqEventType)(DE_ON_DATA_AVAILABLE
             | DE_ON_END_OF_INPUT_SCAN
@@ -100,32 +100,32 @@ private:
             | DE_ON_INPUT_SCAN_ERROR
             | DE_ON_OUTPUT_SCAN_ERROR);
 
-    bool mFixedRange;
-    bool showIndex;
-    bool mRunning;
-    bool mGoTmrIsRunning;
-    bool mStopOnStart;
-    int mChanCount;
-    long long mPlotIndex;
-    long long mPlotCount;
-    bool mPlot;
-    int mPlotChan;
+    bool mFixedRange = false;
+    bool showIndex = false;
+    bool mRunning = false;
+    bool mGoTmrIsRunning = false;
+    bool mStopOnStart = false;
+    int mChanCount = 0;
+    long long mPlotIndex = 0;
+    long long mPlotCount = 0;
+    bool mPlot = false;
+    int mPlotChan = 0;
     int mLowChan, mHighChan;
-    int mSamplesPerChan;
-    int mTextIndex;
-    bool mStatusTimerEnabled;
-    bool mCancelAOut;
+    int mSamplesPerChan = 0;
+    int mTextIndex = 0;
+    bool mStatusTimerEnabled = true;
+    bool mCancelAOut = false;
 
     double *buffer;
 
     QList<DigitalPortType> validPorts;
     QHash<DigitalPortType, int> portBits;
 
-    int mBlockSize;
-    long long mBufSize;
-    long long mFinalCount;
-    int mAoResolution;
-    int mDioResolution;
+    int mBlockSize = 0;
+    long long mBufSize = 0;
+    long long mFinalCount = 0;
+    int mAoResolution = 0;
+    int mDioResolution = 0;
 
     QHash<int, int>             mChanList;
     QHash<int, DaqOutChanType>  mChanTypeList;

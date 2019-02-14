@@ -12,6 +12,7 @@ AoSubWidget::AoSubWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    buffer = NULL;
     mDaqDeviceHandle = 0;
     mRunning = false;
     tmrCheckStatus = new QTimer(this);
@@ -50,7 +51,6 @@ AoSubWidget::AoSubWidget(QWidget *parent) :
     //connect(ui->actionAuto_scale, SIGNAL(triggered()), this, SLOT(setPlotAutoScale()));
 
     ui->cmdStop->setVisible(false);
-    buffer = NULL;
     mPlot = false;
     mPlotChan = -1;
     mSamplesPerChan = 0;
@@ -159,7 +159,7 @@ void AoSubWidget::updateParameters()
     initDeviceParams();
     //if FF_NOSCALEDATA has changed, clear waves
     if (daqOutFlag != (mDaqoFlags & 1))
-            mWaves.clear();
+        mWaves.clear();
     if (aoFlag != (mAoFlags & 1))
         mWaves.clear();
     if (mCancelAOut)
@@ -209,6 +209,7 @@ void AoSubWidget::setUiForFunction()
     case UL_AOUT_SCAN:
         mFuncName = "ulAOutScan";
         mPlot = true;
+        configWaves();
     case UL_DAQ_OUTSCAN:
         if (mUtFunction == UL_DAQ_OUTSCAN) {
             mFuncName = "ulDaqOutScan";
@@ -832,7 +833,11 @@ void AoSubWidget::updateData()
     double curSample;
     bool leave;
 
+    if (!buffer)
+        return;
     leave = true;
+    if(mBlockSize == 0)
+        return;
     if (mUtFunction == UL_DAQ_OUTSCAN) {
         leave = false;
         floatValue = (!(mDaqoFlags & DAQOUTSCAN_FF_NOSCALEDATA));

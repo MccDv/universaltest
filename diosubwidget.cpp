@@ -444,6 +444,8 @@ void DioSubWidget::showPlotWindow(bool showIt)
 {
     QFrame::Shape frameShape;
 
+    if(mBlockSize == 0)
+        return;
     if ((mUtFunction == UL_D_OUTSCAN) | (mUtFunction == UL_D_INSCAN))
         frameShape = QFrame::Box;
     mPlot = showIt;
