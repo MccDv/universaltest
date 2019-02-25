@@ -559,6 +559,9 @@ void subWidget::readInfo()
         infoItem = AI_INFO_FIFO_SIZE;
         devInfo = showInfo(infoType, infoItem, "AI FIFO Size");
         infoText.append(devInfo  + "</tr><tr>");
+        infoItem = AI_INFO_IEPE_SUPPORTED;
+        devInfo = showInfo(infoType, infoItem, "AI IEPE Support");
+        infoText.append(devInfo  + "</tr><tr>");
         ui->teShowValues->setHtml(infoText);
         break;
     case TYPE_AO_INFO:
