@@ -32,16 +32,16 @@ CtrSubWidget::CtrSubWidget(QWidget *parent) :
     this->setFont(font);
 #endif
 
-    ui->lblDelayReturn->setFont(font);
-    ui->lblDutyReturn->setFont(font);
-    ui->lblFreqReturn->setFont(font);
-    ui->lblRateReturned->setFont(font);
+    ui->lblDelayReturn->setFont(QFont ("Courier", mFontSize));
+    ui->lblDutyReturn->setFont(QFont ("Courier", mFontSize));
+    ui->lblFreqReturn->setFont(QFont ("Courier", mFontSize));
+    ui->lblRateReturned->setFont(QFont ("Courier", mFontSize));
     ui->teShowValues->setFont(QFont ("Courier", mFontSize));
     ui->lblStatus->setFont(QFont ("Courier", mFontSize));
     ui->lwMeasMode->setFont(QFont ("Ubuntu", mFontSize));
     ui->lwTypeModes->setFont(QFont ("Ubuntu", mFontSize));
-    ui->fraScan->setFont(font);
-    ui->fraScanParams->setFont(font);
+    ui->fraScan->setFont(QFont ("Ubuntu", mFontSize));
+    ui->fraScanParams->setFont(QFont ("Ubuntu", mFontSize));
 
     ui->lblDelayReturn->setStyleSheet("QLabel { background-color : white; color : blue; } ");
     ui->lblDutyReturn->setStyleSheet("QLabel { background-color : white; color : blue; }" );
@@ -1104,7 +1104,12 @@ void CtrSubWidget::runCInScan()
     mSamplesPerChan = ui->leNumSamples->text().toLong();
     QTime t;
     QString sStartTime;
+    QString fsString, warnColor;
 
+    fsString = "font-size: 8pt; ";
+    if (mFontSize == 12)
+        fsString = "font-size: 12pt; ";
+    warnColor = "background-color:white; ";
     lowCtr = ui->spnLowChan->value();
     highCtr = ui->spnHighChan->value();
     mBlockSize = ui->leBlockSize->text().toLongLong();
@@ -1115,17 +1120,12 @@ void CtrSubWidget::runCInScan()
     //mCInFlags = CINSCAN_FF_DEFAULT;
     blockStyle = "color:black; background-color:white;";
     if(mSamplesPerChan < mBlockSize * 1.8) {
-        QString warnColor;
-        warnColor = "";
-        QString fsString = "font-size: 8pt; ";
-        if (mFontSize == 12)
-            fsString = "font-size: 12pt; ";
         if(mScanOptions & SO_CONTINUOUS)
             warnColor = "background-color:yellow; ";
         if(mSamplesPerChan < mBlockSize)
             warnColor += "color:red; ";
-        blockStyle = "QLineEdit {" + warnColor + fsString + "}";
     }
+    blockStyle = "QLineEdit {" + warnColor + fsString + "}";
     ui->leBlockSize->setStyleSheet(blockStyle);
 
     long long bufSize = mChanCount * mSamplesPerChan;

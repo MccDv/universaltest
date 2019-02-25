@@ -33,9 +33,11 @@ DioSubWidget::DioSubWidget(QWidget *parent) :
     this->setFont(font);
 #endif
 
+    ui->fraScan->setFont(QFont ("Ubuntu", mFontSize));
+    ui->fraAsync->setFont(QFont ("Ubuntu", mFontSize));
     ui->teShowValues->setFont(QFont ("Courier", mFontSize));
     //ui->lblRateReturned->setFont(QFont ("Ubuntu", mFontSize));
-    ui->fraInfoStat->setFont(QFont ("Courier", mFontSize));
+    ui->fraInfoStat->setFont(QFont ("Ubuntu", mFontSize));
     ui->teShowValues->setStyleSheet("QTextEdit { background-color : white; color : blue; }" );
     ui->lblStatus->setStyleSheet("QLabel { color : blue; } ");
     ui->lblInfo->setStyleSheet("QLabel { color : blue; } ");
@@ -1736,6 +1738,12 @@ void DioSubWidget::runDInScanFunc()
     QList<int> portsSelected;
     QTime t;
     QString sStartTime, blockStyle;
+    QString fsString, warnColor;
+
+    fsString = "font-size: 8pt; ";
+    if (mFontSize == 12)
+        fsString = "font-size: 12pt; ";
+    warnColor = "background-color:white; ";
 
     portsSelected.clear();
     foreach (QCheckBox *chkPort, portCheckBoxes) {
@@ -1760,17 +1768,12 @@ void DioSubWidget::runDInScanFunc()
 
     mSamplesPerChan = samplesPerPort;
     if(mSamplesPerChan < mBlockSize * 1.8) {
-        QString warnColor;
-        warnColor = "";
-        QString fsString = "font-size: 8pt; ";
-        if (mFontSize == 12)
-            fsString = "font-size: 12pt; ";
         if(mScanOptions & SO_CONTINUOUS)
             warnColor = "background-color:yellow; ";
         if(mSamplesPerChan < mBlockSize)
             warnColor += "color:red; ";
-        blockStyle = "QLineEdit {" + warnColor + fsString + "}";
     }
+    blockStyle = "QLineEdit {" + warnColor + fsString + "}";
     ui->leBlockSize->setStyleSheet(blockStyle);
 
     long long bufSize = numDigPorts * samplesPerPort;

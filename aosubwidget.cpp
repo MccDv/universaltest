@@ -31,9 +31,11 @@ AoSubWidget::AoSubWidget(QWidget *parent) :
     this->setFont(font);
 #endif
 
-    ui->frame->setFont(font);
-    ui->fraScan->setFont(font);
+    ui->frame->setFont(QFont ("Ubuntu", fontSize));
+    ui->fraScan->setFont(QFont ("Ubuntu", fontSize));
     ui->teShowValues->setFont(QFont ("Courier", fontSize));
+    ui->lblRateReturned->setFont(QFont ("Courier", fontSize));
+    ui->leAoutVal->setFont(QFont ("Ubuntu", fontSize));
     ui->lblRateReturned->setStyleSheet("QLabel { background-color : white; color : blue; }" );
     ui->teShowValues->setStyleSheet("QTextEdit { background-color : white; color : blue; }" );
     ui->lblStatus->setStyleSheet("QLabel { color : blue; }" );
