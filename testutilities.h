@@ -30,6 +30,7 @@ double getRangeVolts(Range rangeVal);
 double getVoltsFromCounts(long long Resolution, Range curRange, int counts);
 double getTickValue(CounterTickSize tickSize);
 
+int getRangeIndex(Range rangeCode);
 QString getOptionNames(ScanOption curOptions);
 QString getInfoDescription(int infoType, int infoItem, long long infoValue);
 QString getEventNames(long long eventMask);

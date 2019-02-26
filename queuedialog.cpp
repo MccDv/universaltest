@@ -105,7 +105,9 @@ void QueueDialog::updateQueueList(int newNumElements)
     itemsRemoved = (newNumElements < numElements);
     daqParams = true;
     if (inputFunctions)
-        daqParams = (!(ui->cmbChanType->currentData()).toInt());
+        //daqParams = (ui->cmbChanType->currentData().toInt() != 0);
+        if (mChanTypeList.count() > 0)
+            daqParams = (mChanTypeList.value(0) != 0);
     ui->lstQueue->clear();
     for (int i = 0; i < newNumElements; i++) {
         if (i < numElements) {
@@ -162,27 +164,10 @@ void QueueDialog::lstQueueRowSelected(int rowSelected)
         if (mChanList.count()) {
             if (!(mChanList[mCurElement]<0)) {
                 ui->spnQChan->setValue(mChanList[mCurElement]);
+                ui->cmbChanType->setCurrentIndex(mChanTypeList[mCurElement]);
                 ui->cmbMode->setCurrentIndex(mModeList[mCurElement]-1);
-                int listIndex = (int)mRangeList[mCurElement] - 4;
-                if (listIndex < 16)
-                    ui->cmbRange->setCurrentIndex(listIndex);
-                else {
-                    switch (listIndex) {
-                    case 15:
-                        //BIPPT078VOLTS
-                        ui->cmbRange->setCurrentIndex(8);
-                        break;
-                    case 1002:
-                        //UNI10VOLTS
-                        ui->cmbRange->setCurrentIndex(9);
-                        break;
-                    case 1003:
-                        ui->cmbRange->setCurrentIndex(10);
-                        break;
-                    default:
-                        break;
-                    }
-                }
+                int listIndex = getRangeIndex(mRangeList[mCurElement]);
+                ui->cmbRange->setCurrentIndex(listIndex);
             }
         }
     }

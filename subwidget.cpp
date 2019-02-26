@@ -840,7 +840,7 @@ void subWidget::readConfig()
         devConfig = showConfig(configType, configItem, "AI Sensor Connection");
         configText.append(devConfig + "</tr><tr>");
         configItem = AI_CFG_CHAN_OTD_MODE;
-        devConfig = showConfig(configType, configItem, "AI Sensor Connection");
+        devConfig = showConfig(configType, configItem, "AI OTD Mode");
         configText.append(devConfig + "</tr><tr>");
         configItem = AI_CFG_CHAN_SLOPE;
         devConfig = showConfigDbl(configType, configItem, "AI Chan Slope");

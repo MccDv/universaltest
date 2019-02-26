@@ -133,6 +133,143 @@ bool getEventParameter(DaqDeviceHandle devHandle, unsigned long long &paramValue
     return eventParamList.contains(devHandle);
 }
 
+int getRangeIndex(Range rangeCode)
+{
+    int trueIndex,  indexResult;
+    int currentOffset;  //changes as menus are modified
+
+    currentOffset = -1;
+    switch (rangeCode) {
+    case BIP60VOLTS:
+        trueIndex = 0;
+        break;
+    case BIP30VOLTS:
+        trueIndex = 1;
+        break;
+    case BIP20VOLTS:
+        trueIndex = 2;
+        currentOffset = 2;
+        break;
+    case BIP15VOLTS:
+        trueIndex = 3;
+        break;
+    case BIP10VOLTS:
+        trueIndex = 4;
+        currentOffset = 3;
+        break;
+    case BIP5VOLTS:
+        trueIndex = 5;
+        currentOffset = 3;
+        break;
+    case BIP4VOLTS:
+        trueIndex = 6;
+        currentOffset = 3;
+        break;
+    case BIP3VOLTS:
+        trueIndex = 7;
+        currentOffset = 3;
+        break;
+    case BIP2PT5VOLTS:
+        trueIndex = 8;
+        currentOffset = 3;
+        break;
+    case BIP2VOLTS:
+        trueIndex = 9;
+        currentOffset = 3;
+        break;
+    case BIP1PT25VOLTS:
+        trueIndex = 10;
+        currentOffset = 3;
+        break;
+    case BIP1VOLTS:
+        trueIndex = 11;
+        currentOffset = 3;
+        break;
+    case BIPPT625VOLTS:
+        trueIndex = 12;
+        currentOffset = 3;
+        break;
+    case BIPPT5VOLTS:
+        trueIndex = 13;
+        break;
+    case BIPPT312VOLTS:
+        trueIndex = 14;
+        currentOffset = 4;
+        break;
+    case BIPPT156VOLTS:
+        trueIndex = 15;
+        currentOffset = 4;
+        break;
+    case BIPPT2VOLTS:
+        trueIndex = 16;
+        break;
+    case BIPPT125VOLTS:
+        trueIndex = 17;
+        break;
+    case BIPPT1VOLTS:
+        trueIndex = 18;
+        break;
+    case BIPPT078VOLTS:
+        trueIndex = 19;
+        currentOffset = 7;
+        break;
+    case BIPPT05VOLTS:
+        trueIndex = 20;
+        break;
+    case BIPPT01VOLTS:
+        trueIndex = 21;
+        break;
+    case BIPPT005VOLTS:
+        trueIndex = 22;
+        break;
+    case UNI60VOLTS:
+        trueIndex = 23;
+        break;
+    case UNI30VOLTS:
+        trueIndex = 24;
+        break;
+    case UNI20VOLTS:
+        trueIndex = 25;
+        break;
+    case UNI15VOLTS:
+        trueIndex = 26;
+        break;
+    case UNI10VOLTS:
+        trueIndex = 27;
+        currentOffset = 14;
+        break;
+    case UNI5VOLTS:
+        trueIndex = 28;
+        currentOffset = 14;
+        break;
+    default:
+        break;
+    }
+
+    /*
+    UNI4VOLTS       = 1007,
+    UNI2PT5VOLTS    = 1008,
+    UNI2VOLTS       = 1009,
+    UNI1PT25VOLTS   = 1010,
+    UNI1VOLTS       = 1011,
+    UNIPT625VOLTS   = 1012,
+    UNIPT5VOLTS     = 1013,
+    UNIPT25VOLTS    = 1014,
+    UNIPT125VOLTS   = 1015,
+    UNIPT2VOLTS     = 1016,
+    UNIPT1VOLTS     = 1017,
+    UNIPT078VOLTS   = 1018,
+    UNIPT05VOLTS    = 1019,
+    UNIPT01VOLTS    = 1020,
+    UNIPT005VOLTS   = 1021,
+    MA0TO20 = 2000*/
+
+    if(currentOffset < 0)
+        trueIndex = 2;
+    indexResult = trueIndex - currentOffset;
+    return indexResult;
+}
+
 double getRangeVolts(Range rangeVal)
 {
     double rangeVolts;
