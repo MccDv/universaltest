@@ -36,6 +36,7 @@ private slots:
     void updateText(QString infoText);
     void functionChanged(int utFunction);
     void groupChanged(int newGroup);
+    void updateData();
 
     void onClickCmdGo();
     void onClickCmdStop();
@@ -139,6 +140,7 @@ private:
     int mBlockSize;
     long long mBufSize;
     long long mFinalCount;
+    int mTextIndex = 0;
 
     //void setUiForGroup();
     void setUiForFunction();

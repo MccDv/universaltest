@@ -99,6 +99,9 @@ AiSubWidget::~AiSubWidget()
 void AiSubWidget::keyPressEvent(QKeyEvent *event)
 {
     int keyCode = event->key();
+    if (keyCode == Qt::Key_F6)
+        if (!mPlot)
+            updateData();
     if (keyCode == Qt::Key_Escape) {
         onClickCmdStop();
     }
@@ -299,7 +302,11 @@ void AiSubWidget::showPlotWindow(bool showIt)
     if (showIt) {
         curIndex = 1;
         frameShape = QFrame::NoFrame;
+    } else {
+        mTextIndex = 0;
+        updateData();
     }
+
     ui->stackedWidget->setFrameShape(frameShape);
     ui->stackedWidget->setCurrentIndex(curIndex);
 }
@@ -1542,6 +1549,55 @@ void AiSubWidget::swStopScan()
     onClickCmdStop();
 }
 
+void AiSubWidget::updateData()
+{
+    QString dataText, str, val;
+    bool floatValue;
+
+    floatValue = false;
+    int increment = mTextIndex;
+    int samplesToPrint;
+    double curSample;
+
+    if (!buffer)
+        return;
+    if(mBlockSize == 0)
+        return;
+    if (mUtFunction == UL_DAQ_INSCAN) {
+        floatValue = (!(mDaqiFlags & DAQINSCAN_FF_NOSCALEDATA));
+    }
+    if (mUtFunction == UL_AINSCAN) {
+        floatValue = (!(mAiFlags & AINSCAN_FF_NOSCALEDATA));
+    }
+    //print only 500
+    samplesToPrint = mSamplesPerChan < 500? mSamplesPerChan : 500;
+    if ((samplesToPrint + mTextIndex) > (mSamplesPerChan * mChanCount))
+        samplesToPrint = (mSamplesPerChan * mChanCount) - mTextIndex;
+    ui->teShowValues->clear();
+    dataText = "<style> th, td { padding-right: 10px;}</style><tr>";
+    for (int y = 0; y < samplesToPrint; y++) {
+        dataText.append("<td>" + str.setNum(increment) + "</td>");
+        for (int chan = 0; chan < mChanCount; chan++) {
+            curSample = buffer[increment + chan];
+            if (floatValue)
+                val = QString("%1%2").arg((curSample < 0) ? "" : "+")
+                        .arg(curSample, 2, 'f', 5, '0');
+            else
+                val = QString("%1").arg(curSample);
+            dataText.append("<td>" + val + "</td>");
+        }
+        dataText.append("</tr><tr>");
+        increment += mChanCount;
+        mTextIndex = increment;
+    }
+    dataText.append("</td></tr>");
+    ui->teShowValues->setHtml(dataText);
+    if (mTextIndex >= (mSamplesPerChan * mChanCount))
+        mTextIndex = 0;
+    else
+        ui->teShowValues->append("... (F6)");
+}
+
 void AiSubWidget::printData(unsigned long long currentCount, long long currentIndex, int blockSize)
 {
     QString dataText, str, val;
@@ -1552,6 +1608,7 @@ void AiSubWidget::printData(unsigned long long currentCount, long long currentIn
     bool floatValue;
     long long samplePerChanel = mChanCount * ui->leNumSamples->text().toLongLong();;
 
+    mTextIndex = 0;
     floatValue = false;
     if (mUtFunction == UL_DAQ_INSCAN)
         floatValue = (!(mDaqiFlags & DAQINSCAN_FF_NOSCALEDATA));
@@ -1586,8 +1643,10 @@ void AiSubWidget::printData(unsigned long long currentCount, long long currentIn
     }
     dataText.append("</td></tr>");
     ui->teShowValues->setHtml(dataText);
-    if (samplesToPrint < blockSize)
-        ui->teShowValues->append("...");
+    if (samplesToPrint < blockSize) {
+        ui->teShowValues->append("... (F6)");
+        mTextIndex = increment;
+    }
 }
 
 void AiSubWidget::plotScan(unsigned long long currentCount, long long currentIndex, int blockSize)
