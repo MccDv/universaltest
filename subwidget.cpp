@@ -1865,7 +1865,10 @@ void subWidget::setConfiguration()
             textToAdd = QString("%1 = %2")
                     .arg(showItem)
                     .arg(configValue);
-        if(showIndex) textToAdd += QString(" (index %1)").arg(index) + valueText;
+        if(showIndex)
+            textToAdd += QString(" (index %1)").arg(index) + valueText;
+        else
+            textToAdd += valueText;
         ui->teShowValues->append(textToAdd);
     }
 }
