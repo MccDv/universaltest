@@ -1793,6 +1793,8 @@ void subWidget::setConfiguration()
             err = ulAISetConfig(mDaqDeviceHandle, aiConfigItem, index, configValue);
             if(aiConfigItem == AI_CFG_CHAN_TC_TYPE)
                 valueText = " [type " + getTcTypeName((TcType)configValue) + "]";
+            if(aiConfigItem == AI_CFG_CHAN_COUPLING_MODE)
+                valueText = " [type " + getChanCouplingModeName((CouplingMode)configValue) + "]";
         } else {
             dblConfigItem = true;
             aiConfigItemDbl = (AiConfigItemDbl)configItem;
