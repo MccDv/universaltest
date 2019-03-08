@@ -51,8 +51,8 @@ TrigDialog::TrigDialog(QWidget *parent) :
     connect(this, SIGNAL(trigLevelChanged(double)), this, SLOT(updateTrigLevel()));
     connect(this, SIGNAL(trigVarianceChanged(double)), this, SLOT(updateTrigVariance()));
     connect(this, SIGNAL(retrigCountChanged(uint)), this, SLOT(updateRetrigCount()));
-    connect(this, SIGNAL(trigChanTypeChanged(int)), this, SLOT());
-    connect(this, SIGNAL(trigRangeChanged(Range)), this, SLOT());
+    //connect(this, SIGNAL(trigChanTypeChanged(int)), this, SLOT());
+    //connect(this, SIGNAL(trigRangeChanged(Range)), this, SLOT());
 }
 
 TrigDialog::~TrigDialog()
