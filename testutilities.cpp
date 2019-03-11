@@ -133,6 +133,36 @@ bool getEventParameter(DaqDeviceHandle devHandle, unsigned long long &paramValue
     return eventParamList.contains(devHandle);
 }
 
+int getDIChanTypeIndex(DaqInChanType chanType)
+{
+    switch (chanType) {
+    case DAQI_ANALOG_DIFF:
+        return 1;
+        break;
+    case DAQI_ANALOG_SE:
+        return 2;
+        break;
+    case DAQI_DIGITAL:
+        return 3;
+        break;
+    case DAQI_CTR16:
+        return 4;
+        break;
+    case DAQI_CTR32:
+        return 5;
+        break;
+    case DAQI_CTR48:
+        return 6;
+        break;
+    case DAQI_DAC:
+        return 7;
+        break;
+    default:
+        return 0;
+        break;
+    }
+}
+
 int getRangeIndex(Range rangeCode)
 {
     int trueIndex,  indexResult;
@@ -1185,7 +1215,7 @@ QString getChanTypeNames(DaqInChanType typeNum)
     QString chanName;
 
     maskedVal = (DaqInChanType)0;
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < 8; i++) {
         mask = pow(2, i);
         maskedVal = (DaqInChanType)(typeNum & (DaqInChanType)mask);
         switch (maskedVal) {

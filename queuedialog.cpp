@@ -164,8 +164,10 @@ void QueueDialog::lstQueueRowSelected(int rowSelected)
         if (mChanList.count()) {
             if (!(mChanList[mCurElement]<0)) {
                 ui->spnQChan->setValue(mChanList[mCurElement]);
-                ui->cmbChanType->setCurrentIndex(mChanTypeList[mCurElement]);
-                ui->cmbMode->setCurrentIndex(mModeList[mCurElement]-1);
+                int offset = 0;
+                offset = getDIChanTypeIndex(mChanTypeList[mCurElement]);
+                ui->cmbChanType->setCurrentIndex(offset);
+                ui->cmbMode->setCurrentIndex(mModeList[mCurElement]);
                 int listIndex = getRangeIndex(mRangeList[mCurElement]);
                 ui->cmbRange->setCurrentIndex(listIndex);
             }
