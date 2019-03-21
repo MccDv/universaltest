@@ -1063,6 +1063,13 @@ void CtrSubWidget::runCConfigScan()
     if (ui->rdoEdgeNeg->isChecked())
         edgeDetection = CED_FALLING_EDGE;
 
+    mCalcPeriod = false;
+
+    if(mDevName.startsWith("DT9837")) {
+        if(mMeasType == CMT_PERIOD) mCalcPeriod = true;
+        return;
+    }
+
     nameOfFunc = "ulCConfigScan";
     funcArgs = "(mDaqDeviceHandle, ctrNum, measType, measMode, "
             "edgeDetection, tickSize, debounceMode, debounceTime, confFlags)\n";
@@ -1570,7 +1577,7 @@ void CtrSubWidget::printData(unsigned long long currentCount, long long currentI
 {
     QString dataText, str;
     QTextCursor curCursor;
-    double tickFactor;
+    double tickFactor, countComp;
     //unsigned long long curSample;
     double curSample;
     int curScan, samplesToPrint, sampleLimit;
@@ -1578,11 +1585,16 @@ void CtrSubWidget::printData(unsigned long long currentCount, long long currentI
     int increment = 0;
     long long samplePerChanel = mChanCount * ui->leNumSamples->text().toLongLong();;
 
+    countComp = 0;
     tickFactor = 1;
     if (mCalcTime & ((mMeasType == CMT_PERIOD)
             | (mMeasType == CMT_PULSE_WIDTH)
             | (mMeasType == CMT_TIMING)))
         tickFactor = getTickValue(mTickSize);
+    if (mCalcPeriod) {
+        tickFactor = (double)1/12000000;
+        countComp = 1;
+    }
     curCursor = QTextCursor(ui->teShowValues->textCursor());
     ui->teShowValues->clear();
     dataText = "<style> th, td { padding-right: 10px;}</style><tr>";
@@ -1595,14 +1607,9 @@ void CtrSubWidget::printData(unsigned long long currentCount, long long currentI
             curScan = 0;
             sampleNum = 0;
         }
-        //ui->teShowValues->append(QString("%1: \t")
-        //                         .arg(currentCount + increment));
         dataText.append("<td>" + str.setNum(currentCount + increment) + "</td>");
         for (int chan = 0; chan < mChanCount; chan++) {
-            curSample = tickFactor * (double)buffer[curScan + chan];
-            //curCursor.movePosition(QTextCursor::End);
-            //ui->teShowValues->textCursor().setPosition(curCursor.position());
-            //ui->teShowValues->insertPlainText(QString("%1\t").arg(curSample));
+            curSample = tickFactor * ((double)buffer[curScan + chan] - countComp);
             dataText.append("<td>" + QString("%1")
                             .arg(curSample, 1, 'g', mPrintResolution, '0')) + "</td>";
         }

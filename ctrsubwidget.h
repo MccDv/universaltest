@@ -93,6 +93,7 @@ private:
     bool mUseGetStatus = true;
     bool mAutoStop = true;
     bool mUseWait = false;
+    bool mCalcPeriod = false;
     double mWaitTime = 0.0;
     DaqEventType mEventType = DE_NONE;
     unsigned long long mEventParams = 0;

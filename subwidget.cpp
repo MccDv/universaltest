@@ -227,6 +227,7 @@ void subWidget::setUiForFunction()
             ui->cmbInfoType->addItem("Set AI Config", TYPE_AI_INFO);
             ui->cmbInfoType->addItem("Set AO Config", TYPE_AO_INFO);
             ui->cmbInfoType->addItem("Set DIO Config", TYPE_DIO_INFO);
+            ui->cmbInfoType->addItem("Set Ctr Config", TYPE_CTR_INFO);
             connect(ui->cmbInfoType, SIGNAL(currentIndexChanged(int)), this, SLOT(setConfigItemsForType()));
             break;
         default:
@@ -277,6 +278,9 @@ void subWidget::setConfigItemsForType()
         ui->cmbConfigItem->addItem("Dio Port Out Val", DIO_CFG_PORT_INITIAL_OUTPUT_VAL);
         ui->cmbConfigItem->addItem("Dio Iso Filter Mask", DIO_CFG_PORT_ISO_FILTER_MASK);
         ui->cmbConfigItem->addItem("Dio Port Out Logic", DIO_CFG_PORT_LOGIC);
+        break;
+    case TYPE_CTR_INFO:
+        ui->cmbConfigItem->addItem("Ctr Cfg Reg Mask", CTR_CFG_REG);
         break;
     default:
         break;
@@ -1750,6 +1754,7 @@ void subWidget::setConfiguration()
     AoConfigItem aoConfigItem;
     DioConfigItem dioConfigItem;
     AiConfigItemDbl aiConfigItemDbl;
+    CtrConfigItem ctrConfigItem;
 
     QString showItem = "";
     QString valueText = "";
@@ -1814,7 +1819,9 @@ void subWidget::setConfiguration()
         err = ulDIOSetConfig(mDaqDeviceHandle, dioConfigItem, index, configValue);
         break;
     case TYPE_CTR_INFO:
-        noConfigItem = true;
+        ctrConfigItem = (CtrConfigItem)configItem;
+        nameOfFunc = "ulCtrSetConfig";
+        err = ulCtrSetConfig(mDaqDeviceHandle, ctrConfigItem, index, configValue);
         break;
     case TYPE_TMR_INFO:
         noConfigItem = true;
