@@ -41,6 +41,29 @@ subWidget::~subWidget()
     delete ui;
 }
 
+void subWidget::keyPressEvent(QKeyEvent *event)
+{
+    int keyCode = event->key();
+    if ((keyCode == Qt::Key_Plus) && (QApplication::keyboardModifiers() & Qt::AltModifier)) {
+        mPrintResolution += 1;
+        mHexResolution += 1;
+        ui->lblStatus->setText(QString("Text resolution %1").arg(mPrintResolution));
+    }
+    if ((keyCode == Qt::Key_Minus) && (QApplication::keyboardModifiers() & Qt::AltModifier)) {
+        mPrintResolution -= 1;
+        mHexResolution -= 1;
+        if (mPrintResolution < 0)
+            mPrintResolution = 0;
+        if (mHexResolution < 2)
+            mHexResolution = 2;
+        ui->lblStatus->setText(QString("Text resolution %1").arg(mPrintResolution));
+    }
+    if ((keyCode == Qt::Key_X) && (QApplication::keyboardModifiers() & Qt::AltModifier)) {
+        mShowHex = !mShowHex;
+        ui->lblStatus->setText(QString("Print hex %1").arg(mShowHex));
+    }
+}
+
 MainWindow *subWidget::getMainWindow()
 {
     foreach (QWidget *w, QApplication::topLevelWidgets())
@@ -942,7 +965,7 @@ QString subWidget::showConfig(int configType, int configItem, QString showItem)
     AoConfigItem aoConfigItem;
     DioConfigItem dioConfigItem;
     CtrConfigItem ctrConfigItem;
-    QString nameOfFunc;
+    QString nameOfFunc, stringValue;
     QString argVals, str;
     QString funcStr, funcArgs;
     QTime t;
@@ -1084,7 +1107,11 @@ QString subWidget::showConfig(int configType, int configItem, QString showItem)
             strIndex = "<td>(" + str.setNum(index) + ")</td>";
         textToAdd = "<td>" + showItem + "</td>";
         textToAdd.append(strIndex);
-        textToAdd.append("<td>" + str.setNum(configValue) + errDesc + "</td>");
+        if(mShowHex)
+            stringValue = QString("0x%1").arg(configValue, mHexResolution, 16, QLatin1Char('0'));
+        else
+            stringValue = QString("%1").arg(configValue);
+        textToAdd.append("<td>" + stringValue + errDesc + "</td>");
         //textToAdd.append("<td>" + infoDesc + "</td>");
         mMainWindow->addFunction(sStartTime + funcStr);
     }
@@ -1297,7 +1324,7 @@ QString subWidget::showInfo(int infoType, int infoItem, QString showItem)
     QString errNumStr, argVals, indexName;
     QString nameOfFunc, funcStr, funcArgs;
     QTime t;
-    QString sStartTime;
+    QString sStartTime, stringValue;
     unsigned int index;
     bool indexInfo;
 
@@ -1433,7 +1460,11 @@ QString subWidget::showInfo(int infoType, int infoItem, QString showItem)
             strIndex = "<td>(" + str.setNum(index) + ")</td>";
         textToAdd = "<td>" + showItem + "</td>";
         textToAdd.append(strIndex);
-        textToAdd.append("<td>" + str.setNum(infoValue) + "</td>");
+        if(mShowHex)
+            stringValue = QString("0x%1").arg(infoValue, mHexResolution, 16, QLatin1Char('0'));
+        else
+            stringValue = QString("%1").arg(infoValue);
+        textToAdd.append("<td>" + stringValue + "</td>");
         textToAdd.append("<td>" + infoDesc + "</td>");
         mMainWindow->addFunction(sStartTime + funcStr);
     }
@@ -1880,7 +1911,7 @@ void subWidget::setConfiguration()
         else
             if (useHex)
                 textToAdd = QString("%1 = 0x%2").arg(showItem)
-                        .arg(configValue, 4, 16, QLatin1Char( '0' ));
+                        .arg(configValue, 4, 16, QLatin1Char('0'));
             else
                 textToAdd = QString("%1 = %2").arg(showItem).arg(configValue);
         if(showIndex)

@@ -21,7 +21,7 @@ class subWidget : public QWidget
 public:
     explicit subWidget(QWidget *parent = 0);
     ~subWidget();
-    //void setDevice(int devHandle, QString devName, QString devUID);
+    void keyPressEvent(QKeyEvent *event);
 
 private slots:
     void updateParameters();
@@ -57,6 +57,10 @@ private:
     int mUtFunction = 0;
     bool showIndex = false;
     int mCurGroup = 0;
+
+    int mPrintResolution = 3;
+    int mHexResolution = 4;
+    bool mShowHex = false;
     QString showInfo(int InfoType, int infoItem, QString showItem);
     QString showInfoDbl(int infoType, int infoItem, QString showItem);
     QString showInfoStr(int infoType, int infoItem, QString showItem);

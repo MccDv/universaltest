@@ -198,13 +198,21 @@ void CtrSubWidget::keyPressEvent(QKeyEvent *event)
         swStopScan();
     if ((keyCode == Qt::Key_Plus)  && (QApplication::keyboardModifiers() & Qt::AltModifier)) {
         mPrintResolution += 1;
+        mHexResolution += 1;
         ui->lblInfo->setText(QString("Text resolution %1").arg(mPrintResolution));
     }
     if ((keyCode == Qt::Key_Minus)  && (QApplication::keyboardModifiers() & Qt::AltModifier)) {
         mPrintResolution -= 1;
+        mHexResolution -= 1;
         if (mPrintResolution < 0)
             mPrintResolution = 0;
+        if (mHexResolution < 2)
+            mHexResolution = 2;
         ui->lblInfo->setText(QString("Text resolution %1").arg(mPrintResolution));
+    }
+    if ((keyCode == Qt::Key_X)  && (QApplication::keyboardModifiers() & Qt::AltModifier)) {
+        mShowHex = !mShowHex;
+        ui->lblInfo->setText(QString("Print hex %1").arg(mShowHex));
     }
     if ((keyCode == Qt::Key_Period)  && (QApplication::keyboardModifiers() & Qt::AltModifier)) {
         mCalcTime = true;
@@ -557,6 +565,8 @@ void CtrSubWidget::runSelectedFunc()
 
     parentWindow = qobject_cast<ChildWindow *>(this->parent());
 
+    mPlotIndex = 0;
+    mPlotCount = 0;
     switch (mUtFunction) {
     case UL_C_CLEAR:
         runClearFunc();
@@ -1134,6 +1144,7 @@ void CtrSubWidget::runCInScan()
     }
     blockStyle = "QLineEdit {" + warnColor + fsString + "}";
     ui->leBlockSize->setStyleSheet(blockStyle);
+    scanIncludes0 = (lowCtr == 0);
 
     long long bufSize = mChanCount * mSamplesPerChan;
     if(mPlot)
@@ -1578,21 +1589,24 @@ void CtrSubWidget::printData(unsigned long long currentCount, long long currentI
     QString dataText, str;
     QTextCursor curCursor;
     double tickFactor, countComp;
-    //unsigned long long curSample;
-    double curSample;
+    double curSample, ctrRate0, ctrRate;
     int curScan, samplesToPrint, sampleLimit;
     int sampleNum = 0;
     int increment = 0;
+    long long hexSample;
     long long samplePerChanel = mChanCount * ui->leNumSamples->text().toLongLong();;
 
     countComp = 0;
     tickFactor = 1;
+    ctrRate0 = 1;
+    ctrRate = 1;
     if (mCalcTime & ((mMeasType == CMT_PERIOD)
             | (mMeasType == CMT_PULSE_WIDTH)
             | (mMeasType == CMT_TIMING)))
         tickFactor = getTickValue(mTickSize);
     if (mCalcPeriod) {
-        tickFactor = (double)1/12000000;
+        ctrRate0 = (double)1/12000000;
+        ctrRate = (double)1/48000000;
         countComp = 1;
     }
     curCursor = QTextCursor(ui->teShowValues->textCursor());
@@ -1609,9 +1623,19 @@ void CtrSubWidget::printData(unsigned long long currentCount, long long currentI
         }
         dataText.append("<td>" + str.setNum(currentCount + increment) + "</td>");
         for (int chan = 0; chan < mChanCount; chan++) {
-            curSample = tickFactor * ((double)buffer[curScan + chan] - countComp);
-            dataText.append("<td>" + QString("%1")
-                            .arg(curSample, 1, 'g', mPrintResolution, '0')) + "</td>";
+            if (mCalcPeriod) {
+                tickFactor = ctrRate;
+                if ((chan == 0) & scanIncludes0) tickFactor = ctrRate0;
+            }
+            if (mShowHex) {
+                hexSample = ((long long)buffer[curScan + chan]);
+                dataText.append("<td>" + QString("0x%1")
+                                .arg(hexSample, mHexResolution, 16, QLatin1Char('0'))) + "</td>";
+            } else {
+                curSample = tickFactor * ((double)buffer[curScan + chan] - countComp);
+                dataText.append("<td>" + QString("%1")
+                                .arg(curSample, 1, 'g', mPrintResolution, '0')) + "</td>";
+            }
         }
         dataText.append("</tr><tr>");
         sampleNum = sampleNum + 1;

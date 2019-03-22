@@ -1,9 +1,9 @@
 #ifndef CTRSUBWIDGET_H
 #define CTRSUBWIDGET_H
 
+#include <QMdiSubWindow>
 #include <QWidget>
 #include <QVariant>
-#include <QMdiSubWindow>
 #include <QVector>
 #include <QTimer>
 #include <QTime>
@@ -68,6 +68,7 @@ private:
     int mUtFunction = 0;
     int mCurGroup = 0;
     bool mUseTimer = false;
+    bool scanIncludes0 = false;
 
     DaqDeviceHandle mDaqDeviceHandle = 0;
     QString mDevUID = "";
@@ -77,6 +78,8 @@ private:
     int mCtrResolution = 0;
     int mChanCount = 0;
     int mPrintResolution = 3;
+    int mHexResolution = 4;
+    bool mShowHex = false;
     bool mCalcTime = false;
     bool mInitPlot = false;
     TriggerType mTriggerType = TRIG_NONE;
