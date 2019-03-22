@@ -1760,18 +1760,25 @@ void subWidget::setConfiguration()
     QString valueText = "";
     QString funcStr, nameOfFunc, funcArgs, argVals;
     QTime t;
-    QString sStartTime, textToAdd;
+    QString sStartTime, textToAdd, userVal;
 
     unsigned int index;
     long long configValue;
     double configValueDbl = 0;
     int configItem, configType;
-    bool noConfigItem, dblConfigItem;
+    bool noConfigItem, dblConfigItem, useHex, hexOK;
+
+    userVal = ui->leSetValue->text();
+    if (userVal.startsWith("0x")) {
+        useHex = true;
+        userVal = userVal.remove("0x");
+        configValue = userVal.toLongLong(&hexOK, 16);
+    } else
+        configValue = userVal.toLongLong();
 
     configType = ui->cmbInfoType->currentData(Qt::UserRole).toInt();
     configItem = ui->cmbConfigItem->currentData(Qt::UserRole).toInt();
-    configValue = ui->leSetValue->text().toLongLong();
-    configValueDbl = ui->leSetValue->text().toDouble();
+    configValueDbl = userVal.toDouble();
     index = ui->spnIndex->value();
 
     if(configItem == 0)
@@ -1871,9 +1878,11 @@ void subWidget::setConfiguration()
                     .arg(showItem)
                     .arg(configValueDbl);
         else
-            textToAdd = QString("%1 = %2")
-                    .arg(showItem)
-                    .arg(configValue);
+            if (useHex)
+                textToAdd = QString("%1 = 0x%2").arg(showItem)
+                        .arg(configValue, 4, 16, QLatin1Char( '0' ));
+            else
+                textToAdd = QString("%1 = %2").arg(showItem).arg(configValue);
         if(showIndex)
             textToAdd += QString(" (index %1)").arg(index) + valueText;
         else
