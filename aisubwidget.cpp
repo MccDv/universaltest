@@ -115,6 +115,10 @@ void AiSubWidget::keyPressEvent(QKeyEvent *event)
             mPrintResolution = 0;
         ui->lblInfo->setText(QString("Text resolution %1").arg(mPrintResolution));
     }
+    if ((keyCode == Qt::Key_X) && (QApplication::keyboardModifiers() & Qt::AltModifier)) {
+        mShowHex = !mShowHex;
+        ui->lblStatus->setText(QString("Print hex %1").arg(mShowHex));
+    }
 }
 
 MainWindow *AiSubWidget::getMainWindow()
@@ -1570,7 +1574,7 @@ void AiSubWidget::updateData()
         floatValue = (!(mAiFlags & AINSCAN_FF_NOSCALEDATA));
     }
     //print only 500
-    samplesToPrint = mSamplesPerChan < 500? mSamplesPerChan : 500;
+    samplesToPrint = (mSamplesPerChan < 1000? mSamplesPerChan : 1000) / mChanCount;
     if ((samplesToPrint + mTextIndex) > (mSamplesPerChan * mChanCount))
         samplesToPrint = (mSamplesPerChan * mChanCount) - mTextIndex;
     ui->teShowValues->clear();
@@ -1579,11 +1583,21 @@ void AiSubWidget::updateData()
         dataText.append("<td>" + str.setNum(increment) + "</td>");
         for (int chan = 0; chan < mChanCount; chan++) {
             curSample = buffer[increment + chan];
-            if (floatValue)
+            if (mMixedFloatInt) {
+                floatValue = false;
+                if ((mChanTypeList[chan] == DAQI_ANALOG_DIFF)
+                        |(mChanTypeList[chan] == DAQI_ANALOG_SE)
+                        |(mChanTypeList[chan] == DAQI_DAC)) floatValue = true;
+            }
+            if (floatValue) {
                 val = QString("%1%2").arg((curSample < 0) ? "" : "+")
-                        .arg(curSample, 2, 'f', 5, '0');
-            else
-                val = QString("%1").arg(curSample);
+                        .arg(curSample, 1, 'f', mPrintResolution, '0');
+            } else {
+                if(mShowHex)
+                    val = QString("0x%1").arg((long)curSample, mHexResolution, 16, QLatin1Char('0'));
+                else
+                    val = QString("%1").arg(curSample);
+            }
             dataText.append("<td>" + val + "</td>");
         }
         dataText.append("</tr><tr>");
@@ -1605,13 +1619,29 @@ void AiSubWidget::printData(unsigned long long currentCount, long long currentIn
     int curScan, samplesToPrint, sampleLimit;
     int sampleNum = 0;
     int increment = 0;
-    bool floatValue;
-    long long samplePerChanel = mChanCount * ui->leNumSamples->text().toLongLong();;
+    bool floatValue, hasFloat, hasInt;
+    //bool mixedFloatInt;
+    long long samplePerChanel = mChanCount * ui->leNumSamples->text().toLongLong();
 
     mTextIndex = 0;
     floatValue = false;
-    if (mUtFunction == UL_DAQ_INSCAN)
+    hasFloat = false;
+    hasInt = false;
+    mMixedFloatInt = false;
+    if (mUtFunction == UL_DAQ_INSCAN) {
         floatValue = (!(mDaqiFlags & DAQINSCAN_FF_NOSCALEDATA));
+        for (int tList = 0; tList < mChanTypeList.count(); tList++) {
+            if ((mChanTypeList[tList] == DAQI_ANALOG_DIFF)
+                    |(mChanTypeList[tList] == DAQI_ANALOG_SE)
+                    |(mChanTypeList[tList] == DAQI_DAC)) hasFloat = true;
+            if ((mChanTypeList[tList] == DAQI_CTR16)
+                    |(mChanTypeList[tList] == DAQI_CTR32)
+                    |(mChanTypeList[tList] == DAQI_CTR48)
+                    |(mChanTypeList[tList] == DAQI_DIGITAL))
+                hasInt = true;
+        }
+        mMixedFloatInt = (hasFloat & hasInt);
+    }
     if (mUtFunction == UL_AINSCAN)
         floatValue = (!(mAiFlags & AINSCAN_FF_NOSCALEDATA));
 
@@ -1629,11 +1659,20 @@ void AiSubWidget::printData(unsigned long long currentCount, long long currentIn
         dataText.append("<td>" + str.setNum(currentCount + increment) + "</td>");
         for (int chan = 0; chan < mChanCount; chan++) {
             curSample = buffer[curScan + chan];
+            if (mMixedFloatInt) {
+                floatValue = false;
+                if ((mChanTypeList[chan] == DAQI_ANALOG_DIFF)
+                        |(mChanTypeList[chan] == DAQI_ANALOG_SE)
+                        |(mChanTypeList[chan] == DAQI_DAC)) floatValue = true;
+            }
             if (floatValue) {
                 val = QString("%1%2").arg((curSample < 0) ? "" : "+")
                         .arg(curSample, 1, 'f', mPrintResolution, '0');
             } else {
-                val = QString("%1").arg(curSample);
+                if(mShowHex)
+                    val = QString("0x%1").arg((long)curSample, mHexResolution, 16, QLatin1Char('0'));
+                else
+                    val = QString("%1").arg(curSample);
             }
             dataText.append("<td>" + val + "</td>");
         }
