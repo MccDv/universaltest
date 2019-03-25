@@ -167,7 +167,7 @@ void QueueDialog::lstQueueRowSelected(int rowSelected)
                 int offset = 0;
                 offset = getDIChanTypeIndex(mChanTypeList[mCurElement]);
                 ui->cmbChanType->setCurrentIndex(offset);
-                ui->cmbMode->setCurrentIndex(mModeList[mCurElement]);
+                ui->cmbMode->setCurrentIndex(mModeList[mCurElement]-1);
                 int listIndex = getRangeIndex(mRangeList[mCurElement]);
                 ui->cmbRange->setCurrentIndex(listIndex);
             }
