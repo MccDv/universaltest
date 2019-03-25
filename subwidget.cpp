@@ -288,6 +288,8 @@ void subWidget::setConfigItemsForType()
         ui->cmbConfigItem->addItem("Auto Zero Mode", AI_CFG_AUTO_ZERO_MODE);
         ui->cmbConfigItem->addItem("IEPE Mode", AI_CFG_CHAN_IEPE_MODE);
         ui->cmbConfigItem->addItem("Chan Coupling Mode", AI_CFG_CHAN_COUPLING_MODE);
+        ui->cmbConfigItem->addItem("Chan Snsr Connection", AI_CFG_CHAN_SENSOR_CONNECTION_TYPE);
+        ui->cmbConfigItem->addItem("Chan OTD Mode", AI_CFG_CHAN_OTD_MODE);
         ui->cmbConfigItem->addItem("Chan Slope", AI_CFG_CHAN_SLOPE);
         ui->cmbConfigItem->addItem("Chan Offset", AI_CFG_CHAN_OFFSET);
         ui->cmbConfigItem->addItem("Chan Sensor Sensitivity", AI_CFG_CHAN_SENSOR_SENSITIVITY);
@@ -876,10 +878,10 @@ void subWidget::readConfig()
         devConfig = showConfigDbl(configType, configItem, "AI Chan Offset");
         configText.append(devConfig + "</tr><tr>");
         configItem = AI_CFG_CHAN_SENSOR_SENSITIVITY;
-        devConfig = showConfigDbl(configType, configItem, "AI Sensor Sensitivity");
+        devConfig = showConfigDbl(configType, configItem, "AI Chan Snsr Snstvty");
         configText.append(devConfig + "</tr><tr>");
         configItem = AI_CFG_CHAN_DATA_RATE;
-        devConfig = showConfigDbl(configType, configItem, "AI Data Rate");
+        devConfig = showConfigDbl(configType, configItem, "AI Chan Data Rate");
         configText.append(devConfig + "</tr><tr>");
         configItem = AI_CFG_CHAN_COEFS_STR;
         devConfig = showConfigStr(configType, configItem, "AI Chan Coeffs");
