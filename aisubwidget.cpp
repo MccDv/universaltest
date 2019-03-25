@@ -1576,7 +1576,7 @@ void AiSubWidget::updateData()
     //print only 500
     samplesToPrint = (mSamplesPerChan < 1000? mSamplesPerChan : 1000) / mChanCount;
     if ((samplesToPrint + mTextIndex) > (mSamplesPerChan * mChanCount))
-        samplesToPrint = (mSamplesPerChan * mChanCount) - mTextIndex;
+        samplesToPrint = ((mSamplesPerChan * mChanCount) - mTextIndex) / mChanCount;
     ui->teShowValues->clear();
     dataText = "<style> th, td { padding-right: 10px;}</style><tr>";
     for (int y = 0; y < samplesToPrint; y++) {
