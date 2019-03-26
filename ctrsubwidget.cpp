@@ -215,11 +215,15 @@ void CtrSubWidget::keyPressEvent(QKeyEvent *event)
         ui->lblInfo->setText(QString("Print hex %1").arg(mShowHex));
     }
     if ((keyCode == Qt::Key_Period)  && (QApplication::keyboardModifiers() & Qt::AltModifier)) {
-        mCalcTime = true;
+        if(mDevName.startsWith("DT9837"))
+            mCalcPeriod = true;
+        else
+            mCalcTime = true;
         ui->lblInfo->setText(QString("Enabled pulse/period calculation").arg(mPrintResolution));
     }
     if ((keyCode == Qt::Key_Slash)  && (QApplication::keyboardModifiers() & Qt::AltModifier)) {
         mCalcTime = false;
+        mCalcPeriod = false;
         ui->lblInfo->setText(QString("Disabled pulse/period calculation").arg(mPrintResolution));
     }
 }
@@ -1072,13 +1076,6 @@ void CtrSubWidget::runCConfigScan()
     edgeDetection = CED_RISING_EDGE;
     if (ui->rdoEdgeNeg->isChecked())
         edgeDetection = CED_FALLING_EDGE;
-
-    mCalcPeriod = false;
-
-    if(mDevName.startsWith("DT9837")) {
-        if(mMeasType == CMT_PERIOD) mCalcPeriod = true;
-        return;
-    }
 
     nameOfFunc = "ulCConfigScan";
     funcArgs = "(mDaqDeviceHandle, ctrNum, measType, measMode, "

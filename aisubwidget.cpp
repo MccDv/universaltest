@@ -1620,13 +1620,14 @@ void AiSubWidget::printData(unsigned long long currentCount, long long currentIn
     int sampleNum = 0;
     int increment = 0;
     bool floatValue, hasFloat, hasInt;
-    //bool mixedFloatInt;
+    bool printBlocks;
     long long samplePerChanel = mChanCount * ui->leNumSamples->text().toLongLong();
 
     mTextIndex = 0;
     floatValue = false;
     hasFloat = false;
     hasInt = false;
+    printBlocks = (mRunning && (mScanOptions && SO_CONTINUOUS));
     mMixedFloatInt = false;
     if (mUtFunction == UL_DAQ_INSCAN) {
         floatValue = (!(mDaqiFlags & DAQINSCAN_FF_NOSCALEDATA));
