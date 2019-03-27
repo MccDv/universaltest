@@ -219,12 +219,12 @@ void CtrSubWidget::keyPressEvent(QKeyEvent *event)
             mCalcPeriod = true;
         else
             mCalcTime = true;
-        ui->lblInfo->setText(QString("Enabled pulse/period calculation").arg(mPrintResolution));
+        ui->lblInfo->setText(QString("Enabled pulse/period calculation"));
     }
     if ((keyCode == Qt::Key_Slash)  && (QApplication::keyboardModifiers() & Qt::AltModifier)) {
         mCalcTime = false;
         mCalcPeriod = false;
-        ui->lblInfo->setText(QString("Disabled pulse/period calculation").arg(mPrintResolution));
+        ui->lblInfo->setText(QString("Disabled pulse/period calculation"));
     }
 }
 

@@ -124,12 +124,12 @@ void AiSubWidget::keyPressEvent(QKeyEvent *event)
             mCalcPeriod = true;
         else
             mCalcTime = true;
-        ui->lblInfo->setText(QString("Enabled pulse/period calculation").arg(mPrintResolution));
+        ui->lblInfo->setText(QString("Enabled pulse/period calculation"));
     }
     if ((keyCode == Qt::Key_Slash)  && (QApplication::keyboardModifiers() & Qt::AltModifier)) {
         mCalcTime = false;
         mCalcPeriod = false;
-        ui->lblInfo->setText(QString("Disabled pulse/period calculation").arg(mPrintResolution));
+        ui->lblInfo->setText(QString("Disabled pulse/period calculation"));
     }
 }
 
@@ -1653,7 +1653,8 @@ void AiSubWidget::printData(unsigned long long currentCount, long long currentIn
     }
     mMixedFloatInt = false;
     if (mUtFunction == UL_DAQ_INSCAN) {
-        floatValue = (!(mDaqiFlags & DAQINSCAN_FF_NOSCALEDATA));
+        hasInt = (mDaqiFlags & DAQINSCAN_FF_NOSCALEDATA);
+        floatValue = !hasInt;
         for (int tList = 0; tList < mChanTypeList.count(); tList++) {
             if ((mChanTypeList[tList] == DAQI_ANALOG_DIFF)
                     |(mChanTypeList[tList] == DAQI_ANALOG_SE)
@@ -1666,8 +1667,10 @@ void AiSubWidget::printData(unsigned long long currentCount, long long currentIn
         }
         mMixedFloatInt = (hasFloat & hasInt);
     }
-    if (mUtFunction == UL_AINSCAN)
+    if (mUtFunction == UL_AINSCAN) {
         floatValue = (!(mAiFlags & AINSCAN_FF_NOSCALEDATA));
+        hasInt = true;
+    }
 
     ui->teShowValues->clear();
     dataText = "<style> th, td { padding-right: 10px;}</style><tr>";
@@ -1683,7 +1686,7 @@ void AiSubWidget::printData(unsigned long long currentCount, long long currentIn
         dataText.append("<td>" + str.setNum(currentCount + increment) + "</td>");
         for (int chan = 0; chan < mChanCount; chan++) {
             curSample = buffer[curScan + chan];
-            if (mMixedFloatInt) {
+            if (hasInt) {
                 floatValue = false;
                 if ((mChanTypeList[chan] == DAQI_ANALOG_DIFF)
                         |(mChanTypeList[chan] == DAQI_ANALOG_SE)
