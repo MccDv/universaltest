@@ -1568,24 +1568,53 @@ void AiSubWidget::swStopScan()
 void AiSubWidget::updateData()
 {
     QString dataText, str, val;
-    bool floatValue;
+    bool floatValue, hasFloat, hasInt;
+    bool isCounter;
 
     floatValue = false;
     int increment = mTextIndex;
     int samplesToPrint;
-    double curSample;
+    double curSample, ctrRate0, ctrRate;
+    double tickFactor, countComp;
+
+    countComp = 0;
+    tickFactor = 1;
+    ctrRate0 = 1;
+    ctrRate = 1;
+    isCounter = false;
+    floatValue = false;
+    hasFloat = false;
+    hasInt = false;
+    if (mCalcPeriod) {
+        ctrRate0 = (double)1/12000000;
+        ctrRate = (double)1/48000000;
+        countComp = 1;
+    }
 
     if (!buffer)
         return;
     if(mBlockSize == 0)
         return;
     if (mUtFunction == UL_DAQ_INSCAN) {
-        floatValue = (!(mDaqiFlags & DAQINSCAN_FF_NOSCALEDATA));
+        hasInt = (mDaqiFlags & DAQINSCAN_FF_NOSCALEDATA);
+        floatValue = !hasInt;
+        for (int tList = 0; tList < mChanTypeList.count(); tList++) {
+            if ((mChanTypeList[tList] == DAQI_ANALOG_DIFF)
+                    |(mChanTypeList[tList] == DAQI_ANALOG_SE)
+                    |(mChanTypeList[tList] == DAQI_DAC)) hasFloat = true;
+            if ((mChanTypeList[tList] == DAQI_CTR16)
+                    |(mChanTypeList[tList] == DAQI_CTR32)
+                    |(mChanTypeList[tList] == DAQI_CTR48)
+                    |(mChanTypeList[tList] == DAQI_DIGITAL))
+                hasInt = true;
+        }
+        mMixedFloatInt = (hasFloat & hasInt);
     }
     if (mUtFunction == UL_AINSCAN) {
         floatValue = (!(mAiFlags & AINSCAN_FF_NOSCALEDATA));
+        hasInt = true;
     }
-    //print only 500
+    //print only 1000
     samplesToPrint = (mSamplesPerChan < 1000? mSamplesPerChan : 1000) / mChanCount;
     if ((samplesToPrint + mTextIndex) > (mSamplesPerChan * mChanCount))
         samplesToPrint = ((mSamplesPerChan * mChanCount) - mTextIndex) / mChanCount;
@@ -1595,7 +1624,7 @@ void AiSubWidget::updateData()
         dataText.append("<td>" + str.setNum(increment) + "</td>");
         for (int chan = 0; chan < mChanCount; chan++) {
             curSample = buffer[increment + chan];
-            if (mMixedFloatInt) {
+            if (hasInt) {
                 floatValue = false;
                 if ((mChanTypeList[chan] == DAQI_ANALOG_DIFF)
                         |(mChanTypeList[chan] == DAQI_ANALOG_SE)
@@ -1605,10 +1634,18 @@ void AiSubWidget::updateData()
                 val = QString("%1%2").arg((curSample < 0) ? "" : "+")
                         .arg(curSample, 1, 'f', mPrintResolution, '0');
             } else {
+                isCounter = (mChanTypeList[chan] == DAQI_CTR32);
+                if (mCalcPeriod & isCounter) {
+                    tickFactor = ctrRate;
+                    if (mChanList[chan] == 0)
+                        tickFactor = ctrRate0;
+                }
                 if(mShowHex)
                     val = QString("0x%1").arg((long)curSample, mHexResolution, 16, QLatin1Char('0'));
-                else
-                    val = QString("%1").arg(curSample);
+                else {
+                    double calcSample = tickFactor * (curSample - countComp);
+                    val = QString("%1").arg(calcSample, 1, 'g', mPrintResolution, '0');
+                }
             }
             dataText.append("<td>" + val + "</td>");
         }
@@ -1705,7 +1742,6 @@ void AiSubWidget::printData(unsigned long long currentCount, long long currentIn
                 if(mShowHex)
                     val = QString("0x%1").arg((long)curSample, mHexResolution, 16, QLatin1Char('0'));
                 else {
-                    //val = QString("%1").arg(curSample);
                     double calcSample = tickFactor * (curSample - countComp);
                     val = QString("%1").arg(calcSample, 1, 'g', mPrintResolution, '0');
                 }
