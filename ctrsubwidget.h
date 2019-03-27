@@ -68,7 +68,6 @@ private:
     int mUtFunction = 0;
     int mCurGroup = 0;
     bool mUseTimer = false;
-    bool scanIncludes0 = false;
 
     DaqDeviceHandle mDaqDeviceHandle = 0;
     QString mDevUID = "";
@@ -80,7 +79,10 @@ private:
     int mPrintResolution = 3;
     int mHexResolution = 4;
     bool mShowHex = false;
+    bool scanIncludes0 = false;
     bool mCalcTime = false;
+    bool mCalcPeriod = false;
+
     bool mInitPlot = false;
     TriggerType mTriggerType = TRIG_NONE;
     int mTrigChannel = 0;
@@ -96,7 +98,6 @@ private:
     bool mUseGetStatus = true;
     bool mAutoStop = true;
     bool mUseWait = false;
-    bool mCalcPeriod = false;
     double mWaitTime = 0.0;
     DaqEventType mEventType = DE_NONE;
     unsigned long long mEventParams = 0;

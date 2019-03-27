@@ -133,8 +133,9 @@ private:
     int mPrintResolution = 5;
     int mHexResolution = 4;
     bool mShowHex = false;
-    //bool mHasFloat = false;
-    //bool mHasInt = false;
+    bool mCalcTime = false;
+    bool mCalcPeriod = false;
+
     bool mMixedFloatInt = false;
     bool mInitPlot;
     bool mStatusTimerEnabled;

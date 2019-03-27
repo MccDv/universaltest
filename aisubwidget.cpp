@@ -119,6 +119,18 @@ void AiSubWidget::keyPressEvent(QKeyEvent *event)
         mShowHex = !mShowHex;
         ui->lblStatus->setText(QString("Print hex %1").arg(mShowHex));
     }
+    if ((keyCode == Qt::Key_Period)  && (QApplication::keyboardModifiers() & Qt::AltModifier)) {
+        if(mDevName.startsWith("DT9837"))
+            mCalcPeriod = true;
+        else
+            mCalcTime = true;
+        ui->lblInfo->setText(QString("Enabled pulse/period calculation").arg(mPrintResolution));
+    }
+    if ((keyCode == Qt::Key_Slash)  && (QApplication::keyboardModifiers() & Qt::AltModifier)) {
+        mCalcTime = false;
+        mCalcPeriod = false;
+        ui->lblInfo->setText(QString("Disabled pulse/period calculation").arg(mPrintResolution));
+    }
 }
 
 MainWindow *AiSubWidget::getMainWindow()
@@ -1615,19 +1627,30 @@ void AiSubWidget::updateData()
 void AiSubWidget::printData(unsigned long long currentCount, long long currentIndex, int blockSize)
 {
     QString dataText, str, val;
-    double curSample;
+    double curSample, ctrRate0, ctrRate;
+    double tickFactor, countComp;
     int curScan, samplesToPrint, sampleLimit;
     int sampleNum = 0;
     int increment = 0;
     bool floatValue, hasFloat, hasInt;
-    bool printBlocks;
+    bool printBlocks, isCounter;
     long long samplePerChanel = mChanCount * ui->leNumSamples->text().toLongLong();
 
     mTextIndex = 0;
+    countComp = 0;
+    tickFactor = 1;
+    ctrRate0 = 1;
+    ctrRate = 1;
+    isCounter = false;
     floatValue = false;
     hasFloat = false;
     hasInt = false;
     printBlocks = (mRunning && (mScanOptions && SO_CONTINUOUS));
+    if (mCalcPeriod) {
+        ctrRate0 = (double)1/12000000;
+        ctrRate = (double)1/48000000;
+        countComp = 1;
+    }
     mMixedFloatInt = false;
     if (mUtFunction == UL_DAQ_INSCAN) {
         floatValue = (!(mDaqiFlags & DAQINSCAN_FF_NOSCALEDATA));
@@ -1648,7 +1671,7 @@ void AiSubWidget::printData(unsigned long long currentCount, long long currentIn
 
     ui->teShowValues->clear();
     dataText = "<style> th, td { padding-right: 10px;}</style><tr>";
-    sampleLimit = mRunning? 100 : 1000 / mChanCount;
+    sampleLimit = printBlocks? 100 : 1000 / mChanCount;
     samplesToPrint = blockSize < sampleLimit? blockSize : sampleLimit;
     for (int y = 0; y < samplesToPrint; y++) {
         curScan = currentIndex + increment;
@@ -1670,10 +1693,19 @@ void AiSubWidget::printData(unsigned long long currentCount, long long currentIn
                 val = QString("%1%2").arg((curSample < 0) ? "" : "+")
                         .arg(curSample, 1, 'f', mPrintResolution, '0');
             } else {
+                isCounter = (mChanTypeList[chan] == DAQI_CTR32);
+                if (mCalcPeriod & isCounter) {
+                    tickFactor = ctrRate;
+                    if (mChanList[chan] == 0)
+                        tickFactor = ctrRate0;
+                }
                 if(mShowHex)
                     val = QString("0x%1").arg((long)curSample, mHexResolution, 16, QLatin1Char('0'));
-                else
-                    val = QString("%1").arg(curSample);
+                else {
+                    //val = QString("%1").arg(curSample);
+                    double calcSample = tickFactor * (curSample - countComp);
+                    val = QString("%1").arg(calcSample, 1, 'g', mPrintResolution, '0');
+                }
             }
             dataText.append("<td>" + val + "</td>");
         }
