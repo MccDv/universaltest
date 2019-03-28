@@ -73,6 +73,19 @@ DataSelectDialog::~DataSelectDialog()
     delete ui;
 }
 
+/*void DataSelectDialog::keyPressEvent(QKeyEvent *event)
+{
+    int keyCode = event->key();
+    if (keyCode == Qt::Key_Escape)
+        (void)keyCode;
+#ifdef Q_OS_MAC
+    if (keyCode == Qt::Key_F5) {
+        this->setWindowState(Qt::WindowMaximized);
+        this->setWindowState(Qt::WindowNoState);
+    }
+#endif
+}*/
+
 void DataSelectDialog::syncControls()
 {
     int selElement = ui->spnElement->value();

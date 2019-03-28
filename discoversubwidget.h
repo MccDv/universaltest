@@ -19,6 +19,7 @@ class DiscoverSubWidget : public QWidget
 public:
     explicit DiscoverSubWidget(QWidget *parent = 0);
     ~DiscoverSubWidget();
+    void keyPressEvent(QKeyEvent *event);
 
 private slots:
     void initDeviceParams();

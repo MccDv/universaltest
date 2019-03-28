@@ -118,6 +118,12 @@ void DioSubWidget::keyPressEvent(QKeyEvent *event)
             mPrintResolution = 0;
         ui->lblInfo->setText(QString("Text resolution %1").arg(mPrintResolution));
     }
+#ifdef Q_OS_MAC
+    if (keyCode == Qt::Key_F5) {
+        this->setWindowState(Qt::WindowMaximized);
+        this->setWindowState(Qt::WindowNoState);
+    }
+#endif
 }
 
 MainWindow *DioSubWidget::getMainWindow()

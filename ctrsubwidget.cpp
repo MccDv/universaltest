@@ -227,6 +227,12 @@ void CtrSubWidget::keyPressEvent(QKeyEvent *event)
         ui->lblInfo->setText(QString("Disabled pulse/period calculation"));
     }
 }
+#ifdef Q_OS_MAC
+    if (keyCode == Qt::Key_F5) {
+        this->setWindowState(Qt::WindowMaximized);
+        this->setWindowState(Qt::WindowNoState);
+    }
+#endif
 
 MainWindow *CtrSubWidget::getMainWindow()
 {

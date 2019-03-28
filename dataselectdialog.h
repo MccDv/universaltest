@@ -23,6 +23,7 @@ class DataSelectDialog : public QDialog
 public:
     explicit DataSelectDialog(QWidget *parent = 0);
     ~DataSelectDialog();
+    //void keyPressEvent(QKeyEvent *event);
 
     void setWaveType(QHash<int, int> waveType) {
         mWaveType = waveType;

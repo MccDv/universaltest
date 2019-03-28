@@ -131,6 +131,12 @@ void AiSubWidget::keyPressEvent(QKeyEvent *event)
         mCalcPeriod = false;
         ui->lblInfo->setText(QString("Disabled pulse/period calculation"));
     }
+#ifdef Q_OS_MAC
+    if (keyCode == Qt::Key_F5) {
+        this->setWindowState(Qt::WindowMaximized);
+        this->setWindowState(Qt::WindowNoState);
+    }
+#endif
 }
 
 MainWindow *AiSubWidget::getMainWindow()
@@ -483,6 +489,10 @@ void AiSubWidget::onClickCmdGo()
     ui->lblStatus->clear();
     ui->lblInfo->clear();
     runSelectedFunc();
+#ifdef Q_OS_MAC
+    this->setWindowState(Qt::WindowMaximized);
+    this->setWindowState(Qt::WindowNoState);
+#endif
 }
 
 void AiSubWidget::runSelectedFunc()

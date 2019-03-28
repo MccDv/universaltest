@@ -43,6 +43,19 @@ DiscoverSubWidget::~DiscoverSubWidget()
     delete ui;
 }
 
+void DiscoverSubWidget::keyPressEvent(QKeyEvent *event)
+{
+    int keyCode = event->key();
+    if (keyCode == Qt::Key_Escape)
+        updateParameters();
+#ifdef Q_OS_MAC
+    if (keyCode == Qt::Key_F5) {
+        this->setWindowState(Qt::WindowMaximized);
+        this->setWindowState(Qt::WindowNoState);
+    }
+#endif
+}
+
 MainWindow* DiscoverSubWidget::getMainWindow()
 {
     foreach (QWidget *w, QApplication::topLevelWidgets())
