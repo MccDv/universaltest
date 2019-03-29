@@ -1739,9 +1739,11 @@ void AoSubWidget::updatePlot()
     double rangeUpper, rangeLower;
 
     autoScale = true;
-    if(autoScale)
+    if(autoScale) {
         ui->plotOutData->rescaleAxes();
-    else {
+        double center = ui->plotOutData->yAxis->range().center();
+        ui->plotOutData->yAxis->scaleRange(1.2, center);
+    } else {
         double rangeVolts = getRangeVolts(mRange);
         rangeBuf = rangeVolts / 10;
         rangeUpper = rangeVolts / 2;
