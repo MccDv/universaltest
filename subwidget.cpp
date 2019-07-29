@@ -297,6 +297,7 @@ void subWidget::setConfigItemsForType()
         break;
     case TYPE_AO_INFO:
         ui->cmbConfigItem->addItem("AO Sync Mode", AO_CFG_SYNC_MODE);
+        ui->cmbConfigItem->addItem("AO Sense Mode", AO_CFG_CHAN_SENSE_MODE);
         break;
     case TYPE_DIO_INFO:
         ui->cmbConfigItem->addItem("Dio Port Dir Mask", DIO_CFG_PORT_DIRECTION_MASK);
@@ -893,6 +894,9 @@ void subWidget::readConfig()
         configItem = AO_CFG_SYNC_MODE;
         showIndex = true;
         devConfig = showConfig(configType, configItem, "AO Sync Mode");
+        configText.append(devConfig + "</tr><tr>");
+        configItem = AO_CFG_CHAN_SENSE_MODE;
+        devConfig = showConfig(configType, configItem, "AO Sense Mode");
         configText.append(devConfig + "</tr><tr>");
         ui->teShowValues->setHtml(configText);
         break;

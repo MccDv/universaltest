@@ -809,6 +809,24 @@ QString getAoSyncModeName(AOutSyncMode syncMode)
     }
 }
 
+QString getAoSenseModeName(int senseMode)
+{
+    //change int to AOutSenseMode when header is updated
+    switch (senseMode) {
+    case 1:
+        //AOSM_DISABLED
+        return "Disabled";
+        break;
+    case 2:
+        //AOSM_ENABLED
+        return "Enabled";
+        break;
+    default:
+        return "Invalid";
+        break;
+    }
+}
+
 QString getTcTypeName(TcType tcType)
 {
     switch (tcType) {

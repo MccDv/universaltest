@@ -39,6 +39,7 @@ QString getAiInputModeName(AiInputMode inMode);
 QString getAiChanTypeName(AiChanType chanType);
 QString getChanCouplingModeName(CouplingMode cplMode);
 QString getAoSyncModeName(AOutSyncMode syncMode);
+QString getAoSenseModeName(int senseMode);
 QString getTcTypeName(TcType tcType);
 QString getTempUnitName(TempUnit tempUnit);
 QString getDigitalDirection(DigitalDirection digDir);

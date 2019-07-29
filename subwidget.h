@@ -54,6 +54,13 @@ private:
     bool mUseTimer = false;
     bool mGoTmrIsRunning = false;
 
+    int AO_CFG_CHAN_SENSE_MODE = 2;
+    /*typedef enum
+    {
+        AOSM_DISABLED = 1,
+        AOSM_ENABLED  = 2
+    }AOutSenseMode;*/
+
     int mUtFunction = 0;
     bool showIndex = false;
     int mCurGroup = 0;
