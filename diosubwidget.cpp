@@ -2375,7 +2375,7 @@ void DioSubWidget::createBitBoxes()
     bitLayout->setSpacing(1);
     bitLayout->setMargin(4);
     bitLayout->setSizeConstraint(QLayout::SetFixedSize);
-    bitLayout->setColumnMinimumWidth(3, 40);
+    bitLayout->setColumnMinimumWidth(5, 40);
 
     //spacing between auxport and firsport set by col width
 
@@ -2402,24 +2402,26 @@ void DioSubWidget::createBitBoxes()
         chkBit[i]->setMaximumHeight(16);
         chkBit[i]->setMaximumWidth(20);
         chkBit[i]->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
-        if (i < 16)
-            portBit = QString("Aux1 bit %1").arg(i);
-        else if (i < 32)
-            portBit = QString("Aux2 bit %1").arg(i - 16);
+        if (i < AUX1_INDEX)
+            portBit = QString("Aux0 bit %1").arg(i);
+        else if (i < AUX2_INDEX)
+            portBit = QString("Aux1 bit %1").arg(i - AUX1_INDEX);
+        else if (i < AUX3_INDEX)
+            portBit = QString("Aux2 bit %1").arg(i - AUX2_INDEX);
         else {
-            if  (i - 32) {
-                if (!((i - 32 - offset) % 20)) {
+            if  (i - AUX3_INDEX) {
+                if (!((i - AUX3_INDEX - offset) % 20)) {
                     pos += 4;
                     bitIndex = 0;
                     portIndex += 1;
-                } else if (!((i - 32) % 24)) {
+                } else if (!((i - AUX3_INDEX) % 24)) {
                     pos += 4;
                     offset += 4;
                     bitIndex = 0;
                     portIndex += 1;
                 }
             }
-            if ((i > 32) && (bitIndex > 0))
+            if ((i > AUX3_INDEX) && (bitIndex > 0))
                 if (!(i % 8)) {
                     bitIndex = 0;
                     portIndex += 1;
@@ -2544,65 +2546,68 @@ int DioSubWidget::getGridOffsetFromPort(DigitalPortType portType)
 
 void DioSubWidget::mapGridToPortBit(int gridIndex, DigitalPortType &portType, int &bitInPort)
 {
-    if (gridIndex < 16) {
+    if (gridIndex < AUX1_INDEX) {
         portType = AUXPORT0;
         bitInPort = gridIndex;
-    } else if (gridIndex < 32) {
+    } else if (gridIndex < AUX2_INDEX) {
         portType = AUXPORT1;
-        bitInPort = gridIndex - 16;
-    } else if (gridIndex < 40) {
-        portType = FIRSTPORTA;
-        bitInPort = gridIndex - 32;
-    } else if (gridIndex < 48) {
-        portType = FIRSTPORTB;
-        bitInPort = gridIndex - 40;
-    } else if (gridIndex < 52) {
-        portType = FIRSTPORTCL;
-        bitInPort = gridIndex - 48;
+        bitInPort = gridIndex - AUX1_INDEX;
+    } else if (gridIndex < AUX3_INDEX) {
+        portType = AUXPORT2;
+        bitInPort = gridIndex - AUX2_INDEX;
     } else if (gridIndex < 56) {
+        portType = FIRSTPORTA;
+        bitInPort = gridIndex - 48;
+    } else if (gridIndex < 64) {
+        portType = FIRSTPORTB;
+        bitInPort = gridIndex - 56;
+    } else if (gridIndex < 68) {
+        portType = FIRSTPORTCL;
+        bitInPort = gridIndex - 64;
+    } else if (gridIndex < 72) {
         portType = FIRSTPORTC;
         if (validPorts.contains(FIRSTPORTCH)) {
             portType = FIRSTPORTCH;
-            bitInPort = gridIndex - 52;
+            bitInPort = gridIndex - 68;
         } else {
-            bitInPort = gridIndex - 48;
+            bitInPort = gridIndex - 64;
         }
-    } else if (gridIndex < 64) {
-        portType = SECONDPORTA;
-        bitInPort = gridIndex - 56;
-    } else if (gridIndex < 72) {
-        portType = SECONDPORTB;
-        bitInPort = gridIndex - 64;
-    } else if (gridIndex < 76) {
-        portType = SECONDPORTCL;
-        bitInPort = gridIndex - 72;
     } else if (gridIndex < 80) {
-        portType = SECONDPORTCH;
-        bitInPort = gridIndex - 76;
+        portType = SECONDPORTA;
+        bitInPort = gridIndex - 72;
     } else if (gridIndex < 88) {
-        portType = THIRDPORTA;
+        portType = SECONDPORTB;
         bitInPort = gridIndex - 80;
-    } else if (gridIndex < 96) {
-        portType = THIRDPORTB;
+    } else if (gridIndex < 92) {
+        portType = SECONDPORTCL;
         bitInPort = gridIndex - 88;
-    } else if (gridIndex < 100) {
-        portType = THIRDPORTCL;
-        bitInPort = gridIndex - 96;
+    } else if (gridIndex < 96) {
+        portType = SECONDPORTCH;
+        bitInPort = gridIndex - 92;
     } else if (gridIndex < 104) {
-        portType = THIRDPORTCH;
-        bitInPort = gridIndex - 100;
+        portType = THIRDPORTA;
+        bitInPort = gridIndex - 96;
     } else if (gridIndex < 112) {
-        portType = FOURTHPORTA;
+        portType = THIRDPORTB;
         bitInPort = gridIndex - 104;
-    } else if (gridIndex < 120) {
-        portType = FOURTHPORTB;
+    } else if (gridIndex < 116) {
+        portType = THIRDPORTCL;
         bitInPort = gridIndex - 112;
-    } else if (gridIndex < 124) {
-        portType = FOURTHPORTCL;
-        bitInPort = gridIndex - 120;
+    } else if (gridIndex < 120) {
+        portType = THIRDPORTCH;
+        bitInPort = gridIndex - 116;
     } else if (gridIndex < 128) {
+        portType = FOURTHPORTA;
+        bitInPort = gridIndex - 120;
+    } else if (gridIndex < 136) {
+        portType = FOURTHPORTB;
+        bitInPort = gridIndex - 128;
+    } else if (gridIndex < 140) {
+        portType = FOURTHPORTCL;
+        bitInPort = gridIndex - 136;
+    } else if (gridIndex < 144) {
         portType = FOURTHPORTCH;
-        bitInPort = gridIndex - 124;
+        bitInPort = gridIndex - 140;
     }
 }
 

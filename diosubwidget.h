@@ -1,6 +1,10 @@
 #ifndef DIOSUBWIDGET_H
 #define DIOSUBWIDGET_H
 
+#define AUX1_INDEX   16
+#define AUX2_INDEX   32
+#define AUX3_INDEX   48
+
 #include <QWidget>
 #include <QVariant>
 #include <QVector>
@@ -62,8 +66,8 @@ private:
     MainWindow *mMainWindow;
     QTimer *tmrCheckStatus;
     DataSelectDialog *dataSelectDlg;
-    int numBitCheckboxes = 128;
-    QCheckBox *chkBit[128]={};
+    int numBitCheckboxes = 144;
+    QCheckBox *chkBit[144]={};
     QRadioButton *rbPlotSel[8]={};
     QList<QCheckBox*> portCheckBoxes;
     UlError err;
