@@ -2502,42 +2502,42 @@ int DioSubWidget::getGridOffsetFromPort(DigitalPortType portType)
         return 0;
         break;
     case AUXPORT1:
-        return 16;
+        return AUX1_INDEX;
     case AUXPORT2:
         //not implemented - used by net prods
-        return 16;
+        return AUX2_INDEX;
     case FIRSTPORTA:
-        return 32;
-    case FIRSTPORTB:
-        return 40;
-    case FIRSTPORTCL:
         return 48;
-    case FIRSTPORTCH:
-        return 52;
-    case SECONDPORTA:
+    case FIRSTPORTB:
         return 56;
-    case SECONDPORTB:
+    case FIRSTPORTCL:
         return 64;
-    case SECONDPORTCL:
+    case FIRSTPORTCH:
+        return 68;
+    case SECONDPORTA:
         return 72;
-    case SECONDPORTCH:
-        return 76;
-    case THIRDPORTA:
+    case SECONDPORTB:
         return 80;
-    case THIRDPORTB:
+    case SECONDPORTCL:
         return 88;
-    case THIRDPORTCL:
+    case SECONDPORTCH:
+        return 92;
+    case THIRDPORTA:
         return 96;
-    case THIRDPORTCH:
-        return 100;
-    case FOURTHPORTA:
+    case THIRDPORTB:
         return 104;
-    case FOURTHPORTB:
+    case THIRDPORTCL:
         return 112;
-    case FOURTHPORTCL:
+    case THIRDPORTCH:
+        return 116;
+    case FOURTHPORTA:
         return 120;
+    case FOURTHPORTB:
+        return 128;
+    case FOURTHPORTCL:
+        return 136;
     case FOURTHPORTCH:
-        return 124;
+        return 140;
     default:
         return 0;
         break;
