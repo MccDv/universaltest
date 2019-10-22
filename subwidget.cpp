@@ -1027,6 +1027,8 @@ QString subWidget::showConfig(int configType, int configItem, QString showItem)
         err = ulAOGetConfig(mDaqDeviceHandle, aoConfigItem, index, &configValue);
         if (aoConfigItem == AO_CFG_SYNC_MODE)
             errDesc = " (" + getAoSyncModeName((AOutSyncMode)configValue) + ")";
+        if(aoConfigItem == AO_CFG_CHAN_SENSE_MODE)
+            errDesc = " (" + getEnableDisableName((int)configValue) + ")";
         break;
     case TYPE_DIO_INFO:
         dioConfigItem = (DioConfigItem)configItem;
@@ -1856,6 +1858,8 @@ void subWidget::setConfiguration()
     case TYPE_AO_INFO:
         aoConfigItem = (AoConfigItem)configItem;
         err = ulAOSetConfig(mDaqDeviceHandle, aoConfigItem, index, configValue);
+        if(aoConfigItem == AO_CFG_CHAN_SENSE_MODE)
+            valueText = " [" + getEnableDisableName((int)configValue) + "]";
         break;
     case TYPE_DIO_INFO:
         dioConfigItem = (DioConfigItem)configItem;

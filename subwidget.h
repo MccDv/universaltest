@@ -54,7 +54,7 @@ private:
     bool mUseTimer = false;
     bool mGoTmrIsRunning = false;
 
-    int AO_CFG_CHAN_SENSE_MODE = 2;
+    //int AO_CFG_CHAN_SENSE_MODE = 2;
     /*typedef enum
     {
         AOSM_DISABLED = 1,
