@@ -1807,6 +1807,7 @@ void subWidget::setConfiguration()
     int configItem, configType;
     bool noConfigItem, dblConfigItem, useHex, hexOK;
 
+    useHex = false;
     userVal = ui->leSetValue->text();
     if (userVal.startsWith("0x")) {
         useHex = true;
