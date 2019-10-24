@@ -1086,6 +1086,9 @@ QString subWidget::showConfig(int configType, int configItem, QString showItem)
         case ERR_BAD_CONFIG_VAL:
             errDesc = errNumStr + "Invalid configVal]";
             break;
+        case ERR_BAD_AI_CHAN_TYPE:
+            errDesc = errNumStr + "bad AI chan type]";
+            break;
         case ERR_BAD_CONFIG_ITEM:
             errDesc = errNumStr + "Invalid configItem]";
             break;
@@ -1842,6 +1845,8 @@ void subWidget::setConfiguration()
             aiConfigItem = (AiConfigItem)configItem;
             nameOfFunc = "ulAISetConfig";
             err = ulAISetConfig(mDaqDeviceHandle, aiConfigItem, index, configValue);
+            if(aiConfigItem == AI_CFG_CHAN_TYPE)
+                valueText = " [" + getChanTypeNames((AiChanType)configValue) + "]";
             if(aiConfigItem == AI_CFG_CHAN_TC_TYPE)
                 valueText = " [type " + getTcTypeName((TcType)configValue) + "]";
             if(aiConfigItem == AI_CFG_CHAN_IEPE_MODE)
