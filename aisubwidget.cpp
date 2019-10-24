@@ -1730,7 +1730,7 @@ void AiSubWidget::printData(unsigned long long currentCount, long long currentIn
     floatValue = false;
     hasFloat = false;
     hasInt = false;
-    printBlocks = (mRunning && (mScanOptions && SO_CONTINUOUS));
+    printBlocks = (mRunning && (mScanOptions & SO_CONTINUOUS));
     if (mCalcPeriod) {
         ctrRate0 = (double)1/12000000;
         ctrRate = (double)1/48000000;
