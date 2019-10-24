@@ -24,7 +24,7 @@ QueueDialog::QueueDialog(QWidget *parent, UtFunctionGroup utFuncGroup) :
     inputFunctions = (utFuncGroup == FUNC_GROUP_AIN);
     ui->cmbRange->addItem("BIP20VOLTS", BIP20VOLTS);
     ui->cmbRange->addItem("BIP10VOLTS", BIP10VOLTS);
-    ui->cmbRange->addItem("BIPPT5VOLTS", BIP5VOLTS);
+    ui->cmbRange->addItem("BIP5VOLTS", BIP5VOLTS);
     ui->cmbRange->addItem("BIP4VOLTS", BIP4VOLTS);
     ui->cmbRange->addItem("BIP3VOLTS", BIP3VOLTS);
     ui->cmbRange->addItem("BIP2PT5VOLTS", BIP2PT5VOLTS);
