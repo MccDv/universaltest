@@ -847,29 +847,53 @@ void AiSubWidget::showData(unsigned long long curTotalCount, unsigned long long 
 void AiSubWidget::runAInFunc()
 {
     QString dataText, str, val;
-    int aInChan, aInLastChan, numAinChans;
-    int numSamples, curIndex;
+    int aInChan, aInLastChan;   //, numAinChans
+    int samplesToRead, curIndex;    //numSamples,
     double data, curSample;
     QString nameOfFunc, funcArgs, argVals, funcStr;
     QString showSign = "+";
-    int afterDecimal;
+    int afterDecimal, bufIndex; //totalZ,
     QTime t;
     QString sStartTime;
 
     aInChan = ui->spnLowChan->value();
     aInLastChan = ui->spnHighChan->value();
-    numAinChans = (aInLastChan - aInChan) + 1;
-    numSamples = ui->leNumSamples->text().toLong();
-    QVector<double> dataVal(numAinChans);
+    //numAinChans = (aInLastChan - aInChan) + 1;
+    //numSamples = ui->leNumSamples->text().toLong();
+    mChanCount = (aInLastChan - aInChan) + 1;
+    mSamplesPerChan = ui->leNumSamples->text().toLong();
+
+    samplesToRead = mSamplesPerChan;
+    curIndex = 0;
+    if(mOneSampPerForTotalSamps) {
+        samplesToRead = 1;
+        curIndex = mTotalRead * mChanCount;
+    }
+
+    if((!mOneSampPerForTotalSamps) | (mTotalRead == 0)) {
+        if (buffer) {
+            delete[] buffer;
+            buffer = NULL;
+        }
+
+        long long bufSize = mChanCount * mSamplesPerChan;
+        mBufSize = bufSize;
+        buffer = new double[bufSize];
+        memset(buffer, 0, mBufSize * sizeof(*buffer));
+        if(mPlot)
+            setupPlot(ui->AiPlot, mChanCount);
+    }
+
+    /*QVector<double> dataVal(numAinChans);
     QVector<QVector<double>>  dataArray(numSamples);
     for (int sample=0; sample<numSamples; sample++)
-        dataArray[sample].resize(numAinChans);
+        dataArray[sample].resize(numAinChans);*/
 
     nameOfFunc = "ulAIn";
     funcArgs = "(mDaqDeviceHandle, aInChan, inputMode, range, flags, &data)\n";
 
-    for (long sampleNum = 0; sampleNum < numSamples; sampleNum++) {
-        curIndex = 0;
+    for (long sampleNum = 0; sampleNum < samplesToRead; sampleNum++) {
+        //curIndex = 0;
         for (int curChan = aInChan; curChan <= aInLastChan; curChan ++) {
             sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
             data = -110011;
@@ -882,8 +906,9 @@ void AiSubWidget::runAInFunc()
                     .arg(mAiFlags)
                     .arg(data);
             ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
-            dataVal[curIndex] = data;
-            dataArray[sampleNum][curIndex] = dataVal[curIndex];
+            buffer[curIndex] = data;
+            //dataVal[curIndex] = data;
+            //dataArray[sampleNum][curIndex] = dataVal[curIndex];
 
             funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
             if (err != ERR_NO_ERROR) {
@@ -894,29 +919,42 @@ void AiSubWidget::runAInFunc()
             }
             curIndex++;
         }
+        mTotalRead += 1;
     }
 
-    afterDecimal = mPrintResolution;
-    if (mAiFlags & AIN_FF_NOSCALEDATA) {
-            afterDecimal = 0;
-            showSign = "";
-    }
-    funcStr = nameOfFunc + argVals;
-    curIndex = 0;
-    ui->teShowValues->clear();
-    dataText = "<style> th, td { padding-right: 10px;}</style><tr>";
-    for (long thisSample = 0; thisSample < numSamples; thisSample++) {
-        dataText.append("<td>" + str.setNum(thisSample * numAinChans) + "</td>");
-        for (curIndex = 0; curIndex < numAinChans; curIndex++) {
-            curSample = dataArray[thisSample][curIndex];
-            val = QString("%1%2").arg((curSample < 0) ? "" : showSign).arg
-                    (curSample, 1, 'f', afterDecimal, '0');
-            dataText.append("<td>" + val + "</td>");
+    if(mPlot)
+        plotScan(0, 0, mTotalRead);
+    else {
+        afterDecimal = mPrintResolution;
+        if (mAiFlags & AIN_FF_NOSCALEDATA) {
+                afterDecimal = 0;
+                showSign = "";
         }
-        dataText.append("</tr><tr>");
+        funcStr = nameOfFunc + argVals;
+        curIndex = 0;
+        bufIndex = 0;
+        ui->teShowValues->clear();
+        dataText = "<style> th, td { padding-right: 10px;}</style><tr>";
+        for (long thisSample = 0; thisSample < mSamplesPerChan; thisSample++) {
+            dataText.append("<td>" + str.setNum(thisSample * mChanCount) + "</td>");
+            for (curIndex = 0; curIndex < mChanCount; curIndex++) {
+                curSample = buffer[bufIndex];
+                val = QString("%1%2").arg((curSample < 0) ? "" : showSign).arg
+                        (curSample, 1, 'f', afterDecimal, '0');
+                dataText.append("<td>" + val + "</td>");
+                bufIndex++;
+            }
+            dataText.append("</tr><tr>");
+        }
+        dataText.append("</td></tr>");
+        ui->teShowValues->setHtml(dataText);
     }
-    dataText.append("</td></tr>");
-    ui->teShowValues->setHtml(dataText);
+
+    if(mOneSampPerForTotalSamps) {
+        if(mTotalRead == mSamplesPerChan) {
+            mUseTimer = false;
+        }
+    }
 }
 
 void AiSubWidget::runTInFunc()
