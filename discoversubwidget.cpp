@@ -351,28 +351,30 @@ void DiscoverSubWidget::on_cmdDiscover_clicked()
                 ui->listWidget->addItem(newItem);
                 ui->listWidget->setCurrentItem(newItem);
                 uidKey = devDescriptors[i].uniqueId;
-                if (existingList.contains(uidKey)) {
-                    existingDevHandle = existingList.value(uidKey);
-                    existingList.remove(uidKey);
-                }
-                mDaqDeviceHandle = existingDevHandle;
-                devList.insert(uidKey, mDaqDeviceHandle);
-                if(autoConnect) {
-                    nameOfFunc = "ulConnectDaqDevice";
-                    funcArgs = "(deviceHandle)\n";
-                    sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
-                    qApp->processEvents();
-                    err = ulConnectDaqDevice(mDaqDeviceHandle);
-                    argVals = QStringLiteral("(%1)")
-                            .arg(mDaqDeviceHandle);
-                    funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-                    if (err != ERR_NO_ERROR) {
-                        mMainWindow->setError(err, sStartTime + funcStr);
-                    } else {
-                        mMainWindow->addFunction(sStartTime + funcStr);
+                if (existingList.count()) {
+                    if (existingList.contains(uidKey)) {
+                        existingDevHandle = existingList.value(uidKey);
+                        existingList.remove(uidKey);
                     }
+                    mDaqDeviceHandle = existingDevHandle;
+                    devList.insert(uidKey, mDaqDeviceHandle);
+                    if(autoConnect) {
+                        nameOfFunc = "ulConnectDaqDevice";
+                        funcArgs = "(deviceHandle)\n";
+                        sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
+                        qApp->processEvents();
+                        err = ulConnectDaqDevice(mDaqDeviceHandle);
+                        argVals = QStringLiteral("(%1)")
+                                .arg(mDaqDeviceHandle);
+                        funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
+                        if (err != ERR_NO_ERROR) {
+                            mMainWindow->setError(err, sStartTime + funcStr);
+                        } else {
+                            mMainWindow->addFunction(sStartTime + funcStr);
+                        }
+                    }
+                    updateList();
                 }
-                updateList();
             }
         } else
             ui->listWidget->addItem("No device detected");
