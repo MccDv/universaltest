@@ -1627,7 +1627,7 @@ QString subWidget::showInfoDbl(int infoType, int infoItem, QString showItem)
             strIndex = "<td>(" + str.setNum(index) + ")</td>";
         textToAdd = "<td>" + showItem + "</td>";
         textToAdd.append(strIndex);
-        textToAdd.append("<td>" + str.setNum(infoValueDbl) + "</td>");
+        textToAdd.append("<td>" + str.setNum(infoValueDbl, 'g', 8) + "</td>");
         textToAdd.append("<td>" + infoDesc + "</td>");
         mMainWindow->addFunction(sStartTime + funcStr);
     }
