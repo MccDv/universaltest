@@ -874,6 +874,9 @@ void AiSubWidget::runAInFunc()
         if (buffer) {
             delete[] buffer;
             buffer = NULL;
+            mPlotIndex = 0;
+            mPlotCount = 0;
+            mTotalRead = 0;
         }
 
         long long bufSize = mChanCount * mSamplesPerChan;
@@ -953,6 +956,9 @@ void AiSubWidget::runAInFunc()
     if(mOneSampPerForTotalSamps) {
         if(mTotalRead == mSamplesPerChan) {
             mUseTimer = false;
+            mPlotIndex = 0;
+            mPlotCount = 0;
+            mTotalRead = 0;
         }
     }
 }
