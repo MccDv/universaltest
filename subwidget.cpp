@@ -1869,6 +1869,9 @@ void subWidget::setConfiguration()
                 valueText = " [" + getEnableDisableName((int)configValue) + "]";
             if(aiConfigItem == AI_CFG_CHAN_COUPLING_MODE)
                 valueText = " [" + getChanCouplingModeName((CouplingMode)configValue) + "]";
+            if((aiConfigItem == AI_CFG_SCAN_CHAN_TEMP_UNIT) |
+                    (aiConfigItem == AI_CFG_SCAN_TEMP_UNIT))
+                valueText = " [" + getTempUnitName((TempUnit)configValue) + "]";
         } else {
             dblConfigItem = true;
             aiConfigItemDbl = (AiConfigItemDbl)configItem;
