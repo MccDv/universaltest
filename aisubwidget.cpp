@@ -915,6 +915,7 @@ void AiSubWidget::runAInFunc()
 
             funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
             if (err != ERR_NO_ERROR) {
+                mUseTimer = false;
                 mMainWindow->setError(err, sStartTime + funcStr);
                 return;
             } else {

@@ -44,6 +44,9 @@ subWidget::~subWidget()
 void subWidget::keyPressEvent(QKeyEvent *event)
 {
     int keyCode = event->key();
+    if (keyCode == Qt::Key_Escape) {
+        onStopCmd();
+    }
     if ((keyCode == Qt::Key_Plus) && (QApplication::keyboardModifiers() & Qt::AltModifier)) {
         mPrintResolution += 1;
         mHexResolution += 1;
@@ -321,7 +324,8 @@ void subWidget::runSelectedFunc()
     //bool showStop;
 
     parentWindow = qobject_cast<ChildWindow *>(this->parent());
-    mUseTimer = parentWindow->tmrEnabled();
+    //tmrIsEnabled = parentWindow->tmrEnabled();
+    //mUseTimer = tmrIsEnabled;
     ui->teShowValues->clear();
 
     switch (mCurGroup) {
@@ -364,6 +368,7 @@ void subWidget::runSelectedFunc()
 
     tmrIsEnabled = parentWindow->tmrEnabled();
     tmrIsRunning = parentWindow->tmrRunning();
+
     if (!tmrIsEnabled) {
         if (tmrIsRunning)
             parentWindow->setTmrRunning(false);
@@ -395,6 +400,7 @@ void subWidget::onStopCmd()
 {
     mUseTimer = false;
     ui->cmdStop->setEnabled(false);
+    qApp->processEvents();
 }
 
 void subWidget::memRead()
@@ -423,6 +429,7 @@ void subWidget::memRead()
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
     if(err != ERR_NO_ERROR) {
+        mUseTimer = false;
         mMainWindow->setError(err, sStartTime + funcStr);
         ui->lblStatus->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
     } else {
@@ -452,6 +459,7 @@ void subWidget::memRead()
         funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
         str = getRegionNames(memRegion);
         if(err != ERR_NO_ERROR) {
+            mUseTimer = false;
             mMainWindow->setError(err, sStartTime + funcStr);
             ui->lblStatus->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
         } else {
@@ -1072,6 +1080,7 @@ QString subWidget::showConfig(int configType, int configItem, QString showItem)
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
     if(err != ERR_NO_ERROR) {
+        mUseTimer = false;
         errNumStr = QString("[Error %1: ").arg(err);
         switch (err) {
         case ERR_BAD_DEV_TYPE:
@@ -1170,6 +1179,7 @@ QString subWidget::showConfigDbl(int configType, int configItem, QString showIte
     funcStr = nameOfFunc + funcArgs + argVals;
 
     if(err != ERR_NO_ERROR) {
+        mUseTimer = false;
         errNumStr = QString("[Error %1: ").arg(err);
         switch (err) {
         case ERR_BAD_DEV_TYPE:
@@ -1273,6 +1283,7 @@ QString subWidget::showConfigStr(int configType, int configItem, QString showIte
 
     funcStr = nameOfFunc + funcArgs + argVals;
     if(err != ERR_NO_ERROR) {
+        mUseTimer = false;
         errNumStr = QString("[Error %1: ").arg(err);
         switch (err) {
         case ERR_BAD_DEV_TYPE:
@@ -1428,6 +1439,7 @@ QString subWidget::showInfo(int infoType, int infoItem, QString showItem)
     QString errDesc = "";
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
     if(err != ERR_NO_ERROR) {
+        mUseTimer = false;
         errNumStr = QString("[Error %1: ").arg(err);
         switch (err) {
         case ERR_BAD_DEV_TYPE:
@@ -1580,6 +1592,7 @@ QString subWidget::showInfoDbl(int infoType, int infoItem, QString showItem)
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
     if(err != ERR_NO_ERROR) {
+        mUseTimer = false;
         errNumStr = QString("[Error %1: ").arg(err);
         switch (err) {
         case ERR_BAD_DEV_TYPE:
@@ -1697,6 +1710,7 @@ QString subWidget::showInfoStr(int infoType, int infoItem, QString showItem)
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
     if(err != ERR_NO_ERROR) {
+        mUseTimer = false;
         mMainWindow->setError(err, sStartTime + funcStr);
         ui->lblStatus->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
     } else {
@@ -1753,6 +1767,7 @@ QString subWidget::showInfoMem(MemRegion memRegion)
     QString errDesc = "";
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
     if(err != ERR_NO_ERROR) {
+        mUseTimer = false;
         errNumStr = QString("[Error %1: ").arg(err);
         switch (err) {
         case ERR_BAD_MEM_ADDRESS:
@@ -1916,6 +1931,7 @@ void subWidget::setConfiguration()
     ui->lblStatus->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
     if (err != ERR_NO_ERROR) {
+        mUseTimer = false;
         //funcStr = nameOfFunc + funcArgs + argVals;
         mMainWindow->setError(err, sStartTime + funcStr);
     } else {
@@ -2035,6 +2051,7 @@ void subWidget::setMiscFunction()
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
     if (err != ERR_NO_ERROR) {
+        mUseTimer = false;
         mMainWindow->setError(err, sStartTime + funcStr);
         ui->lblStatus->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
     } else {

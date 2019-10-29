@@ -1447,6 +1447,7 @@ void DioSubWidget::runDInFunc()
 
             funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
             if (err != ERR_NO_ERROR) {
+                mUseTimer = false;
                 mMainWindow->setError(err, sStartTime + funcStr);
                 return;
             } else {
@@ -1550,6 +1551,7 @@ void DioSubWidget::runDInArray()
 
         funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
         if (err != ERR_NO_ERROR) {
+            mUseTimer = false;
             mMainWindow->setError(err, sStartTime + funcStr);
             return;
         } else {
@@ -1613,6 +1615,7 @@ void DioSubWidget::runDBitInFunc()
 
             funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
             if (err != ERR_NO_ERROR) {
+                mUseTimer = false;
                 mMainWindow->setError(err, sStartTime + funcStr);
                 disableCheckboxInput(false);
                 return;
@@ -1652,6 +1655,7 @@ void DioSubWidget::runDOutFunc()
 
             funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
             if (err != ERR_NO_ERROR) {
+                mUseTimer = false;
                 mMainWindow->setError(err, sStartTime + funcStr);
             } else {
                 mMainWindow->addFunction(sStartTime + funcStr);
@@ -1701,6 +1705,7 @@ void DioSubWidget::runDOutArray()
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
     if (err != ERR_NO_ERROR) {
+        mUseTimer = false;
         mMainWindow->setError(err, sStartTime + funcStr);
     } else {
         mMainWindow->addFunction(sStartTime + funcStr);
@@ -1728,6 +1733,7 @@ void DioSubWidget::runDBitOutFunc(DigitalPortType portType, int bitNum, unsigned
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
     if (err != ERR_NO_ERROR) {
+        mUseTimer = false;
         mMainWindow->setError(err, sStartTime + funcStr);
         return;
     } else {
@@ -1798,6 +1804,7 @@ void DioSubWidget::runDInScanFunc()
 
         funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
         if (err != ERR_NO_ERROR) {
+            mUseTimer = false;
             mMainWindow->setError(err, sStartTime + funcStr);
             return;
         } else {
@@ -1832,6 +1839,7 @@ void DioSubWidget::runDInScanFunc()
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
     if (err != ERR_NO_ERROR) {
+        mUseTimer = false;
         mStatusTimerEnabled = false;
         mMainWindow->setError(err, sStartTime + funcStr);
     } else {
@@ -1915,6 +1923,7 @@ void DioSubWidget::runDOutScanFunc()
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
     if (err != ERR_NO_ERROR) {
+        mUseTimer = false;
         mStatusTimerEnabled = false;
         mMainWindow->setError(err, sStartTime + funcStr);
     } else {
@@ -1936,6 +1945,7 @@ void DioSubWidget::runDOutScanFunc()
 
             funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
             if (err != ERR_NO_ERROR) {
+                mUseTimer = false;
                 mMainWindow->setError(err, sStartTime + funcStr);
             } else {
                 mMainWindow->addFunction(sStartTime + funcStr);
@@ -2035,6 +2045,7 @@ UlError DioSubWidget::stopScan(long long perChan, long long curCount, long long 
 
         funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
         if (err != ERR_NO_ERROR) {
+            mUseTimer = false;
             mStatusTimerEnabled = false;
             mMainWindow->setError(err, sStartTime + funcStr);
             return err;
@@ -2310,6 +2321,7 @@ void DioSubWidget::readSingleBit()
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
     if (err != ERR_NO_ERROR) {
+        mUseTimer = false;
         mMainWindow->setError(err, sStartTime + funcStr);
     } else {
         mMainWindow->addFunction(sStartTime + funcStr);

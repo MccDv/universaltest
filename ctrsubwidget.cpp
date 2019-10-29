@@ -934,6 +934,7 @@ void CtrSubWidget::readRegister()
 
         funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
         if(err != ERR_NO_ERROR) {
+            mUseTimer = false;
             mMainWindow->setError(err, sStartTime + funcStr);
             return;
         } else {
@@ -1007,6 +1008,7 @@ void CtrSubWidget::runCInFunc()
 
             funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
             if(err != ERR_NO_ERROR) {
+                mUseTimer = false;
                 mMainWindow->setError(err, sStartTime + funcStr);
                 return;
             } else {
@@ -1055,6 +1057,7 @@ void CtrSubWidget::runClearFunc()
 
             funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
             if(err != ERR_NO_ERROR) {
+                mUseTimer = false;
                 mMainWindow->setError(err, sStartTime + funcStr);
             } else {
                 mMainWindow->addFunction(sStartTime + funcStr);
@@ -1179,6 +1182,7 @@ void CtrSubWidget::runCInScan()
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
     if(err != ERR_NO_ERROR) {
+        mUseTimer = false;
         mMainWindow->setError(err, sStartTime + funcStr);
     } else {
         mMainWindow->addFunction(sStartTime + funcStr);
@@ -1199,6 +1203,7 @@ void CtrSubWidget::runCInScan()
 
             funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
             if (err != ERR_NO_ERROR) {
+                mUseTimer = false;
                 mMainWindow->setError(err, sStartTime + funcStr);
             } else {
                 mMainWindow->addFunction(sStartTime + funcStr);
@@ -1249,6 +1254,7 @@ void CtrSubWidget::userScanStop()
 
         funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
         if (err != ERR_NO_ERROR) {
+            mUseTimer = false;
             mMainWindow->setError(err, sStartTime + funcStr);
         } else {
             mMainWindow->addFunction(sStartTime + funcStr);
@@ -1302,6 +1308,7 @@ void CtrSubWidget::runTimerOut()
 
             funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
             if(err != ERR_NO_ERROR) {
+                mUseTimer = false;
                 mMainWindow->setError(err, sStartTime + funcStr);
             } else {
                 mMainWindow->addFunction(sStartTime + funcStr);
