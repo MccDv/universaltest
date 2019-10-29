@@ -1865,13 +1865,15 @@ void subWidget::setConfiguration()
                 valueText = " [" + getChanTypeNames((AiChanType)configValue) + "]";
             if(aiConfigItem == AI_CFG_CHAN_TC_TYPE)
                 valueText = " [type " + getTcTypeName((TcType)configValue) + "]";
+            if((aiConfigItem == AI_CFG_SCAN_CHAN_TEMP_UNIT) |
+                    (aiConfigItem == AI_CFG_SCAN_TEMP_UNIT))
+                valueText = " [" + getTempUnitName((TempUnit)configValue) + "]";
             if(aiConfigItem == AI_CFG_CHAN_IEPE_MODE)
                 valueText = " [" + getEnableDisableName((int)configValue) + "]";
             if(aiConfigItem == AI_CFG_CHAN_COUPLING_MODE)
                 valueText = " [" + getChanCouplingModeName((CouplingMode)configValue) + "]";
-            if((aiConfigItem == AI_CFG_SCAN_CHAN_TEMP_UNIT) |
-                    (aiConfigItem == AI_CFG_SCAN_TEMP_UNIT))
-                valueText = " [" + getTempUnitName((TempUnit)configValue) + "]";
+            if(aiConfigItem == AI_CFG_CHAN_OTD_MODE)
+                valueText = " [" + getEnableDisableName((int)configValue) + "]";
         } else {
             dblConfigItem = true;
             aiConfigItemDbl = (AiConfigItemDbl)configItem;
