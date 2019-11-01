@@ -831,10 +831,13 @@ void subWidget::readConfig()
         configText.append(devID + "</tr><tr>");
         configItem = DEV_VER_FW_MAIN;
         showIndex = true;
-        verName = "FW Version";
-        for(int verType = 0; verType < 3; verType++){
-            if(verType == 1) verName = "FPGA Version";
-            if(verType == 2) verName = "Radio Version";
+
+        for(int verType = 0; verType < 5; verType++){
+            if(verType == DEV_VER_FW_MAIN) verName = "FW Version";
+            if(verType == DEV_VER_FPGA) verName = "FPGA Version";
+            if(verType == DEV_VER_RADIO) verName = "Radio Version";
+            if(verType == DEV_VER_FW_MEASUREMENT) verName = "Meas FW Version";
+            if(verType == DEV_VER_FW_MEASUREMENT_EXP) verName = "Exp FW Version";
             devConfig = showConfigStr(configType, verType, verName);
             configText.append(devConfig + "</tr><tr>");
         }
@@ -861,6 +864,7 @@ void subWidget::readConfig()
         configItem = AI_CFG_AUTO_ZERO_MODE;
         devConfig = showConfig(configType, configItem, "AI Auto Zero Mode");
         configText.append(devConfig + "</tr><tr>");
+        showIndex = true;
         configItem = AI_CFG_CAL_DATE;
         devConfig = showConfig(configType, configItem, "AI Cal Date");
         configText.append(devConfig + "</tr><tr>");
@@ -868,7 +872,6 @@ void subWidget::readConfig()
         devConfig = showConfigStr(configType, configItem, "AI Cal String");
         configText.append(devConfig + "</tr><tr>");
         configItem = AI_CFG_CHAN_IEPE_MODE;
-        showIndex = true;
         devConfig = showConfig(configType, configItem, "AI Chan IEPE Mode");
         configText.append(devConfig + "</tr><tr>");
         configItem = AI_CFG_CHAN_COUPLING_MODE;
