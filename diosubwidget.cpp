@@ -1158,7 +1158,7 @@ void DioSubWidget::runDConfigBit(DigitalPortType portType, int bitNum, DigitalDi
 long long DioSubWidget::getIOConfigMask(int portIndex)
 {
     QTime t;
-    QString sStartTime;
+    QString sStartTime, errNumStr, errDesc;
     DioConfigItem configItem;
     QString nameOfFunc, funcArgs, argVals, funcStr;
     long long configValue;
@@ -1176,8 +1176,14 @@ long long DioSubWidget::getIOConfigMask(int portIndex)
 
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
     if (err != ERR_NO_ERROR) {
-        mMainWindow->setError(err, sStartTime + funcStr);
-        return 0;
+        errNumStr = QString("[Error %1: ").arg(err);
+        if(err == ERR_CONFIG_NOT_SUPPORTED) {
+            errDesc = errNumStr + "Direction mask not supporetd]";
+            mMainWindow->addFunction(sStartTime + funcStr + errDesc);
+        } else {
+            mMainWindow->setError(err, sStartTime + funcStr);
+            return 0;
+        }
     } else {
         mMainWindow->addFunction(sStartTime + funcStr);
     }
