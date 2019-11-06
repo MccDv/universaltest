@@ -142,6 +142,7 @@ private:
     long long mBufSize = 0;
     long long mFinalCount = 0;
     int mDioResolution = 0;
+    bool mHasAiExp32;
 
     //void setUiForGroup();
     void setUiForFunction();
@@ -165,6 +166,7 @@ private:
     void printData(unsigned long long currentCount, long long currentIndex, int blockSize);
     void updatePlot();
     void disableCheckboxInput(bool disableMouse);
+    bool disableExpDigital();
     void setDefaultBits(DigitalPortType portType);
     void updateControlDefaults(bool setAllValidPorts);
     DigitalPortType parsePortFromBitIndex(DigitalPortType tempPort, int &bitNum);

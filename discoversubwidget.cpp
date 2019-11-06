@@ -2,6 +2,13 @@
 #include "ui_discoversubwidget.h"
 #include "errordialog.h"
 #include <QMouseEvent>
+/*
+ * Find out why unsupported device messes up the board list menu
+ * Saeed had E-TC detected on development version, but not fully
+ * implemented, so device could not be created. The result was of
+ * the four devices detected, only 3, including the E-TC, were
+ * listed in the board menu.
+*/
 
 DiscoverSubWidget::DiscoverSubWidget(QWidget *parent) :
     QWidget(parent),
