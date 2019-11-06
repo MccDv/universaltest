@@ -854,6 +854,8 @@ void AiSubWidget::runAInFunc()
     QString showSign = "+";
     int afterDecimal, bufIndex; //totalZ,
     QTime t;
+    QString errDesc = "";
+    QString errNumStr;
     QString sStartTime;
 
     aInChan = ui->spnLowChan->value();
@@ -915,9 +917,21 @@ void AiSubWidget::runAInFunc()
 
             funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
             if (err != ERR_NO_ERROR) {
-                mUseTimer = false;
-                mMainWindow->setError(err, sStartTime + funcStr);
-                return;
+                errNumStr = QString("[Error %1: ").arg(err);
+                switch (err) {
+                case ERR_OPEN_CONNECTION:
+                    errDesc = errNumStr + "Open thermocouple]";
+                    break;
+                default:
+                    break;
+                }
+                if (errDesc.length()) {
+                    mMainWindow->addFunction(sStartTime + funcStr + errDesc);
+                } else {
+                    mUseTimer = false;
+                    mMainWindow->setError(err, sStartTime + funcStr);
+                    return;
+                }
             } else {
                 mMainWindow->addFunction(sStartTime + funcStr);
             }
@@ -972,6 +986,7 @@ void AiSubWidget::runTInFunc()
     double data, curSample;
     QString nameOfFunc, funcArgs, argVals, funcStr;
     QString errNumStr;
+    QString errDesc = "";
     QString showSign = "+";
     int afterDecimal, totalZ, bufIndex;
     QTime t;
@@ -1028,7 +1043,6 @@ void AiSubWidget::runTInFunc()
             buffer[curIndex] = data;
             //dataArray[sampleNum][curIndex] = dataVal[curIndex];
 
-            QString errDesc = "";
             funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
             if (err != ERR_NO_ERROR) {
                 errNumStr = QString("[Error %1: ").arg(err);
