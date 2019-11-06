@@ -90,8 +90,7 @@ DioSubWidget::DioSubWidget(QWidget *parent) :
     for (int i = 0; i < 8; i++)
         mPlotList[i] = true;
 
-    mHasAiExp32 = true;
-    //to do: Call new function to set this
+    mHasAiExp32 = false;
 
 }
 
@@ -143,6 +142,7 @@ void DioSubWidget::updateParameters()
     ChildWindow *parentWindow;
     bool showStop = false;
     bool enableIt = false;
+    long long configValue;
 
     parentWindow = qobject_cast<ChildWindow *>(this->parent());
     mDaqDeviceHandle = parentWindow->devHandle();
@@ -189,6 +189,10 @@ void DioSubWidget::updateParameters()
     ui->cmdStop->setEnabled(mUtFunction == UL_D_CONFIG_BIT);
     ui->leBlockSize->setEnabled(mUseGetStatus);
     this->setWindowTitle(mFuncName + ": " + mDevName + QString(" [%1]").arg(mDaqDeviceHandle));
+    err = ulDevGetConfig(mDaqDeviceHandle, DEV_CFG_HAS_EXP, 0, &configValue);
+    if (err == ERR_NO_ERROR)
+        if (configValue == 1)
+            mHasAiExp32 = true;
 }
 
 void DioSubWidget::groupChanged(int newGroup)
@@ -597,6 +601,8 @@ void DioSubWidget::initDeviceParams()
     }
     portList = validPorts;
     ui->cmdGo->setFocus();
+    if (!mHasAiExp32)
+        disableExpDigital(false);
 }
 
 void DioSubWidget::updateControlDefaults(bool setAllValidPorts)
@@ -1462,7 +1468,7 @@ void DioSubWidget::runDInFunc()
 
             if((err == ERR_BAD_PORT_TYPE) && (mDevName.startsWith("USB-2416")))
                 if ((portType == AUXPORT1) || (portType == AUXPORT2)) {
-                    breakLoop = disableExpDigital();
+                    breakLoop = disableExpDigital(true);
                     if (breakLoop) {
                         err = ERR_NO_ERROR;
                         errText = " [No AI-EXP32 detected]";
@@ -1578,7 +1584,7 @@ void DioSubWidget::runDInArray()
         funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
         if((err == ERR_BAD_PORT_TYPE) && (mDevName.startsWith("USB-2416")))
             if ((portTypeHigh == AUXPORT1) || (portTypeHigh == AUXPORT2)) {
-                breakLoop = disableExpDigital();
+                breakLoop = disableExpDigital(true);
                 if (breakLoop) {
                     err = ERR_NO_ERROR;
                     errText = " [No AI-EXP32 detected]";
@@ -1653,7 +1659,7 @@ void DioSubWidget::runDBitInFunc()
             funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
             if((err == ERR_BAD_PORT_TYPE) && (mDevName.startsWith("USB-2416")))
                 if ((portType == AUXPORT1) || (portType == AUXPORT2)) {
-                    breakLoop = disableExpDigital();
+                    breakLoop = disableExpDigital(true);
                     if (breakLoop)
                         err = ERR_NO_ERROR;
                 }
@@ -1703,7 +1709,7 @@ void DioSubWidget::runDOutFunc()
             funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
             if((err == ERR_BAD_PORT_TYPE) && (mDevName.startsWith("USB-2416")))
                 if ((portType == AUXPORT1) || (portType == AUXPORT2)) {
-                    breakLoop = disableExpDigital();
+                    breakLoop = disableExpDigital(true);
                     if (breakLoop) {
                         err = ERR_NO_ERROR;
                         errText = " [No AI-EXP32 detected]";
@@ -1763,7 +1769,7 @@ void DioSubWidget::runDOutArray()
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
     if((err == ERR_BAD_PORT_TYPE) && (mDevName.startsWith("USB-2416")))
         if ((portTypeHigh == AUXPORT1) || (portTypeHigh == AUXPORT2)) {
-            breakLoop = disableExpDigital();
+            breakLoop = disableExpDigital(true);
             if (breakLoop) {
                 err = ERR_NO_ERROR;
                 errText = " [No AI-EXP32 detected]";
@@ -1773,7 +1779,7 @@ void DioSubWidget::runDOutArray()
         mUseTimer = false;
         mMainWindow->setError(err, sStartTime + funcStr);
     } else {
-        mMainWindow->addFunction(sStartTime + funcStr + errText);
+        mMainWindow->addFunction(sStartTime + funcStr);
         funcStr = nameOfFunc + argVals;
         ui->lblInfo->setText(funcStr);
     }
@@ -1801,7 +1807,7 @@ void DioSubWidget::runDBitOutFunc(DigitalPortType portType, int bitNum, unsigned
     funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
     if((err == ERR_BAD_PORT_TYPE) && (mDevName.startsWith("USB-2416")))
         if ((portType == AUXPORT1) || (portType == AUXPORT2)) {
-            breakLoop = disableExpDigital();
+            breakLoop = disableExpDigital(true);
             if (breakLoop) {
                 err = ERR_NO_ERROR;
                 errText = " [No AI-EXP32 detected]";
@@ -2724,12 +2730,17 @@ void DioSubWidget::showQueueConfig()
     return;
 }
 
-bool DioSubWidget::disableExpDigital()
+bool DioSubWidget::disableExpDigital(bool prompt)
 {
     QMessageBox::StandardButton reply;
-    reply = QMessageBox::question(this, "AI-EXP32 Not Detected",
+
+    if (prompt) {
+        reply = QMessageBox::question(this, "AI-EXP32 Not Detected",
                                   "Disable EXP ports?",
                                   QMessageBox::Yes|QMessageBox::No);
+    } else
+        reply = QMessageBox::Yes;
+
     if (reply == QMessageBox::Yes){
         portList.clear();
         if (validPorts.contains(AUXPORT2)) {

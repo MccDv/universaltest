@@ -166,7 +166,7 @@ private:
     void printData(unsigned long long currentCount, long long currentIndex, int blockSize);
     void updatePlot();
     void disableCheckboxInput(bool disableMouse);
-    bool disableExpDigital();
+    bool disableExpDigital(bool prompt);
     void setDefaultBits(DigitalPortType portType);
     void updateControlDefaults(bool setAllValidPorts);
     DigitalPortType parsePortFromBitIndex(DigitalPortType tempPort, int &bitNum);
