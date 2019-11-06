@@ -831,7 +831,6 @@ void subWidget::readConfig()
         configText.append(devID + "</tr><tr>");
         configItem = DEV_VER_FW_MAIN;
         showIndex = true;
-
         for(int verType = 0; verType < 5; verType++){
             if(verType == DEV_VER_FW_MAIN) verName = "FW Version";
             if(verType == DEV_VER_FPGA) verName = "FPGA Version";
@@ -841,6 +840,10 @@ void subWidget::readConfig()
             devConfig = showConfigStr(configType, verType, verName);
             configText.append(devConfig + "</tr><tr>");
         }
+        configItem = DEV_CFG_HAS_EXP;
+        showIndex = false;
+        devConfig = showConfig(configType, configItem, "AiExp32 connected");
+        configText.append(devConfig + "</tr><tr>");
         ui->teShowValues->setHtml(configText);
         break;
     case TYPE_AI_INFO:
@@ -978,6 +981,7 @@ QString subWidget::showConfig(int configType, int configItem, QString showItem)
 {
     long long configValue;
     UlConfigItem ulConfigItem;
+    DevConfigItem devConfigItem;
     AiConfigItem aiConfigItem;
     AoConfigItem aoConfigItem;
     DioConfigItem dioConfigItem;
@@ -1005,7 +1009,9 @@ QString subWidget::showConfig(int configType, int configItem, QString showItem)
         err = ulGetConfig(ulConfigItem, index, &configValue);
         break;
     case TYPE_DEV_INFO:
-        noConfigItem = true;
+        devConfigItem = (DevConfigItem)configItem;
+        nameOfFunc = "ulDevGetConfig";
+        err = ulDevGetConfig(mDaqDeviceHandle, devConfigItem, index, &configValue);
         break;
     case TYPE_AI_INFO:
         aiConfigItem = (AiConfigItem)configItem;
