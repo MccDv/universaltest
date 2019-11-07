@@ -714,6 +714,7 @@ void DioSubWidget::configureInputs()
                     .arg(portType)
                     .arg(direction);
 
+            funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
             if (err != ERR_NO_ERROR) {
                 mMainWindow->setError(err, sStartTime + funcStr);
                 return;
