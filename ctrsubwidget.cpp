@@ -1311,6 +1311,7 @@ void CtrSubWidget::runTimerOut()
                 mUseTimer = false;
                 mMainWindow->setError(err, sStartTime + funcStr);
             } else {
+                mWaitingTrigger = (options != PO_DEFAULT);
                 mMainWindow->addFunction(sStartTime + funcStr);
                 ui->cmdStop->setEnabled(true);
                 nameOfFunc = "ulTmrPulseOutStatus";
@@ -1328,7 +1329,7 @@ void CtrSubWidget::runTimerOut()
                     mMainWindow->setError(err, sStartTime + funcStr);
                 } else {
                     mMainWindow->addFunction(sStartTime + funcStr);
-                    if ((status == TMRS_RUNNING) | (mTriggerType != TRIG_NONE))
+                    if ((status == TMRS_RUNNING) | (mWaitingTrigger))
                         tmrCheckStatus->start(300);
                 }
             }
@@ -1442,8 +1443,12 @@ void CtrSubWidget::checkTmrStatus()
         } else {
             if (status != TMRS_RUNNING) {
                 mMainWindow->addFunction(sStartTime + funcStr);
-                tmrCheckStatus->stop();
-                ui->cmdStop->setEnabled(false);
+                if (!mWaitingTrigger) {
+                    tmrCheckStatus->stop();
+                    ui->cmdStop->setEnabled(false);
+                }
+            } else {
+                mWaitingTrigger = false;
             }
         }
     }

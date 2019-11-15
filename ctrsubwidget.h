@@ -82,6 +82,7 @@ private:
     bool scanIncludes0 = false;
     bool mCalcTime = false;
     bool mCalcPeriod = false;
+    bool mWaitingTrigger = false;
 
     bool mInitPlot = false;
     TriggerType mTriggerType = TRIG_NONE;
