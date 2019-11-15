@@ -1328,7 +1328,7 @@ void CtrSubWidget::runTimerOut()
                     mMainWindow->setError(err, sStartTime + funcStr);
                 } else {
                     mMainWindow->addFunction(sStartTime + funcStr);
-                    if (status == TMRS_RUNNING)
+                    if ((status == TMRS_RUNNING) | (mTriggerType != TRIG_NONE))
                         tmrCheckStatus->start(300);
                 }
             }
