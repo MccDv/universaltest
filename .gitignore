@@ -1,1 +1,5 @@
 universaltest.pro.user
+Makefile
+*.o
+moc_*
+ui_*
