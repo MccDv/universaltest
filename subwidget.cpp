@@ -1239,7 +1239,7 @@ QString subWidget::showConfigDbl(int configType, int configItem, QString showIte
 QString subWidget::showConfigStr(int configType, int configItem, QString showItem)
 {
     unsigned int maxConfigLen;
-    maxConfigLen = 50;
+    maxConfigLen = 64;
     char configValue[maxConfigLen];
     char *pConfigValue = configValue;
 
@@ -1662,7 +1662,7 @@ QString subWidget::showInfoDbl(int infoType, int infoItem, QString showItem)
 QString subWidget::showInfoStr(int infoType, int infoItem, QString showItem)
 {
     unsigned int maxConfigLen;
-    maxConfigLen = 5;
+    maxConfigLen = 16;
     char configValue[maxConfigLen];
     char *pInfoValue = configValue;
 
