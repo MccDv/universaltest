@@ -1463,15 +1463,30 @@ void MainWindow::discoverDevices()
 void MainWindow::updateInventory()
 {
     unsigned int numDevs = MAX_DEV_COUNT;
-    QString uidKey, funcName;
+    unsigned int maxConfigLen;
+    unsigned int index;
+    maxConfigLen = 16;
+    char configValue[maxConfigLen];
+    char *pInfoValue = configValue;
+
+    QString uidKey, funcName, returnStr;
     QString funcStr, argString, argVals;
     DaqDeviceHandle deviceHandle;
     QTime t;
     QString sStartTime;
+    UlError err;
+
+    index = (uint)0;
+    err = ulGetInfoStr(UL_INFO_VER_STR, index, pInfoValue, &maxConfigLen);
+    if(err != ERR_NO_ERROR)
+        returnStr = "UL version unavailable";
+    else
+        returnStr = QString::fromLocal8Bit(pInfoValue, (int)maxConfigLen);
+    ui->lblULVersion->setText("UL version " + returnStr);
 
     DaqDeviceInterface interfaceType = ANY_IFC;
     sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
-    UlError err = ulGetDaqDeviceInventory(interfaceType, devDescriptors, &numDevs);
+    err = ulGetDaqDeviceInventory(interfaceType, devDescriptors, &numDevs);
 
     funcName = "ulGetDaqDeviceInventory";
     argString = "(interfaceType, devDescriptors, &numDevs)\n";
