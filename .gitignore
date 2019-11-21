@@ -1,1 +1,8 @@
 universaltest.pro.user
+Makefile
+*.o
+moc_*
+ui_*
+*.stash
+universaltest
+qrc_*
