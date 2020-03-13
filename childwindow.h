@@ -26,6 +26,8 @@ class ChildWindow : public QMdiSubWindow
 
     Q_PROPERTY(AiInputMode inputMode READ inputMode WRITE setInputMode NOTIFY inputModeChanged)
     Q_PROPERTY(AInFlag aiFlags READ aiFlags WRITE setAiFlags NOTIFY aiFlagsChanged)
+    Q_PROPERTY(TInFlag tiFlags READ tiFlags WRITE setTiFlags NOTIFY tiFlagsChanged)
+    Q_PROPERTY(TInArrayFlag tiArrayFlags READ tiArrayFlags WRITE setTiArrayFlags NOTIFY tiArrayFlagsChanged)
     Q_PROPERTY(AOutFlag aoFlags READ aoFlags WRITE setAoFlags NOTIFY aoFlagsChanged)
     Q_PROPERTY(DaqOutScanFlag daqOutFlag READ daqOutFlag WRITE setDaqOutFlag NOTIFY daqOutFlagChanged)
     Q_PROPERTY(DaqInScanFlag daqiFlags READ daqiFlags WRITE setDaqiFlags NOTIFY daqiFlagsChanged)
@@ -155,6 +157,18 @@ public:
     {
         mAiFlags = aiFlags;
         emit aiFlagsChanged(aiFlags);
+    }
+
+    void setTiFlags(TInFlag tiFlags)
+    {
+        mTiFlags = tiFlags;
+        emit tiFlagsChanged(tiFlags);
+    }
+
+    void setTiArrayFlags(TInArrayFlag tiArrayFlags)
+    {
+        mTiArrayFlags = tiArrayFlags;
+        emit tiArrayFlagsChanged(tiArrayFlags);
     }
 
     void setAoFlags(AOutFlag aoFlags)
@@ -301,6 +315,8 @@ public:
 
     AiInputMode inputMode() { return mInputMode; }
     AInFlag aiFlags() { return mAiFlags; }
+    TInFlag tiFlags() { return mTiFlags; }
+    TInArrayFlag tiArrayFlags() { return mTiArrayFlags; }
     AOutFlag aoFlags() { return mAoFlags; }
     DaqOutScanFlag daqOutFlag() { return mDaqOutFlags; }
     DaqInScanFlag daqiFlags() { return mDaqiFlags; }
@@ -346,6 +362,8 @@ private:
 
     AiInputMode mInputMode = AI_DIFFERENTIAL;
     AInFlag mAiFlags = AIN_FF_DEFAULT;
+    TInFlag mTiFlags = TIN_FF_DEFAULT;
+    TInArrayFlag mTiArrayFlags = TINARRAY_FF_DEFAULT;
     AOutFlag mAoFlags = AOUT_FF_DEFAULT;
     DaqOutScanFlag mDaqOutFlags = DAQOUTSCAN_FF_DEFAULT;
     DaqInScanFlag mDaqiFlags = DAQINSCAN_FF_DEFAULT;
@@ -403,6 +421,8 @@ signals:
 
     void inputModeChanged(AiInputMode);
     void aiFlagsChanged(long long);
+    void tiFlagsChanged(long long);
+    void tiArrayFlagsChanged(long long);
     void aoFlagsChanged(long long);
     void daqiFlagsChanged(DaqInScanFlag);
     void daqOutFlagChanged(DaqOutScanFlag);

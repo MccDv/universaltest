@@ -174,9 +174,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionFF_CTR48_BIT, SIGNAL(triggered(bool)), this, SLOT(setAiFlags()));
     connect(ui->actionFF_CTR64_BIT, SIGNAL(triggered(bool)), this, SLOT(setAiFlags()));
     connect(ui->actionFF_NOCLEAR, SIGNAL(triggered(bool)), this, SLOT(setAiFlags()));
-
-    connect(ui->cmdDiscover, SIGNAL(clicked(bool)), this, SLOT(createDiscChild()));
-    connect(ui->cmdAIn, SIGNAL(clicked(bool)), this, SLOT(createAiChild()));
+    connect(ui->actionTI_WAIT, SIGNAL(triggered(bool)), this, SLOT());
+    connect(ui->actionTI_ARRAY_WAIT, SIGNAL(triggered(bool)), this, SLOT());
     connect(ui->cmdAOut, SIGNAL(clicked(bool)), this, SLOT(createAoChild()));
     connect(ui->cmdDIn, SIGNAL(clicked(bool)), this, SLOT(createDinChild()));
     connect(ui->cmdDOut, SIGNAL(clicked(bool)), this, SLOT(createDOutChild()));
@@ -1163,6 +1162,8 @@ void MainWindow::setAiFlags()
 {
     ChildWindow *mdiChild = activeMdiChild();
     AInFlag aiFlag;
+    TInFlag tiFLag;
+    TInArrayFlag tiArrayFlag;
     AOutFlag aoFlag;
     CInScanFlag ctrFlag;
     DaqInScanFlag daqiFlag;
@@ -1170,6 +1171,8 @@ void MainWindow::setAiFlags()
     int tempFlag;
 
     aiFlag = (AInFlag)0;
+    tiFLag = (TInFlag)0;
+    tiArrayFlag = (TInArrayFlag)0;
     aoFlag = (AOutFlag)0;
     ctrFlag = (CInScanFlag)0;
     daqiFlag = (DaqInScanFlag)0;
@@ -1201,6 +1204,10 @@ void MainWindow::setAiFlags()
             tempFlag |= ui->actionFF_CTR64_BIT->data().toInt();
         if (ui->actionFF_NOCLEAR->isChecked())
             tempFlag |= ui->actionFF_NOCLEAR->data().toInt();
+        if (ui->actionTI_WAIT->isChecked())
+            tempFlag = ui->actionTI_WAIT->data().toInt();
+        if (ui->actionTI_ARRAY_WAIT->isChecked())
+            tempFlag = ui->actionTI_ARRAY_WAIT->data().toInt();
     }
 
     ui->actionFF_DEFAULT->setChecked(!tempFlag);
@@ -1214,6 +1221,14 @@ void MainWindow::setAiFlags()
             case UL_AINSCAN:
                 aiFlag = static_cast<AInFlag>(tempFlag);
                 mdiChild->setAiFlags(aiFlag);
+                break;
+            case UL_TIN:
+                tiFLag = static_cast<TInFlag>(tempFlag);
+                mdiChild->setTiFlags(tiFLag);
+                break;
+            case UL_TINARRAY:
+                tiArrayFlag = static_cast<TInArrayFlag>(tempFlag);
+                mdiChild->setTiArrayFlags(tiArrayFlag);
                 break;
             case UL_DAQ_INSCAN:
                 daqiFlag = static_cast<DaqInScanFlag>(tempFlag);

@@ -166,6 +166,8 @@ void AiSubWidget::updateParameters()
 
     mInputMode = parentWindow->inputMode();
     mAiFlags = parentWindow->aiFlags();
+    mTiFlags = parentWindow->tiFlags();
+    mTiArrayFlags = parentWindow->tiArrayFlags();
     mDaqiFlags = parentWindow->daqiFlags();
     mTriggerType = parentWindow->triggerType();
     mTrigChannel = parentWindow->trigChannel();
@@ -992,7 +994,7 @@ void AiSubWidget::runTInFunc()
     QTime t;
     QString sStartTime;
 
-    mTiFlags = TIN_FF_DEFAULT; //currently the only value
+    //mTiFlags = TIN_FF_DEFAULT; //currently the only value
     tInChan = ui->spnLowChan->value();
     tInLastChan = ui->spnHighChan->value();
     mChanCount = (tInLastChan - tInChan) + 1;
@@ -1117,7 +1119,7 @@ void AiSubWidget::runTInArray()
     QTime t;
     QString sStartTime;
 
-    mTiArrFlags = TINARRAY_FF_DEFAULT; //currently the only value
+    //mTiArrFlags = TINARRAY_FF_DEFAULT; //currently the only value
     lowChan = ui->spnLowChan->value();
     highChan = ui->spnHighChan->value();
     mChanCount = (highChan - lowChan) + 1;
@@ -1150,13 +1152,13 @@ void AiSubWidget::runTInArray()
 
     for (long sampleNum = 0; sampleNum < samplesToRead; sampleNum++) {
         sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
-        err = ulTInArray(mDaqDeviceHandle, lowChan, highChan, mScale, mTiArrFlags, data);
+        err = ulTInArray(mDaqDeviceHandle, lowChan, highChan, mScale, mTiArrayFlags, data);
         argVals = QStringLiteral("(%1, %2, %3, %4, %5, %6)")
                 .arg(mDaqDeviceHandle)
                 .arg(lowChan)
                 .arg(highChan)
                 .arg(mScale)
-                .arg(mTiArrFlags)
+                .arg(mTiArrayFlags)
                 .arg(data[0]);
 
         QString errDesc = "";

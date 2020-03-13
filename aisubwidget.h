@@ -79,14 +79,14 @@ private:
     long mTotalRead;
     AiInputMode mInputMode;
     AInFlag mAiFlags;
+    TInFlag mTiFlags;
+    TInArrayFlag mTiArrayFlags;
     struct DaqInChanDescriptor chanDescriptors[32];
     DaqInScanFlag mDaqiFlags;
     ScanOption mScanOptions;
     AInScanFlag mFunctionFlag;
     Range mRange;
     TempScale mScale;
-    TInFlag mTiFlags;
-    TInArrayFlag mTiArrFlags;
 
     TriggerType mTriggerType;
     DaqInChanType mTrigChanType;

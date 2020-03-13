@@ -291,6 +291,9 @@
     <addaction name="actionAI_DIFFERENTIAL"/>
     <addaction name="actionAI_SINGLE_ENDED"/>
     <addaction name="actionAI_PSEUDO_DIFFERENTIAL"/>
+    <addaction name="separator"/>
+    <addaction name="actionTI_WAIT"/>
+    <addaction name="actionTI_ARRAY_WAIT"/>
    </widget>
    <widget class="QMenu" name="menuFunction">
     <property name="font">
@@ -1306,6 +1309,32 @@
   <action name="actionAbout">
    <property name="text">
     <string>About</string>
+   </property>
+  </action>
+  <action name="actionTI_WAIT">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>TI_WAIT</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionTI_ARRAY_WAIT">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>TI_ARRAY_WAIT</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
    </property>
   </action>
  </widget>

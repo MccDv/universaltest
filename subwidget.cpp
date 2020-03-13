@@ -298,6 +298,8 @@ void subWidget::setConfigItemsForType()
         ui->cmbConfigItem->addItem("Chan Coupling Mode", AI_CFG_CHAN_COUPLING_MODE);
         ui->cmbConfigItem->addItem("Chan Snsr Connection", AI_CFG_CHAN_SENSOR_CONNECTION_TYPE);
         ui->cmbConfigItem->addItem("Chan OTD Mode", AI_CFG_CHAN_OTD_MODE);
+        ui->cmbConfigItem->addItem("Cal Table Types", AI_CFG_CAL_TABLE_TYPE);
+        ui->cmbConfigItem->addItem("Reject Frequency", AI_CFG_REJECT_FREQ_TYPE);
         ui->cmbConfigItem->addItem("Chan Slope", AI_CFG_CHAN_SLOPE);
         ui->cmbConfigItem->addItem("Chan Offset", AI_CFG_CHAN_OFFSET);
         ui->cmbConfigItem->addItem("Chan Sensor Sensitivity", AI_CFG_CHAN_SENSOR_SENSITIVITY);
@@ -902,7 +904,16 @@ void subWidget::readConfig()
         devConfig = showConfig(configType, configItem, "AI Sensor Connection");
         configText.append(devConfig + "</tr><tr>");
         configItem = AI_CFG_CHAN_OTD_MODE;
+        devConfig = showConfig(configType, configItem, "AI CH OTD Mode");
+        configText.append(devConfig + "</tr><tr>");
+        configItem = AI_CFG_OTD_MODE;
         devConfig = showConfig(configType, configItem, "AI OTD Mode");
+        configText.append(devConfig + "</tr><tr>");
+        configItem = AI_CFG_CAL_TABLE_TYPE;
+        devConfig = showConfig(configType, configItem, "AI Cal Table");
+        configText.append(devConfig + "</tr><tr>");
+        configItem = AI_CFG_REJECT_FREQ_TYPE;
+        devConfig = showConfig(configType, configItem, "Reject Freq");
         configText.append(devConfig + "</tr><tr>");
         configItem = AI_CFG_CHAN_SLOPE;
         devConfig = showConfigDbl(configType, configItem, "AI Chan Slope");
@@ -1055,6 +1066,10 @@ QString subWidget::showConfig(int configType, int configItem, QString showItem)
             errDesc = " (" + getSensorConnectNames((SensorConnectionType)configValue) + ")";
         if (aiConfigItem == AI_CFG_CHAN_OTD_MODE)
             errDesc = " (" + getEnableDisableName((int)configValue) + ")";
+        if (aiConfigItem == AI_CFG_CAL_TABLE_TYPE)
+            errDesc = " (" + getAiCalTableTypeName((AiCalTableType)configValue) + ")";
+        if (aiConfigItem == AI_CFG_REJECT_FREQ_TYPE)
+            errDesc = " (" + getAiRejFreqName((AiRejectFreqType)configValue) + ")";
         break;
     case TYPE_AO_INFO:
         aoConfigItem = (AoConfigItem)configItem;
@@ -1910,6 +1925,12 @@ void subWidget::setConfiguration()
                 valueText = " [" + getChanCouplingModeName((CouplingMode)configValue) + "]";
             if(aiConfigItem == AI_CFG_CHAN_OTD_MODE)
                 valueText = " [" + getEnableDisableName((int)configValue) + "]";
+            if(aiConfigItem == AI_CFG_OTD_MODE)
+                valueText = " [" + getEnableDisableName((int)configValue) + "]";
+            if(aiConfigItem == AI_CFG_CAL_TABLE_TYPE)
+                valueText = " [" + getAiCalTableTypeName((AiCalTableType)configValue) + "]";
+            if(aiConfigItem == AI_CFG_REJECT_FREQ_TYPE)
+                valueText = " [" + getAiRejFreqName((AiRejectFreqType)configValue) + "]";
         } else {
             dblConfigItem = true;
             aiConfigItemDbl = (AiConfigItemDbl)configItem;

@@ -37,6 +37,8 @@ QString getInfoDescription(int infoType, int infoItem, long long infoValue);
 QString getEventNames(long long eventMask);
 QString getAiInputModeName(AiInputMode inMode);
 QString getAiChanTypeName(AiChanType chanType);
+QString getAiCalTableTypeName(AiCalTableType tableType);
+QString getAiRejFreqName(AiRejectFreqType rejFreq);
 QString getChanCouplingModeName(CouplingMode cplMode);
 QString getAoSyncModeName(AOutSyncMode syncMode);
 QString getAoSenseModeName(int senseMode);

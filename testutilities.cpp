@@ -754,6 +754,30 @@ QString getAiChanTypeName(AiChanType chanType)
     }
 }
 
+QString getAiCalTableTypeName(AiCalTableType tableType)
+{
+    switch(tableType) {
+    case AI_CTT_FACTORY:
+        return "Factory Cal";
+    case AI_CTT_FIELD:
+        return "Field Cal";
+    default:
+        return "Invalid Cal Table";
+    }
+}
+
+QString getAiRejFreqName(AiRejectFreqType rejFreq)
+{
+    switch (rejFreq) {
+    case AI_RFT_50HZ:
+        return "50Hz Rejection";
+    case AI_RFT_60HZ:
+        return "60Hz Rejection";
+    default:
+        return "Invalid rejFreq";
+    }
+}
+
 QString getChanTypeNames(AiChanType typeNum)
 {
     int mask;
