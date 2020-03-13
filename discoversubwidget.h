@@ -58,6 +58,8 @@ private:
     struct DaqDeviceDescriptor devDescriptors[MAX_DEV_COUNT];
     QString mUidString = "";
     int mDevListCount = 0;
+    QString sDevAddr = "10.17.5.139";
+    unsigned short nDevPort = 54211;
 
     QString mFuncName = "";
     int mUtFunction = 0;

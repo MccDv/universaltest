@@ -250,6 +250,7 @@ void subWidget::setUiForFunction()
             userFrameVisible = true;
             cmdSetVisible = true;
             ui->cmbInfoType->addItem("Set UL Config", TYPE_UL_INFO);
+            ui->cmbInfoType->addItem("Set Dev Config", TYPE_DEV_INFO);
             ui->cmbInfoType->addItem("Set AI Config", TYPE_AI_INFO);
             ui->cmbInfoType->addItem("Set AO Config", TYPE_AO_INFO);
             ui->cmbInfoType->addItem("Set DIO Config", TYPE_DIO_INFO);
@@ -281,6 +282,10 @@ void subWidget::setConfigItemsForType()
     switch (configType) {
     case TYPE_UL_INFO:
         ui->cmbConfigItem->addItem("USB Xfer Priority", UL_CFG_USB_XFER_PRIORITY);
+        break;
+    case TYPE_DEV_INFO:
+        ui->cmbConfigItem->addItem("Connect Code", DEV_CFG_CONNECTION_CODE);
+        ui->cmbConfigItem->addItem("Mem Code", DEV_CFG_MEM_UNCLOK_CODE);
         break;
     case TYPE_AI_INFO:
         ui->cmbConfigItem->addItem("AIn Chan Type", AI_CFG_CHAN_TYPE);
@@ -844,6 +849,19 @@ void subWidget::readConfig()
         showIndex = false;
         devConfig = showConfig(configType, configItem, "AiExp32 connected");
         configText.append(devConfig + "</tr><tr>");
+        //ui->teShowValues->setHtml(configText);
+        configItem = DEV_CFG_IP_ADDR_STR;
+        devConfig = showConfigStr(configType, configItem, "IP Address");
+        configText.append(devConfig + "</tr><tr>");
+        configItem = DEV_CFG_NET_IFC_STR;
+        devConfig = showConfigStr(configType, configItem, "Net Interface");
+        configText.append(devConfig + "</tr><tr>");
+        configItem = DEV_CFG_CONNECTION_CODE;
+        devConfig = showConfigStr(configType, configItem, "Connect Code");
+        configText.append(devConfig + "</tr><tr>");
+        configItem = DEV_CFG_MEM_UNCLOK_CODE;
+        devConfig = showConfigStr(configType, configItem, "Mem Code");
+        configText.append(devConfig + "</tr><tr>");
         ui->teShowValues->setHtml(configText);
         break;
     case TYPE_AI_INFO:
@@ -1257,7 +1275,7 @@ QString subWidget::showConfigStr(int configType, int configItem, QString showIte
     sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
     switch (configType){
     case TYPE_DEV_INFO:
-        devConfigItem = DEV_CFG_VER_STR;
+        devConfigItem = (DevConfigItemStr)configItem;
         //devConfigItem = (DevConfigItemStr)configItem;
         nameOfFunc = "ulDevGetConfigStr";
         index = (unsigned int)configItem;
@@ -1822,6 +1840,7 @@ QString subWidget::showInfoMem(MemRegion memRegion)
 void subWidget::setConfiguration()
 {
     UlConfigItem ulConfigItem;
+    DevConfigItem devConfigItem;
     AiConfigItem aiConfigItem;
     AoConfigItem aoConfigItem;
     DioConfigItem dioConfigItem;
@@ -1869,8 +1888,10 @@ void subWidget::setConfiguration()
         err = ulSetConfig(ulConfigItem, index, configValue);
         break;
     case TYPE_DEV_INFO:
-        noConfigItem = true;
-        return;
+        devConfigItem = (DevConfigItem)configItem;
+        nameOfFunc = "devSetConfig";
+        err = ulDevSetConfig(mDaqDeviceHandle, devConfigItem, index, configValue);
+        break;
     case TYPE_AI_INFO:
         if (configItem < 1000) {
             aiConfigItem = (AiConfigItem)configItem;
