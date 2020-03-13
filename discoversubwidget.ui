@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>487</width>
+    <width>482</width>
     <height>361</height>
    </rect>
   </property>
@@ -214,6 +214,13 @@
         </property>
         <property name="text">
          <string/>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="chkManual">
+        <property name="text">
+         <string>Manual Discover</string>
         </property>
        </widget>
       </item>
