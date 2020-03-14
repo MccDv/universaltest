@@ -335,12 +335,14 @@ void DiscoverSubWidget::on_cmdDiscover_clicked()
                             QLineEdit::Normal, sDevAddr);
         if(devAddr != "") {
             sDevAddr = devAddr;
+            QByteArray inBytes;
+            inBytes = sDevAddr.toUtf8();
             nDevPort = QInputDialog::getInt(this, "Find Network Device","Enter port number",
                                 nDevPort);
             const char* host;
             //const char* ifcName = "eth0";
             double timeout = 5;
-            host = qPrintable(sDevAddr);
+            host = inBytes.constData();
 
             nameOfFunc = "ulGetNetDaqDeviceDescriptor";
             funcArgs = "(host, port, NULL, &daqDevDescriptor, timeout)\n";

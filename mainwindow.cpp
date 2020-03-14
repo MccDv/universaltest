@@ -174,8 +174,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionFF_CTR48_BIT, SIGNAL(triggered(bool)), this, SLOT(setAiFlags()));
     connect(ui->actionFF_CTR64_BIT, SIGNAL(triggered(bool)), this, SLOT(setAiFlags()));
     connect(ui->actionFF_NOCLEAR, SIGNAL(triggered(bool)), this, SLOT(setAiFlags()));
-    connect(ui->actionTI_WAIT, SIGNAL(triggered(bool)), this, SLOT());
-    connect(ui->actionTI_ARRAY_WAIT, SIGNAL(triggered(bool)), this, SLOT());
+    connect(ui->actionTI_WAIT, SIGNAL(triggered(bool)), this, SLOT(setAiFlags()));
+    connect(ui->actionTI_ARRAY_WAIT, SIGNAL(triggered(bool)), this, SLOT(setAiFlags()));
+    connect(ui->cmdDiscover, SIGNAL(clicked(bool)), this, SLOT(createDiscChild()));
     connect(ui->cmdAOut, SIGNAL(clicked(bool)), this, SLOT(createAoChild()));
     connect(ui->cmdDIn, SIGNAL(clicked(bool)), this, SLOT(createDinChild()));
     connect(ui->cmdDOut, SIGNAL(clicked(bool)), this, SLOT(createDOutChild()));
