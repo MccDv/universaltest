@@ -302,13 +302,14 @@ void DiscoverSubWidget::on_cmdDiscover_clicked()
     unsigned int numDevs;   // = MAX_DEV_COUNT
     QString uidKey;
     DaqDeviceHandle existingDevHandle;
-    bool autoConnect;
+    bool autoConnect, emptyList;
 
     autoConnect = mMainWindow->isAutoConnect();
     numDevs = ui->leNumDevs->text().toUInt();
     QHash<QString, DaqDeviceHandle> existingList = mMainWindow->getListedDevices();
     DaqDeviceInterface interfaceType = ANY_IFC;
     DaqDeviceDescriptor daqDevDescriptor;
+    emptyList = true;
 
     //because of DT implementation, must disconnect before discovery
     if (existingList.count()) {
@@ -330,75 +331,8 @@ void DiscoverSubWidget::on_cmdDiscover_clicked()
         }
     }
 
-    if(ui->chkManual->isChecked()) {
-        QString devAddr = QInputDialog::getText(this, "Find Network Device","Enter address",
-                            QLineEdit::Normal, sDevAddr);
-        if(devAddr != "") {
-            sDevAddr = devAddr;
-            QByteArray inBytes;
-            inBytes = sDevAddr.toUtf8();
-            nDevPort = QInputDialog::getInt(this, "Find Network Device","Enter port number",
-                                nDevPort);
-            const char* host;
-            //const char* ifcName = "eth0";
-            double timeout = 5;
-            host = inBytes.constData();
-
-            nameOfFunc = "ulGetNetDaqDeviceDescriptor";
-            funcArgs = "(host, port, NULL, &daqDevDescriptor, timeout)\n";
-            sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
-            err = ulGetNetDaqDeviceDescriptor(host, nDevPort, NULL, &daqDevDescriptor, timeout);
-            argVals = QStringLiteral("(%1, %2, %3, %4, %5)")
-                    .arg(sDevAddr)
-                    .arg(nDevPort)
-                    .arg("NULL")
-                    .arg("daqDevDescriptor")
-                    .arg(timeout);
-            ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
-            ui->lblDevicesFound->setText(QString("Found: %1").arg(numDevs));
-
-            funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-            if (err != ERR_NO_ERROR) {
-                mMainWindow->setError(err, sStartTime + funcStr);
-            } else {
-                mMainWindow->addFunction(sStartTime + funcStr);
-                existingDevHandle = 0;
-                uint i = existingList.count();
-                QListWidgetItem *newItem = new QListWidgetItem;
-                newItem->setData(Qt::UserRole, QVariant(i));
-                newItem->setText(daqDevDescriptor.productName);
-                ui->listWidget->addItem(newItem);
-                ui->listWidget->setCurrentItem(newItem);
-                uidKey = daqDevDescriptor.uniqueId;
-                if (existingList.count()) {
-                    if (existingList.contains(uidKey)) {
-                        existingDevHandle = existingList.value(uidKey);
-                        existingList.remove(uidKey);
-                    }
-                    mDaqDeviceHandle = existingDevHandle;
-                    if (mDaqDeviceHandle != 0) {
-                        devList.insert(uidKey, mDaqDeviceHandle);
-                        if(autoConnect) {
-                            nameOfFunc = "ulConnectDaqDevice";
-                            funcArgs = "(deviceHandle)\n";
-                            sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
-                            qApp->processEvents();
-                            err = ulConnectDaqDevice(mDaqDeviceHandle);
-                            argVals = QStringLiteral("(%1)")
-                                    .arg(mDaqDeviceHandle);
-                            funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-                            if (err != ERR_NO_ERROR) {
-                                mMainWindow->setError(err, sStartTime + funcStr);
-                            } else {
-                                mMainWindow->addFunction(sStartTime + funcStr);
-                            }
-                        }
-                        updateList();
-                    }
-                }
-            }
-        }
-    }
+    ui->listWidget->clear();
+    ui->textEdit->clear();
 
     nameOfFunc = "ulGetDaqDeviceInventory";
     funcArgs = "(interfaceType, devDescriptors, &numDevs)\n";
@@ -417,14 +351,13 @@ void DiscoverSubWidget::on_cmdDiscover_clicked()
         mMainWindow->setError(err, sStartTime + funcStr);
     } else {
         mMainWindow->addFunction(sStartTime + funcStr);
-        ui->listWidget->clear();
-        ui->textEdit->clear();
         ui->cmdCreate->setEnabled(false);
         ui->cmdRelease->setEnabled(false);
         ui->cmdConnect->setEnabled(false);
         ui->cmdDisconnect->setEnabled(false);
 
         if (numDevs) {
+            emptyList = false;
             for (uint i=0;i<numDevs;i++) {
                 existingDevHandle = 0;
                 QListWidgetItem *newItem = new QListWidgetItem;
@@ -461,7 +394,8 @@ void DiscoverSubWidget::on_cmdDiscover_clicked()
                 }
             }
         } else
-            ui->listWidget->addItem("No device detected");
+            emptyList = true;
+
 
         //any items left in existingList weren't detected, so
         //must be removed from the board menu and mainwindow list
@@ -471,6 +405,81 @@ void DiscoverSubWidget::on_cmdDiscover_clicked()
             }
         }
     }
+
+    if(ui->chkManual->isChecked()) {
+        QString devAddr = QInputDialog::getText(this, "Find Network Device","Enter address",
+                            QLineEdit::Normal, sDevAddr);
+        if(devAddr != "") {
+            uint i = ui->listWidget->count();
+            sDevAddr = devAddr;
+            QByteArray inBytes;
+            inBytes = sDevAddr.toUtf8();
+            nDevPort = QInputDialog::getInt(this, "Find Network Device","Enter port number",
+                                nDevPort);
+            const char* host;
+            //const char* ifcName = "eth0";
+            double timeout = 10;
+            host = inBytes.constData();
+
+            nameOfFunc = "ulGetNetDaqDeviceDescriptor";
+            funcArgs = "(host, port, NULL, &daqDevDescriptor, timeout)\n";
+            sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
+            err = ulGetNetDaqDeviceDescriptor(host, nDevPort, NULL, &daqDevDescriptor, timeout);
+            argVals = QStringLiteral("(%1, %2, %3, %4, %5)")
+                    .arg(sDevAddr)
+                    .arg(nDevPort)
+                    .arg("NULL")
+                    .arg("daqDevDescriptor")
+                    .arg(timeout);
+            ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
+            ui->lblDevicesFound->setText(QString("Found: %1").arg(numDevs));
+
+            funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
+            if (err != ERR_NO_ERROR) {
+                mMainWindow->setError(err, sStartTime + funcStr);
+            } else {
+                mMainWindow->addFunction(sStartTime + funcStr);
+                existingDevHandle = 0;
+                QListWidgetItem *newItem = new QListWidgetItem;
+                newItem->setData(Qt::UserRole, QVariant(i));
+                newItem->setText(daqDevDescriptor.productName);
+                ui->listWidget->addItem(newItem);
+                ui->listWidget->setCurrentItem(newItem);
+                uidKey = daqDevDescriptor.uniqueId;
+                if (existingList.count()) {
+                    if (existingList.contains(uidKey)) {
+                        existingDevHandle = existingList.value(uidKey);
+                        existingList.remove(uidKey);
+                    }
+                    mDaqDeviceHandle = existingDevHandle;
+                    if (mDaqDeviceHandle != 0) {
+                        devList.insert(uidKey, mDaqDeviceHandle);
+                        if(autoConnect) {
+                            nameOfFunc = "ulConnectDaqDevice";
+                            funcArgs = "(deviceHandle)\n";
+                            sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
+                            qApp->processEvents();
+                            err = ulConnectDaqDevice(mDaqDeviceHandle);
+                            argVals = QStringLiteral("(%1)")
+                                    .arg(mDaqDeviceHandle);
+                            funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
+                            if (err != ERR_NO_ERROR) {
+                                mMainWindow->setError(err, sStartTime + funcStr);
+                            } else {
+                                mMainWindow->addFunction(sStartTime + funcStr);
+                            }
+                        }
+                        updateList();
+                    }
+                }
+                devDescriptors[i] = daqDevDescriptor;
+                updateList();
+            }
+        }
+    }
+
+    if (emptyList)
+        ui->listWidget->addItem("No device detected");
 }
 
 void DiscoverSubWidget::refreshSelDevice()
