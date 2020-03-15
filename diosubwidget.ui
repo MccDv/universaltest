@@ -202,6 +202,13 @@
        </widget>
       </item>
       <item>
+       <widget class="QPushButton" name="cmdClrAlarm">
+        <property name="text">
+         <string>Clr Alarm</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <spacer name="horizontalSpacer_3">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -1125,7 +1132,7 @@
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>2</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="pgText">
       <layout class="QVBoxLayout" name="pgTextLayout">

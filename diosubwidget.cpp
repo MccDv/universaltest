@@ -1686,10 +1686,10 @@ void DioSubWidget::runDOutFunc()
 {
     DigitalPortType portType;
     QString nameOfFunc, funcArgs, argVals, funcStr;
-    unsigned long long data;
-    bool breakLoop = false;
     QTime t;
     QString errText, sStartTime;
+    unsigned long long data;
+    bool breakLoop = false;
 
     errText = "";
     data = ui->leNumSamples->text().toULongLong();
@@ -2761,4 +2761,38 @@ bool DioSubWidget::disableExpDigital(bool prompt)
         return true;
     } else
         return false;
+}
+
+void DioSubWidget::clearAlarm()
+{
+    QString nameOfFunc, funcArgs, argVals, funcStr;
+    QTime t;
+    QString errText, sStartTime;
+    unsigned long long mask;
+    DigitalPortType portType;
+
+    mask = 0xffff;
+    nameOfFunc = "ulDClearAlarm";
+    funcArgs = "(mDaqDeviceHandle, portType, mask)\n";
+    foreach (QCheckBox *chkPort, portCheckBoxes) {
+        if (chkPort->isChecked()) {
+            int portNum = chkPort->property("portNum").toInt();
+            portType = (DigitalPortType)portNum;
+            sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
+            err = ulDClearAlarm(mDaqDeviceHandle, portType, mask);
+        }
+        argVals = QStringLiteral("(%1, %2, %3)")
+                .arg(mDaqDeviceHandle)
+                .arg(portType)
+                .arg(mask);
+
+        funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
+        if (err != ERR_NO_ERROR) {
+            mMainWindow->setError(err, sStartTime + funcStr);
+        } else {
+            mMainWindow->addFunction(sStartTime + funcStr + errText);
+            funcStr = nameOfFunc + argVals;
+            ui->lblInfo->setText(funcStr);
+        }
+    }
 }

@@ -931,6 +931,12 @@ void subWidget::readConfig()
         devConfig = showConfigStr(configType, configItem, "AI Chan Coeffs");
         configText.append(devConfig + "</tr><tr>");
         showIndex = false;
+        configItem = AI_CFG_EXP_CAL_DATE;
+        devConfig = showConfig(configType, configItem, "AI Cal Table");
+        configText.append(devConfig + "</tr><tr>");
+        configItem = AI_CFG_EXP_CAL_DATE_STR;
+        devConfig = showConfigStr(configType, configItem, "AI Cal Date");
+        configText.append(devConfig + "</tr><tr>");
         ui->teShowValues->setHtml(configText);
         break;
     case TYPE_AO_INFO:

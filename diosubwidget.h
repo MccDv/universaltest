@@ -59,6 +59,7 @@ private slots:
     void replot();
     void plotSelect();
     void showData(unsigned long long curTotalCount, unsigned long long curIndex, int blockSize);
+    void clearAlarm();
 
 private:
     Ui::DioSubWidget *ui;
