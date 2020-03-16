@@ -446,6 +446,7 @@ void DiscoverSubWidget::on_cmdDiscover_clicked()
                 ui->listWidget->addItem(newItem);
                 ui->listWidget->setCurrentItem(newItem);
                 uidKey = daqDevDescriptor.uniqueId;
+                emptyList = false;
                 if (existingList.count()) {
                     if (existingList.contains(uidKey)) {
                         existingDevHandle = existingList.value(uidKey);

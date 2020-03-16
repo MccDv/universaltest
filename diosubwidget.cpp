@@ -2769,7 +2769,7 @@ void DioSubWidget::clearAlarm()
     QTime t;
     QString errText, sStartTime;
     unsigned long long mask;
-    DigitalPortType portType;
+    DigitalPortType portType = AUXPORT;
 
     mask = 0xffff;
     nameOfFunc = "ulDClearAlarm";
