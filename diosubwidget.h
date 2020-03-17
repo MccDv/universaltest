@@ -144,6 +144,7 @@ private:
     long long mFinalCount = 0;
     int mDioResolution = 0;
     bool mHasAiExp32;
+    unsigned long long ulMask = 0;
 
     //void setUiForGroup();
     void setUiForFunction();

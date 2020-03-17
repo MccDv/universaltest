@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>498</width>
+    <width>491</width>
     <height>487</height>
    </rect>
   </property>
@@ -66,7 +66,7 @@
      <property name="frameShadow">
       <enum>QFrame::Raised</enum>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,1,10,0,4,4">
+     <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,1,8,3,0,3,3">
       <property name="leftMargin">
        <number>0</number>
       </property>
@@ -100,6 +100,13 @@
         </property>
         <property name="text">
          <string>7</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="cmdClrAlarm">
+        <property name="text">
+         <string>Clr Alarm</string>
         </property>
        </widget>
       </item>
@@ -198,13 +205,6 @@
         </property>
         <property name="text">
          <string/>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="cmdClrAlarm">
-        <property name="text">
-         <string>Clr Alarm</string>
         </property>
        </widget>
       </item>

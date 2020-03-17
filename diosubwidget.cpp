@@ -56,6 +56,8 @@ DioSubWidget::DioSubWidget(QWidget *parent) :
             ui->plotDigitalData->yAxis2, SLOT(setRange(QCPRange)));
     connect(ui->rbAutoScale, SIGNAL(clicked(bool)), this, SLOT(replot()));
     connect(ui->rbFullScale, SIGNAL(clicked(bool)), this, SLOT(replot()));
+    connect(ui->cmdClrAlarm, SIGNAL(clicked(bool)), this, SLOT(clearAlarm()));
+
     rbPlotSel[0] = ui->rbPlot0;
     rbPlotSel[1] = ui->rbPlot1;
     rbPlotSel[2] = ui->rbPlot2;
@@ -2769,30 +2771,39 @@ void DioSubWidget::clearAlarm()
     QTime t;
     QString errText, sStartTime;
     unsigned long long mask;
+    int dioResolution;
     DigitalPortType portType = AUXPORT;
 
     mask = 0xffff;
+    ulMask = QInputDialog::getInt(this, "Set Mask Value",
+                                    "Enter mask value (default: 0 = all bits)", 0);
     nameOfFunc = "ulDClearAlarm";
     funcArgs = "(mDaqDeviceHandle, portType, mask)\n";
     foreach (QCheckBox *chkPort, portCheckBoxes) {
         if (chkPort->isChecked()) {
             int portNum = chkPort->property("portNum").toInt();
             portType = (DigitalPortType)portNum;
+            mask = ulMask;
+            if (ulMask == 0) {
+                dioResolution = portBits.value(portType);
+                mask = pow(2, dioResolution) - 1;
+            }
             sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
             err = ulDClearAlarm(mDaqDeviceHandle, portType, mask);
-        }
-        argVals = QStringLiteral("(%1, %2, %3)")
-                .arg(mDaqDeviceHandle)
-                .arg(portType)
-                .arg(mask);
+            argVals = QStringLiteral("(%1, %2, %3)")
+                    .arg(mDaqDeviceHandle)
+                    .arg(portType)
+                    .arg(mask);
 
-        funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
-        if (err != ERR_NO_ERROR) {
-            mMainWindow->setError(err, sStartTime + funcStr);
-        } else {
-            mMainWindow->addFunction(sStartTime + funcStr + errText);
-            funcStr = nameOfFunc + argVals;
-            ui->lblInfo->setText(funcStr);
+            funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
+            if (err != ERR_NO_ERROR) {
+                mMainWindow->setError(err, sStartTime + funcStr);
+                break;
+            } else {
+                mMainWindow->addFunction(sStartTime + funcStr + errText);
+                funcStr = nameOfFunc + argVals;
+                ui->lblInfo->setText(funcStr);
+            }
         }
     }
 }
