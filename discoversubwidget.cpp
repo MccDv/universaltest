@@ -412,25 +412,38 @@ void DiscoverSubWidget::on_cmdDiscover_clicked()
         if(devAddr != "") {
             uint i = ui->listWidget->count();
             sDevAddr = devAddr;
-            QByteArray inBytes;
-            inBytes = sDevAddr.toUtf8();
-            nDevPort = QInputDialog::getInt(this, "Find Network Device","Enter port number",
-                                nDevPort);
+            QByteArray addrInBytes;
+            QByteArray ifcInBytes;
+            addrInBytes = sDevAddr.toUtf8();
             const char* host;
-            //const char* ifcName = "eth0";
-            double timeout = 10;
-            host = inBytes.constData();
+            host = addrInBytes.constData();
+
+            nDevPort = QInputDialog::getInt(this, "Find Network Device",
+                                "Enter port number", nDevPort);
+
+            const char* ifcName = NULL;
+            QString netIfc = QInputDialog::getText(this, "Find Network Device",
+                                "Enter interface name (default NULL)",
+                                                   QLineEdit::Normal, sInterface);
+            if (netIfc != "") {
+                sInterface = netIfc;
+                ifcInBytes = netIfc.toUtf8();
+                ifcName = ifcInBytes.constData();
+            }
+
+            nNetTimo = QInputDialog::getInt(this, "Find Network Device",
+                                            "Enter timeout (s)", nNetTimo);
 
             nameOfFunc = "ulGetNetDaqDeviceDescriptor";
-            funcArgs = "(host, port, NULL, &daqDevDescriptor, timeout)\n";
+            funcArgs = "(host, port, ifcName, &daqDevDescriptor, timeout)\n";
             sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
-            err = ulGetNetDaqDeviceDescriptor(host, nDevPort, NULL, &daqDevDescriptor, timeout);
+            err = ulGetNetDaqDeviceDescriptor(host, nDevPort, ifcName, &daqDevDescriptor, nNetTimo);
             argVals = QStringLiteral("(%1, %2, %3, %4, %5)")
-                    .arg(sDevAddr)
+                    .arg(host)
                     .arg(nDevPort)
-                    .arg("NULL")
+                    .arg(ifcName)
                     .arg("daqDevDescriptor")
-                    .arg(timeout);
+                    .arg(nNetTimo);
             ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
             ui->lblDevicesFound->setText(QString("Found: %1").arg(numDevs));
 

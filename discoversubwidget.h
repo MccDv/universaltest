@@ -59,7 +59,9 @@ private:
     QString mUidString = "";
     int mDevListCount = 0;
     QString sDevAddr = "10.17.5.139";
+    QString sInterface = "";
     unsigned short nDevPort = 54211;
+    double nNetTimo = 10;
 
     QString mFuncName = "";
     int mUtFunction = 0;
