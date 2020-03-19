@@ -742,7 +742,7 @@ void MainWindow::createFuncMenus()
     ui->actionFF_SIMULTANEOUS->setVisible(simultaneousVisible);
 }
 
-void MainWindow::setBoardMenuSelect(QMdiSubWindow*)
+void MainWindow::setBoardMenuSelect(QMdiSubWindow* activeSubWindow)
 {
     bool optionVisible, rangeVisible;
     bool plotShowing;
@@ -757,7 +757,8 @@ void MainWindow::setBoardMenuSelect(QMdiSubWindow*)
     rangeVisible = false;
     optionVisible = false;
     plotShowing = false;
-    curChild = activeMdiChild();
+    curChild = qobject_cast<ChildWindow *>(activeSubWindow);
+    //curChild = activeMdiChild();
     if (curChild) {
         curBoard = curChild->devName();
         if (curBoard == "")
