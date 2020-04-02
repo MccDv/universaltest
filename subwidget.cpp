@@ -128,7 +128,7 @@ void subWidget::setUiForGroup()
         cmdLabel = "Set";
         break;
     case FUNC_GROUP_MEM:
-        connect(ui->cmdSet, SIGNAL(clicked(bool)), this, SLOT(memRead()));
+        //connect(ui->cmdSet, SIGNAL(clicked(bool)), this, SLOT(memRead()));
         break;
     default:
         break;
@@ -444,6 +444,7 @@ void subWidget::memRead()
         address = memDescriptor.address;
         unsigned char memValue[maxMemLen];
         unsigned char *pMemValue = memValue;
+        memset(pMemValue, 0, maxMemLen);
         nameOfFunc = "ulMemRead";
         sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
         err = ulMemRead(mDaqDeviceHandle, memRegion, address, pMemValue, maxMemLen);
@@ -452,7 +453,7 @@ void subWidget::memRead()
                 .arg(mDaqDeviceHandle)
                 .arg(memRegion)
                 .arg(address)
-                .arg(memValue[0])
+                .arg(QString("0x%1").arg((quintptr)pMemValue, QT_POINTER_SIZE * 2, 16, QChar('0')))
                 .arg(maxMemLen);
 
         int rev = strlen(reinterpret_cast<const char*>(memValue));
@@ -863,6 +864,9 @@ void subWidget::readConfig()
         configText.append(devConfig + "</tr><tr>");
         configItem = DEV_CFG_MEM_UNLOCK_CODE;
         devConfig = showConfig(configType, configItem, "Mem Code");
+        configText.append(devConfig + "</tr><tr>");
+        configItem = DEV_CFG_RESET;
+        devConfig = showConfig(configType, configItem, "Dev Reset");
         configText.append(devConfig + "</tr><tr>");
         ui->teShowValues->setHtml(configText);
         break;
