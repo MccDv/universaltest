@@ -285,7 +285,7 @@ void subWidget::setConfigItemsForType()
         break;
     case TYPE_DEV_INFO:
         ui->cmbConfigItem->addItem("Connect Code", DEV_CFG_CONNECTION_CODE);
-        ui->cmbConfigItem->addItem("Mem Code", DEV_CFG_MEM_UNCLOK_CODE);
+        ui->cmbConfigItem->addItem("Mem Code", DEV_CFG_MEM_UNLOCK_CODE);
         break;
     case TYPE_AI_INFO:
         ui->cmbConfigItem->addItem("AIn Chan Type", AI_CFG_CHAN_TYPE);
@@ -861,7 +861,7 @@ void subWidget::readConfig()
         configItem = DEV_CFG_CONNECTION_CODE;
         devConfig = showConfigStr(configType, configItem, "Connect Code");
         configText.append(devConfig + "</tr><tr>");
-        configItem = DEV_CFG_MEM_UNCLOK_CODE;
+        configItem = DEV_CFG_MEM_UNLOCK_CODE;
         devConfig = showConfigStr(configType, configItem, "Mem Code");
         configText.append(devConfig + "</tr><tr>");
         ui->teShowValues->setHtml(configText);
