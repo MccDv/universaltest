@@ -836,7 +836,7 @@ void subWidget::readConfig()
         devID = "<td>Device ID: " + str.setNum(mDaqDeviceHandle)
                 + "<td></td><td></td>" + mDevUID + "</td>";
         configText.append(devID + "</tr><tr>");
-        configItem = DEV_VER_FW_MAIN;
+        configItem = DEV_CFG_VER_STR;
         showIndex = true;
         for(int verType = 0; verType < 5; verType++){
             if(verType == DEV_VER_FW_MAIN) verName = "FW Version";
@@ -844,7 +844,7 @@ void subWidget::readConfig()
             if(verType == DEV_VER_RADIO) verName = "Radio Version";
             if(verType == DEV_VER_FW_MEASUREMENT) verName = "Meas FW Version";
             if(verType == DEV_VER_FW_MEASUREMENT_EXP) verName = "Exp FW Version";
-            devConfig = showConfigStr(configType, verType, verName);
+            devConfig = showConfigStr(configType, configItem, verName);
             configText.append(devConfig + "</tr><tr>");
         }
         configItem = DEV_CFG_HAS_EXP;
@@ -1296,10 +1296,20 @@ QString subWidget::showConfigStr(int configType, int configItem, QString showIte
     sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
     switch (configType){
     case TYPE_DEV_INFO:
+        if(showItem == "FW Version")
+            index = DEV_VER_FW_MAIN;
+        if(showItem == "FPGA Version")
+            index = DEV_VER_FPGA;
+        if(showItem == "Radio Version")
+            index = DEV_VER_RADIO;
+        if(showItem == "Meas FW Version")
+            index = DEV_VER_FW_MEASUREMENT;
+        if(showItem == "Exp FW Version")
+            index = DEV_VER_FW_MEASUREMENT_EXP;
         devConfigItem = (DevConfigItemStr)configItem;
         //devConfigItem = (DevConfigItemStr)configItem;
         nameOfFunc = "ulDevGetConfigStr";
-        index = (unsigned int)configItem;
+        //index = (unsigned int)configItem;
         err = ulDevGetConfigStr(mDaqDeviceHandle, devConfigItem, index, pConfigValue, &maxConfigLen);
         break;
     case TYPE_AI_INFO:
