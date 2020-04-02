@@ -859,10 +859,10 @@ void subWidget::readConfig()
         devConfig = showConfigStr(configType, configItem, "Net Interface");
         configText.append(devConfig + "</tr><tr>");
         configItem = DEV_CFG_CONNECTION_CODE;
-        devConfig = showConfigStr(configType, configItem, "Connect Code");
+        devConfig = showConfig(configType, configItem, "Connect Code");
         configText.append(devConfig + "</tr><tr>");
         configItem = DEV_CFG_MEM_UNLOCK_CODE;
-        devConfig = showConfigStr(configType, configItem, "Mem Code");
+        devConfig = showConfig(configType, configItem, "Mem Code");
         configText.append(devConfig + "</tr><tr>");
         ui->teShowValues->setHtml(configText);
         break;
