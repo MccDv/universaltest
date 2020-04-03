@@ -59,8 +59,8 @@ private:
     {
         AOSM_DISABLED = 1,
         AOSM_ENABLED  = 2
-    }AOutSenseMode;*/
-    DevConfigItem DEV_CFG_RESET = (DevConfigItem)4;
+    }AOutSenseMode;
+    DevConfigItem DEV_CFG_RESET = (DevConfigItem)4;*/
 
     int mUtFunction = 0;
     bool showIndex = false;
