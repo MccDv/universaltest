@@ -456,7 +456,7 @@ void subWidget::memRead()
                 .arg(QString("0x%1").arg((quintptr)pMemValue, QT_POINTER_SIZE * 2, 16, QChar('0')))
                 .arg(maxMemLen);
 
-        int rev = strlen(reinterpret_cast<const char*>(memValue));
+        int rev = maxMemLen;
         // Print String in Reverse order....
         for (int i = 0; i<rev; i++) {
             s = QString("%1").arg(memValue[i], 0, 16);
