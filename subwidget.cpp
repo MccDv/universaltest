@@ -30,7 +30,7 @@ subWidget::subWidget(QWidget *parent) :
     ui->lblStatus->setStyleSheet("QLabel { background-color : white; color : blue; }" );
     //connect(ui->spnIndex, SIGNAL(valueChanged(int)), SLOT(runSelectedFunc()));
     connect(ui->cmdStop, SIGNAL(clicked(bool)), this, SLOT(onStopCmd()));
-    //connect(ui->cmdSet, SIGNAL(clicked(bool)), this, SLOT(runSelectedFunc()));
+    connect(ui->cmdSet, SIGNAL(clicked(bool)), this, SLOT(runSelectedFunc()));
     //connect(ui->cmbConfigItem, SIGNAL(currentIndexChanged(int)), this, SLOT(runSelectedFunc()));
     //connect(ui->spnIndex, SIGNAL(valueChanged(int)), this, SLOT(runSelectedFunc()));
     mMainWindow = getMainWindow();
@@ -109,25 +109,27 @@ void subWidget::setUiForGroup()
     //parentWindow = qobject_cast<ChildWindow *>(this->parent());
 
     configVisible = false;
-    disconnect(ui->cmbInfoType, SIGNAL(currentIndexChanged(int)));
-    disconnect(ui->cmdSet, SIGNAL(clicked(bool)));
+    //disconnect(ui->cmbInfoType, SIGNAL(currentIndexChanged(int)));
+    //disconnect(ui->cmdSet, SIGNAL(clicked(bool)));
     //disconnect(ui->cmbConfigItem, SIGNAL(currentIndexChanged(int)));
-    disconnect(ui->spnIndex, SIGNAL(valueChanged(int)));
+    //disconnect(ui->spnIndex, SIGNAL(valueChanged(int)));
     switch (mCurGroup) {
     case FUNC_GROUP_MISC:
-        connect(ui->cmdSet, SIGNAL(clicked(bool)), this, SLOT(runSelectedFunc()));
+        //connect(ui->cmdSet, SIGNAL(clicked(bool)), this, SLOT(runSelectedFunc()));
         //connect(ui->cmbConfigItem, SIGNAL(currentIndexChanged(int)), this, SLOT(runSelectedFunc()));
         //connect(ui->spnIndex, SIGNAL(valueChanged(int)), this, SLOT(runSelectedFunc()));
         cmdLabel = "Go";
         break;
     case FUNC_GROUP_CONFIG:
         //connect(ui->cmbInfoType, SIGNAL(currentIndexChanged(int)), this, SLOT(setConfigItemsForType()));
-        connect(ui->cmdSet, SIGNAL(clicked(bool)), this, SLOT(setConfiguration()));
-        connect(ui->spnIndex, SIGNAL(valueChanged(int)), this, SLOT(runSelectedFunc()));
+        //connect(ui->cmdSet, SIGNAL(clicked(bool)), this, SLOT(setConfiguration()));
+        //connect(ui->spnIndex, SIGNAL(valueChanged(int)), this, SLOT(runSelectedFunc()));
         configVisible = true;
         cmdLabel = "Set";
         break;
     case FUNC_GROUP_MEM:
+        if (mUtFunction == UL_MEM_WRITE)
+            configVisible = true;
         //connect(ui->cmdSet, SIGNAL(clicked(bool)), this, SLOT(memRead()));
         break;
     default:
@@ -150,17 +152,19 @@ void subWidget::setUiForFunction()
 {
     bool userFrameVisible, configComboVisible;
     bool infoComboVisible, cmdSetVisible;
+    bool leSetValVisible;
     QString cmdLabel;
 
     configComboVisible = false;
     infoComboVisible = true;
     cmdSetVisible = false;
     userFrameVisible = false;
+    leSetValVisible = false;
 
     ui->cmbInfoType->clear();
     ui->spnIndex->setValue(0);
-    disconnect(ui->cmbConfigItem, SIGNAL(currentIndexChanged(int)));
-    disconnect(ui->cmbInfoType, SIGNAL(currentIndexChanged(int)));
+    //disconnect(ui->cmbConfigItem, SIGNAL(currentIndexChanged(int)));
+    //disconnect(ui->cmbInfoType, SIGNAL(currentIndexChanged(int)));
     QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
     switch (mCurGroup) {
     case FUNC_GROUP_MISC:
@@ -198,13 +202,21 @@ void subWidget::setUiForFunction()
             ui->cmbInfoType->addItem("ulDaqOutScanStop");
             break;
         case UL_MEM_READ:
+            ui->cmbInfoType->addItem("Cal Region", MR_CAL);
+            ui->cmbInfoType->addItem("User Region", MR_USER);
+            ui->cmbInfoType->addItem("Settings Region", MR_SETTINGS);
+            ui->cmbInfoType->addItem("Reserved Region0", MR_RESERVED0);
+            //connect(ui->cmdSet, SIGNAL(clicked(bool)), this, SLOT(memReadWrite()));
+            infoComboVisible = true;
+            break;
         case UL_MEM_WRITE:
             ui->cmbInfoType->addItem("Cal Region", MR_CAL);
             ui->cmbInfoType->addItem("User Region", MR_USER);
             ui->cmbInfoType->addItem("Settings Region", MR_SETTINGS);
             ui->cmbInfoType->addItem("Reserved Region0", MR_RESERVED0);
-            connect(ui->cmdSet, SIGNAL(clicked(bool)), this, SLOT(memRead()));
+            //connect(ui->cmdSet, SIGNAL(clicked(bool)), this, SLOT(memReadWrite()));
             infoComboVisible = true;
+            leSetValVisible = true;
             break;
         default:
             break;
@@ -229,7 +241,7 @@ void subWidget::setUiForFunction()
             ui->cmbInfoType->addItem("DaqIn Info", TYPE_DAQI_INFO);
             ui->cmbInfoType->addItem("DaqOut Info", TYPE_DAQO_INFO);
             ui->cmbInfoType->addItem("Mem Info", TYPE_MEM_INFO);
-            connect(ui->cmbInfoType, SIGNAL(currentIndexChanged(int)), this, SLOT(runSelectedFunc()));
+            //connect(ui->cmbInfoType, SIGNAL(currentIndexChanged(int)), this, SLOT(runSelectedFunc()));
             break;
         case UL_GET_CONFIG:
             mFuncName = "ulGetConfig";
@@ -255,7 +267,7 @@ void subWidget::setUiForFunction()
             ui->cmbInfoType->addItem("Set AO Config", TYPE_AO_INFO);
             ui->cmbInfoType->addItem("Set DIO Config", TYPE_DIO_INFO);
             ui->cmbInfoType->addItem("Set Ctr Config", TYPE_CTR_INFO);
-            connect(ui->cmbInfoType, SIGNAL(currentIndexChanged(int)), this, SLOT(setConfigItemsForType()));
+            //connect(ui->cmbInfoType, SIGNAL(currentIndexChanged(int)), this, SLOT(setConfigItemsForType()));
             break;
         default:
             break;
@@ -270,6 +282,7 @@ void subWidget::setUiForFunction()
     ui->cmdSet->setVisible(cmdSetVisible);
     ui->cmdSet->setText(cmdLabel);
     ui->cmdSet->setFocus();
+    ui->leSetValue->setVisible(leSetValVisible);
     this->setWindowTitle(mFuncName + ": " + mDevName + QString(" [%1]").arg(mDaqDeviceHandle));
 }
 
@@ -331,6 +344,8 @@ void subWidget::runSelectedFunc()
     bool makeBold, tmrIsEnabled, tmrIsRunning;
     //bool showStop;
 
+    if (mDaqDeviceHandle < 0)
+        return;
     parentWindow = qobject_cast<ChildWindow *>(this->parent());
     //tmrIsEnabled = parentWindow->tmrEnabled();
     //mUseTimer = tmrIsEnabled;
@@ -351,7 +366,11 @@ void subWidget::runSelectedFunc()
         case UL_SCAN_STOP:
             setMiscFunction();
             break;
-        default:
+        case UL_MEM_READ:
+            memRead();
+            break;
+        case UL_MEM_WRITE:
+            memWrite();
             break;
         }
         break;
@@ -411,6 +430,18 @@ void subWidget::onStopCmd()
     qApp->processEvents();
 }
 
+void subWidget::memReadWrite()
+{
+    switch (mUtFunction) {
+    case UL_MEM_READ:
+        memRead();
+        break;
+    case UL_MEM_WRITE:
+        memWrite();
+        break;
+    }
+}
+
 void subWidget::memRead()
 {
     QString nameOfFunc, funcArgs, argVals;
@@ -460,11 +491,80 @@ void subWidget::memRead()
         int rev = maxMemLen;
         // Print String in Reverse order....
         for (int i = 0; i<rev; i++) {
-            s = QString("%1").arg(memValue[i], 0, 16);
-            if(s == "0")
-                  s="00";
-             result.append(s);
+            s = QString("%1").arg(memValue[i], 2, 16, QChar('0'));
+            result.append(s + " ");
+            if ((i+1)%8 == 0)
+                result.append("  ");
+            if ((i+1)%16 == 0)
+                result.append("\n");
         }
+        funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
+        str = getRegionNames(memRegion);
+        if(err != ERR_NO_ERROR) {
+            mUseTimer = false;
+            mMainWindow->setError(err, sStartTime + funcStr);
+            ui->lblStatus->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
+        } else {
+            ui->lblStatus->setText(nameOfFunc + argVals);
+            ui->teShowValues->setText(result);
+            mMainWindow->addFunction(sStartTime + funcStr);
+        }
+    }
+}
+
+void subWidget::memWrite()
+{
+    QString nameOfFunc, funcArgs, argVals;
+    QString str, valToWrite;
+    QTime t;
+    QString sStartTime, funcStr;
+    QString result = "";
+    MemRegion memRegion;
+    MemDescriptor memDescriptor;
+    unsigned int address;
+    unsigned int maxMemLen;
+
+    memRegion = (MemRegion)ui->cmbInfoType->currentData(Qt::UserRole).toInt();
+    nameOfFunc = "ulMemGetInfo";
+    funcArgs = "(mDaqDeviceHandle, memRegion, {accessTypes, address, size})\n";
+    sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
+    err = ulMemGetInfo(mDaqDeviceHandle, memRegion, &memDescriptor);
+    argVals = QStringLiteral("(%1, %2, {%3, %4, %5})")
+            .arg(mDaqDeviceHandle)
+            .arg(memRegion)
+            .arg(memDescriptor.accessTypes)
+            .arg(memDescriptor.address)
+            .arg(memDescriptor.size);
+
+    funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
+    if(err != ERR_NO_ERROR) {
+        mUseTimer = false;
+        mMainWindow->setError(err, sStartTime + funcStr);
+        ui->lblStatus->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
+    } else {
+        maxMemLen = memDescriptor.size;
+        address = memDescriptor.address;
+        QByteArray addrInBytes;
+        valToWrite = ui->leSetValue->text();
+        addrInBytes = valToWrite.toUtf8();
+        unsigned char* pMemValue;
+        pMemValue = reinterpret_cast<unsigned char*>(addrInBytes.data());
+        maxMemLen = addrInBytes.size();
+        //unsigned char memValue[maxMemLen];
+        //unsigned char *pMemValue = memValue;
+        //memset(pMemValue, 0, maxMemLen);
+        //toWCharArray(pMemValue);
+        nameOfFunc = "ulMemWrite";
+        sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
+        err = ulMemWrite(mDaqDeviceHandle, memRegion, address, pMemValue, maxMemLen);
+        funcArgs = "(mDaqDeviceHandle, memRegion, address, pMemValue, maxMemLen)\n";
+        argVals = QStringLiteral("(%1, %2, %3, %4, %5)")
+                .arg(mDaqDeviceHandle)
+                .arg(memRegion)
+                .arg(address)
+                .arg(QString("0x%1").arg((quintptr)pMemValue, QT_POINTER_SIZE * 2, 16, QChar('0')))
+                .arg(maxMemLen);
+
         funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
         str = getRegionNames(memRegion);
         if(err != ERR_NO_ERROR) {

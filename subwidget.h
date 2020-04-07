@@ -31,8 +31,8 @@ private slots:
     void setConfigItemsForType();
     void setConfiguration();
     void setMiscFunction();
-    void memRead();
     void onStopCmd();
+    void memReadWrite();
 
     void showPlotWindow(bool);
     void showQueueConfig();
@@ -46,7 +46,7 @@ private:
     Ui::subWidget *ui;
     MainWindow* getMainWindow();
     MainWindow *mMainWindow;
-    DaqDeviceHandle mDaqDeviceHandle;
+    DaqDeviceHandle mDaqDeviceHandle = -1;
     UlError err = ERR_NO_ERROR;
     QString mDevUID = "";
     QString mDevName = "";
@@ -79,6 +79,8 @@ private:
     void readInfo();
     void readConfig();
     void readMem();
+    void memRead();
+    void memWrite();
     void setUiForGroup();
     void setUiForFunction();
     void getErrorMessage();
