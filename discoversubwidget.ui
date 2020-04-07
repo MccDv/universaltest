@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>482</width>
+    <width>491</width>
     <height>361</height>
    </rect>
   </property>
@@ -182,21 +182,27 @@
      <property name="frameShadow">
       <enum>QFrame::Raised</enum>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="2,2,6,1,3,6,6">
       <property name="leftMargin">
        <number>0</number>
       </property>
       <property name="topMargin">
-       <number>2</number>
+       <number>0</number>
       </property>
       <property name="rightMargin">
        <number>0</number>
       </property>
       <property name="bottomMargin">
-       <number>2</number>
+       <number>0</number>
       </property>
       <item>
        <widget class="QLineEdit" name="leNumDevs">
+        <property name="maximumSize">
+         <size>
+          <width>36</width>
+          <height>16777215</height>
+         </size>
+        </property>
         <property name="toolTip">
          <string>Descriptor array size</string>
         </property>
@@ -238,6 +244,19 @@
        </spacer>
       </item>
       <item>
+       <widget class="QPushButton" name="cmdSetCode">
+        <property name="maximumSize">
+         <size>
+          <width>60</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Set Code</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="cmdIsConnected">
         <property name="text">
          <string>Is Connected?</string>
@@ -246,6 +265,12 @@
       </item>
       <item>
        <widget class="QPushButton" name="cmdDescriptor">
+        <property name="maximumSize">
+         <size>
+          <width>80</width>
+          <height>16777215</height>
+         </size>
+        </property>
         <property name="text">
          <string>Descriptor</string>
         </property>

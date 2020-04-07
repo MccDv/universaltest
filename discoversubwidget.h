@@ -32,6 +32,7 @@ private slots:
     void on_cmdCreate_clicked();
     void on_cmdRelease_clicked();
     void on_cmdDisconnect_clicked();
+    void on_cmdCode_clicked();
     void on_cmdConnect_clicked();
     //void on_actionRefresh_Devices_triggered();
     void getDescriptor();
@@ -62,6 +63,7 @@ private:
     QString sInterface = "";
     unsigned short nDevPort = 54211;
     double nNetTimo = 10;
+    long long mConnectCode;
 
     QString mFuncName = "";
     int mUtFunction = 0;

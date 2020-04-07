@@ -41,6 +41,7 @@ DiscoverSubWidget::DiscoverSubWidget(QWidget *parent) :
     //connect(ui->cmdDiscover, SIGNAL(clicked(bool)), this, SLOT(on_cmdDiscover_clicked()));
     connect(ui->cmdDescriptor, SIGNAL(clicked(bool)), this, SLOT(getDescriptor()));
     connect(ui->cmdIsConnected, SIGNAL(clicked(bool)), this, SLOT(checkConnection()));
+    connect(ui->cmdSetCode, SIGNAL(clicked(bool)), this, SLOT(on_cmdCode_clicked()));
     ui->textEdit->setTabStopWidth(50);
     mMainWindow = getMainWindow();
 
@@ -230,6 +231,38 @@ void DiscoverSubWidget::on_cmdDisconnect_clicked()
         mMainWindow->addFunction(sStartTime + funcStr);
         //updateList();
         checkConnection();
+    }
+}
+
+void DiscoverSubWidget::on_cmdCode_clicked()
+{
+    QString nameOfFunc, funcArgs, argVals, funcStr;
+    QTime t;
+    QString sStartTime;
+    long long code;
+    bool ok = false;
+    int defCode, max, min;
+
+    min = -2147483647;
+    max = 2147483647;
+    defCode = mConnectCode;
+    code = QInputDialog::getInt(this, "Connection Code", "Enter connection code:", defCode, min, max, 1, &ok);
+    if (ok) {
+        nameOfFunc = "ulDaqDeviceConnectionCode";
+        funcArgs = "(mDaqDeviceHandle, code)\n";
+        sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
+        err = ulDaqDeviceConnectionCode(mDaqDeviceHandle, code);
+        argVals = QString("(%1, %2)")
+                .arg(mDaqDeviceHandle)
+                .arg(code);
+        ui->lblInfo->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
+
+        funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
+        if (err != ERR_NO_ERROR) {
+            mMainWindow->setError(err, sStartTime + funcStr);
+        } else {
+            mMainWindow->addFunction(sStartTime + funcStr);
+        }
     }
 }
 
