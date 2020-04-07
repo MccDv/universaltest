@@ -286,6 +286,7 @@ void subWidget::setConfigItemsForType()
     case TYPE_DEV_INFO:
         ui->cmbConfigItem->addItem("Connect Code", DEV_CFG_CONNECTION_CODE);
         ui->cmbConfigItem->addItem("Mem Code", DEV_CFG_MEM_UNLOCK_CODE);
+        ui->cmbConfigItem->addItem("Config Reset", DEV_CFG_RESET);
         break;
     case TYPE_AI_INFO:
         ui->cmbConfigItem->addItem("AIn Chan Type", AI_CFG_CHAN_TYPE);
