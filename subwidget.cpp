@@ -154,12 +154,14 @@ void subWidget::setUiForFunction()
     bool infoComboVisible, cmdSetVisible;
     bool leSetValVisible;
     QString cmdLabel;
+    QString inputToolTip;
 
     configComboVisible = false;
     infoComboVisible = true;
     cmdSetVisible = false;
     userFrameVisible = false;
     leSetValVisible = false;
+    inputToolTip = "Start with '0x' for hex value.";
 
     ui->cmbInfoType->clear();
     ui->spnIndex->setValue(0);
@@ -215,6 +217,7 @@ void subWidget::setUiForFunction()
             ui->cmbInfoType->addItem("Settings Region", MR_SETTINGS);
             ui->cmbInfoType->addItem("Reserved Region0", MR_RESERVED0);
             //connect(ui->cmdSet, SIGNAL(clicked(bool)), this, SLOT(memReadWrite()));
+            inputToolTip = "Single byte. Start with '0x' for hex value.";
             infoComboVisible = true;
             leSetValVisible = true;
             break;
@@ -283,6 +286,7 @@ void subWidget::setUiForFunction()
     ui->cmdSet->setText(cmdLabel);
     ui->cmdSet->setFocus();
     ui->leSetValue->setVisible(leSetValVisible);
+    ui->leSetValue->setToolTip(inputToolTip);
     this->setWindowTitle(mFuncName + ": " + mDevName + QString(" [%1]").arg(mDaqDeviceHandle));
 }
 
@@ -491,7 +495,7 @@ void subWidget::memRead()
         int rev = maxMemLen;
         // Print String in Reverse order....
         for (int i = 0; i<rev; i++) {
-            s = QString("%1").arg(memValue[i], 2, 16, QChar('0'));
+            s = QString("0x%1").arg(memValue[i], 2, 16, QChar('0'));
             result.append(s + " ");
             if ((i+1)%8 == 0)
                 result.append("  ");
@@ -515,14 +519,14 @@ void subWidget::memRead()
 void subWidget::memWrite()
 {
     QString nameOfFunc, funcArgs, argVals;
-    QString str, valToWrite;
+    QString str;
     QTime t;
     QString sStartTime, funcStr;
     QString result = "";
     MemRegion memRegion;
     MemDescriptor memDescriptor;
     unsigned int address;
-    unsigned int maxMemLen;
+    long valToWrite;
 
     memRegion = (MemRegion)ui->cmbInfoType->currentData(Qt::UserRole).toInt();
     nameOfFunc = "ulMemGetInfo";
@@ -542,28 +546,47 @@ void subWidget::memWrite()
         mMainWindow->setError(err, sStartTime + funcStr);
         ui->lblStatus->setText(nameOfFunc + argVals + QString(" [Error = %1]").arg(err));
     } else {
-        maxMemLen = memDescriptor.size;
-        address = memDescriptor.address;
-        QByteArray addrInBytes;
-        valToWrite = ui->leSetValue->text();
-        addrInBytes = valToWrite.toUtf8();
-        unsigned char* pMemValue;
-        pMemValue = reinterpret_cast<unsigned char*>(addrInBytes.data());
-        maxMemLen = addrInBytes.size();
-        //unsigned char memValue[maxMemLen];
-        //unsigned char *pMemValue = memValue;
-        //memset(pMemValue, 0, maxMemLen);
-        //toWCharArray(pMemValue);
+        valToWrite = 0;
+        QString valEntered = ui->leSetValue->text();
+        bool ok;
+        if (valEntered.startsWith("0x")) {
+            valToWrite = valEntered.toLong(&ok, 16);
+            if (!ok) {
+                ui->leSetValue->setSelection(0, 12);
+                return;
+            }
+        } else {
+            valToWrite = valEntered.toLong();
+        }
+        address = ui->spnIndex->value();
+        unsigned int valSize = 1;
+        /*unsigned int valSize = (valToWrite / 256) + 1;
+        if (valSize > 4) {
+            return;
+        }*/
+        unsigned char chArr[valSize];
+
+        chArr[0] = valToWrite             & 0xFF;
+        /*if (valSize > 1)
+            chArr[1] = (valToWrite >> 8)  & 0xFF;
+        if (valSize > 2)
+            chArr[2] = (valToWrite >> 16) & 0xFF;
+        if (valSize > 3)
+            chArr[3] = (valToWrite >> 24) & 0xFF;
+        */
+
+        unsigned char* pMemValue = chArr;
+
         nameOfFunc = "ulMemWrite";
         sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
-        err = ulMemWrite(mDaqDeviceHandle, memRegion, address, pMemValue, maxMemLen);
+        err = ulMemWrite(mDaqDeviceHandle, memRegion, address, pMemValue, valSize);
         funcArgs = "(mDaqDeviceHandle, memRegion, address, pMemValue, maxMemLen)\n";
         argVals = QStringLiteral("(%1, %2, %3, %4, %5)")
                 .arg(mDaqDeviceHandle)
                 .arg(memRegion)
                 .arg(address)
                 .arg(QString("0x%1").arg((quintptr)pMemValue, QT_POINTER_SIZE * 2, 16, QChar('0')))
-                .arg(maxMemLen);
+                .arg(valSize);
 
         funcStr = nameOfFunc + funcArgs + "Arg vals: " + argVals;
         str = getRegionNames(memRegion);
