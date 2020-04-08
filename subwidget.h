@@ -65,6 +65,7 @@ private:
     int mUtFunction = 0;
     bool showIndex = false;
     int mCurGroup = 0;
+    bool mSigsConfigured = false;
 
     int mPrintResolution = 3;
     int mHexResolution = 4;

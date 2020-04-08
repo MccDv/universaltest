@@ -28,7 +28,7 @@ subWidget::subWidget(QWidget *parent) :
     ui->fraSelector->setFont(font);
     ui->teShowValues->setStyleSheet("QTextEdit { background-color : white; color : blue; }" );
     ui->lblStatus->setStyleSheet("QLabel { background-color : white; color : blue; }" );
-    //connect(ui->spnIndex, SIGNAL(valueChanged(int)), SLOT(runSelectedFunc()));
+    connect(ui->cmdRefresh, SIGNAL(clicked(bool)), SLOT(runSelectedFunc()));
     connect(ui->cmdStop, SIGNAL(clicked(bool)), this, SLOT(onStopCmd()));
     connect(ui->cmdSet, SIGNAL(clicked(bool)), this, SLOT(runSelectedFunc()));
     //connect(ui->cmbConfigItem, SIGNAL(currentIndexChanged(int)), this, SLOT(runSelectedFunc()));
@@ -347,6 +347,12 @@ void subWidget::runSelectedFunc()
     QFont goFont = ui->cmdSet->font();
     bool makeBold, tmrIsEnabled, tmrIsRunning;
     //bool showStop;
+    if (!mSigsConfigured) {
+        connect(ui->cmbInfoType, SIGNAL(currentIndexChanged(int)), this, SLOT(runSelectedFunc()));
+        connect(ui->cmbConfigItem, SIGNAL(currentIndexChanged(int)), this, SLOT(runSelectedFunc()));
+        connect(ui->spnIndex, SIGNAL(valueChanged(int)), this, SLOT(runSelectedFunc()));
+        mSigsConfigured = true;
+    }
 
     if (mDaqDeviceHandle < 0)
         return;
@@ -526,7 +532,7 @@ void subWidget::memWrite()
     MemRegion memRegion;
     MemDescriptor memDescriptor;
     unsigned int address;
-    long valToWrite;
+    short valToWrite;
 
     memRegion = (MemRegion)ui->cmbInfoType->currentData(Qt::UserRole).toInt();
     nameOfFunc = "ulMemGetInfo";
@@ -556,7 +562,7 @@ void subWidget::memWrite()
                 return;
             }
         } else {
-            valToWrite = valEntered.toLong();
+            valToWrite = valEntered.toShort();
         }
         address = ui->spnIndex->value();
         unsigned int valSize = 1;
@@ -567,14 +573,6 @@ void subWidget::memWrite()
         unsigned char chArr[valSize];
 
         chArr[0] = valToWrite             & 0xFF;
-        /*if (valSize > 1)
-            chArr[1] = (valToWrite >> 8)  & 0xFF;
-        if (valSize > 2)
-            chArr[2] = (valToWrite >> 16) & 0xFF;
-        if (valSize > 3)
-            chArr[3] = (valToWrite >> 24) & 0xFF;
-        */
-
         unsigned char* pMemValue = chArr;
 
         nameOfFunc = "ulMemWrite";
