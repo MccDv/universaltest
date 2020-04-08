@@ -41,6 +41,10 @@ private slots:
     void updateText(QString infoText);
     void swStopScan();
     void runEventSetup();
+    void setCmdClicked();
+    void infoTypeSelected(int curIndex);
+    void cfgItemSelected();
+    void spinChanged();
 
 private:
     Ui::subWidget *ui;
@@ -65,7 +69,7 @@ private:
     int mUtFunction = 0;
     bool showIndex = false;
     int mCurGroup = 0;
-    bool mSigsConfigured = false;
+    bool mSetCmdSignal = false;
 
     int mPrintResolution = 3;
     int mHexResolution = 4;

@@ -30,9 +30,10 @@ subWidget::subWidget(QWidget *parent) :
     ui->lblStatus->setStyleSheet("QLabel { background-color : white; color : blue; }" );
     connect(ui->cmdRefresh, SIGNAL(clicked(bool)), SLOT(runSelectedFunc()));
     connect(ui->cmdStop, SIGNAL(clicked(bool)), this, SLOT(onStopCmd()));
-    connect(ui->cmdSet, SIGNAL(clicked(bool)), this, SLOT(runSelectedFunc()));
-    //connect(ui->cmbConfigItem, SIGNAL(currentIndexChanged(int)), this, SLOT(runSelectedFunc()));
-    //connect(ui->spnIndex, SIGNAL(valueChanged(int)), this, SLOT(runSelectedFunc()));
+    connect(ui->cmdSet, SIGNAL(clicked(bool)), this, SLOT(setCmdClicked()));
+    connect(ui->cmbInfoType, SIGNAL(currentIndexChanged(int)), this, SLOT(infoTypeSelected(int)));
+    connect(ui->cmbConfigItem, SIGNAL(currentIndexChanged(int)), this, SLOT(cfgItemSelected()));
+    connect(ui->spnIndex, SIGNAL(valueChanged(int)), this, SLOT(spinChanged()));
     mMainWindow = getMainWindow();
 }
 
@@ -153,6 +154,7 @@ void subWidget::setUiForFunction()
     bool userFrameVisible, configComboVisible;
     bool infoComboVisible, cmdSetVisible;
     bool leSetValVisible;
+    bool refreshVisible;
     QString cmdLabel;
     QString inputToolTip;
 
@@ -161,12 +163,11 @@ void subWidget::setUiForFunction()
     cmdSetVisible = false;
     userFrameVisible = false;
     leSetValVisible = false;
+    refreshVisible = true;
     inputToolTip = "Start with '0x' for hex value.";
 
     ui->cmbInfoType->clear();
     ui->spnIndex->setValue(0);
-    //disconnect(ui->cmbConfigItem, SIGNAL(currentIndexChanged(int)));
-    //disconnect(ui->cmbInfoType, SIGNAL(currentIndexChanged(int)));
     QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
     switch (mCurGroup) {
     case FUNC_GROUP_MISC:
@@ -209,6 +210,7 @@ void subWidget::setUiForFunction()
             ui->cmbInfoType->addItem("Settings Region", MR_SETTINGS);
             ui->cmbInfoType->addItem("Reserved Region0", MR_RESERVED0);
             //connect(ui->cmdSet, SIGNAL(clicked(bool)), this, SLOT(memReadWrite()));
+            refreshVisible = false;
             infoComboVisible = true;
             break;
         case UL_MEM_WRITE:
@@ -220,6 +222,7 @@ void subWidget::setUiForFunction()
             inputToolTip = "Single byte. Start with '0x' for hex value.";
             infoComboVisible = true;
             leSetValVisible = true;
+            refreshVisible = false;
             break;
         default:
             break;
@@ -264,6 +267,7 @@ void subWidget::setUiForFunction()
             //lineEditVisible = true;
             userFrameVisible = true;
             cmdSetVisible = true;
+            refreshVisible = false;
             ui->cmbInfoType->addItem("Set UL Config", TYPE_UL_INFO);
             ui->cmbInfoType->addItem("Set Dev Config", TYPE_DEV_INFO);
             ui->cmbInfoType->addItem("Set AI Config", TYPE_AI_INFO);
@@ -287,6 +291,7 @@ void subWidget::setUiForFunction()
     ui->cmdSet->setFocus();
     ui->leSetValue->setVisible(leSetValVisible);
     ui->leSetValue->setToolTip(inputToolTip);
+    ui->cmdRefresh->setVisible(refreshVisible);
     this->setWindowTitle(mFuncName + ": " + mDevName + QString(" [%1]").arg(mDaqDeviceHandle));
 }
 
@@ -341,18 +346,85 @@ void subWidget::setConfigItemsForType()
     }
 }
 
+void subWidget::infoTypeSelected(int curIndex)
+{
+    if (curIndex > -1) {
+        switch (mCurGroup) {
+        case FUNC_GROUP_MISC:
+            switch (mUtFunction) {
+            case UL_GET_ERR_MSG:
+            case UL_GET_STATUS:
+            case UL_MEM_READ:
+                runSelectedFunc();
+                break;
+            default:
+                break;
+            }
+            break;
+        case FUNC_GROUP_CONFIG:
+            switch (mUtFunction) {
+            case UL_GET_INFO:
+            case UL_GET_CONFIG:
+                runSelectedFunc();
+                break;
+            case UL_SET_CONFIG:
+                setConfigItemsForType();
+                break;
+            default:
+                break;
+            }
+            break;
+        default:
+            break;
+        }
+    }
+}
+
+void subWidget::cfgItemSelected()
+{
+
+}
+
+void subWidget::spinChanged()
+{
+    switch (mCurGroup) {
+    case FUNC_GROUP_MISC:
+        switch (mUtFunction) {
+        case UL_GET_ERR_MSG:
+        case UL_GET_STATUS:
+        case UL_MEM_READ:
+            runSelectedFunc();
+            break;
+        default:
+            break;
+        }
+        break;
+    case FUNC_GROUP_CONFIG:
+        switch (mUtFunction) {
+        case UL_GET_INFO:
+        case UL_GET_CONFIG:
+            runSelectedFunc();
+            break;
+        default:
+            break;
+        }
+        break;
+    default:
+        break;
+    }
+}
+
+void subWidget::setCmdClicked()
+{
+    mSetCmdSignal = true;
+    runSelectedFunc();
+}
+
 void subWidget::runSelectedFunc()
 {
     ChildWindow *parentWindow;
     QFont goFont = ui->cmdSet->font();
     bool makeBold, tmrIsEnabled, tmrIsRunning;
-    //bool showStop;
-    if (!mSigsConfigured) {
-        connect(ui->cmbInfoType, SIGNAL(currentIndexChanged(int)), this, SLOT(runSelectedFunc()));
-        connect(ui->cmbConfigItem, SIGNAL(currentIndexChanged(int)), this, SLOT(runSelectedFunc()));
-        connect(ui->spnIndex, SIGNAL(valueChanged(int)), this, SLOT(runSelectedFunc()));
-        mSigsConfigured = true;
-    }
 
     if (mDaqDeviceHandle < 0)
         return;
@@ -380,7 +452,8 @@ void subWidget::runSelectedFunc()
             memRead();
             break;
         case UL_MEM_WRITE:
-            memWrite();
+            if (mSetCmdSignal)
+                memWrite();
             break;
         }
         break;
@@ -393,7 +466,7 @@ void subWidget::runSelectedFunc()
             readConfig();
             break;
         case UL_SET_CONFIG:
-            //setConfiguration();
+            setConfiguration();
             break;
         default:
             break;
@@ -431,6 +504,7 @@ void subWidget::runSelectedFunc()
             ui->cmdSet->setFont(goFont);
         }
     }
+    mSetCmdSignal = false;
 }
 
 void subWidget::onStopCmd()
@@ -465,6 +539,8 @@ void subWidget::memRead()
     unsigned int maxMemLen;
 
     memRegion = (MemRegion)ui->cmbInfoType->currentData(Qt::UserRole).toInt();
+    if (memRegion < 1)
+        return;
     nameOfFunc = "ulMemGetInfo";
     funcArgs = "(mDaqDeviceHandle, memRegion, {accessTypes, address, size})\n";
     sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
@@ -605,6 +681,8 @@ void subWidget::readInfo()
     int infoItem, infoType;
     QString devID, devInfo, infoText, str;
 
+    if (mDaqDeviceHandle < 0)
+        return;
     infoType = ui->cmbInfoType->currentData(Qt::UserRole).toInt();
     showIndex = false;
 
@@ -941,6 +1019,8 @@ void subWidget::readConfig()
     QString devConfig, str;
     bool noCfgExists;
 
+    if (mDaqDeviceHandle < 0)
+        return;
     configType = ui->cmbInfoType->currentData(Qt::UserRole).toInt();
     showIndex = false;
 
