@@ -267,6 +267,7 @@ void subWidget::setUiForFunction()
             //lineEditVisible = true;
             userFrameVisible = true;
             cmdSetVisible = true;
+            leSetValVisible = true;
             refreshVisible = false;
             ui->cmbInfoType->addItem("Set UL Config", TYPE_UL_INFO);
             ui->cmbInfoType->addItem("Set Dev Config", TYPE_DEV_INFO);
