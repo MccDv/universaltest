@@ -23,6 +23,8 @@ subWidget::subWidget(QWidget *parent) :
     this->setFont(font);
 #endif
 
+    ui->cmdSet->setObjectName("userCmd");
+    ui->cmdRefresh->setObjectName("userRefresh");
     ui->teShowValues->setFont(QFont ("Courier", fontSize));
     ui->fraCenter->setFont(font);
     ui->fraSelector->setFont(font);
@@ -205,6 +207,7 @@ void subWidget::setUiForFunction()
             ui->cmbInfoType->addItem("ulDaqOutScanStop");
             break;
         case UL_MEM_READ:
+            mFuncName = "ulMemRead";
             ui->cmbInfoType->addItem("Cal Region", MR_CAL);
             ui->cmbInfoType->addItem("User Region", MR_USER);
             ui->cmbInfoType->addItem("Settings Region", MR_SETTINGS);
@@ -214,6 +217,7 @@ void subWidget::setUiForFunction()
             infoComboVisible = true;
             break;
         case UL_MEM_WRITE:
+            mFuncName = "ulMemWrite";
             ui->cmbInfoType->addItem("Cal Region", MR_CAL);
             ui->cmbInfoType->addItem("User Region", MR_USER);
             ui->cmbInfoType->addItem("Settings Region", MR_SETTINGS);
@@ -383,6 +387,8 @@ void subWidget::infoTypeSelected(int curIndex)
 
 void subWidget::cfgItemSelected()
 {
+    if (ui->cmbConfigItem->currentText() == "Mem Code")
+        ui->leSetValue->setText("43605");
 
 }
 
@@ -538,10 +544,23 @@ void subWidget::memRead()
     MemDescriptor memDescriptor;
     unsigned int address;
     unsigned int maxMemLen;
+    bool userCmd, regionValid;
+    long long validRegions;
 
+    regionValid = false;
+    err = ulDevGetInfo(mDaqDeviceHandle, DEV_INFO_MEM_REGIONS, 0, &validRegions);
+    QObject* signalSource = this->sender();
+    if ((signalSource->objectName() == "userRefresh") | (signalSource->objectName() == "userCmd"))
+        userCmd = true;
     memRegion = (MemRegion)ui->cmbInfoType->currentData(Qt::UserRole).toInt();
     if (memRegion < 1)
         return;
+    if (validRegions & memRegion)
+        regionValid = true;
+    if (!regionValid)
+        if (!userCmd)
+            return;
+
     nameOfFunc = "ulMemGetInfo";
     funcArgs = "(mDaqDeviceHandle, memRegion, {accessTypes, address, size})\n";
     sStartTime = t.currentTime().toString("hh:mm:ss.zzz") + "~";
@@ -610,6 +629,22 @@ void subWidget::memWrite()
     MemDescriptor memDescriptor;
     unsigned int address;
     short valToWrite;
+    bool userCmd, regionValid;
+    long long validRegions;
+
+    regionValid = false;
+    err = ulDevGetInfo(mDaqDeviceHandle, DEV_INFO_MEM_REGIONS, 0, &validRegions);
+    QObject* signalSource = this->sender();
+    if ((signalSource->objectName() == "userRefresh") | (signalSource->objectName() == "userCmd"))
+        userCmd = true;
+    memRegion = (MemRegion)ui->cmbInfoType->currentData(Qt::UserRole).toInt();
+    if (memRegion < 1)
+        return;
+    if (validRegions & memRegion)
+        regionValid = true;
+    if (!regionValid)
+        if (!userCmd)
+            return;
 
     memRegion = (MemRegion)ui->cmbInfoType->currentData(Qt::UserRole).toInt();
     nameOfFunc = "ulMemGetInfo";
@@ -1338,6 +1373,9 @@ QString subWidget::showConfig(int configType, int configItem, QString showItem)
         mUseTimer = false;
         errNumStr = QString("[Error %1: ").arg(err);
         switch (err) {
+        case ERR_BAD_DEV_HANDLE:
+            errDesc = errNumStr + "Bad device handle]";
+            break;
         case ERR_BAD_DEV_TYPE:
             errDesc = errNumStr + "Function incompatible with device]";
             break;
