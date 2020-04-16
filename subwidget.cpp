@@ -35,7 +35,7 @@ subWidget::subWidget(QWidget *parent) :
     connect(ui->cmdSet, SIGNAL(clicked(bool)), this, SLOT(setCmdClicked()));
     connect(ui->cmbInfoType, SIGNAL(currentIndexChanged(int)), this, SLOT(infoTypeSelected(int)));
     connect(ui->cmbConfigItem, SIGNAL(currentIndexChanged(int)), this, SLOT(cfgItemSelected()));
-    connect(ui->spnIndex, SIGNAL(valueChanged(int)), this, SLOT(spinChanged()));
+    connect(ui->spnIndex, SIGNAL(valueChanged(int)), this, SLOT(spinChanged(int)));
     mMainWindow = getMainWindow();
 }
 
@@ -420,15 +420,19 @@ void subWidget::cfgItemSelected()
 
 }
 
-void subWidget::spinChanged()
+void subWidget::spinChanged(int newVal)
 {
+    int curSize;
+
     switch (mCurGroup) {
     case FUNC_GROUP_MISC:
         switch (mUtFunction) {
         case UL_GET_ERR_MSG:
         case UL_GET_STATUS:
         case UL_MEM_READ:
-            runSelectedFunc();
+            curSize = ui->cmbNumBytes->currentText().toInt();
+            if ((newVal + curSize) < mMemSize)
+                runSelectedFunc();
             break;
         default:
             break;
@@ -793,6 +797,8 @@ void subWidget::readInfo()
         infoItem = DEV_INFO_HAS_AI_DEV;
         devInfo = showInfo(infoType, infoItem, "DevHasAI");
         infoText.append(devInfo + "</tr><tr>");
+        if (devInfo.startsWith("Error:"))
+            break;
         infoItem = DEV_INFO_HAS_AO_DEV;
         devInfo = showInfo(infoType, infoItem, "DevHasAO");
         infoText.append(devInfo  + "</tr><tr>");
@@ -823,6 +829,8 @@ void subWidget::readInfo()
         infoItem = AI_INFO_MIN_SCAN_RATE;
         devInfo = showInfoDbl(infoType, infoItem, "AIScan min");
         infoText.append(devInfo  + "</tr><tr>");
+        if (devInfo.startsWith("Error:"))
+            break;
         infoItem = AI_INFO_MAX_SCAN_RATE;
         devInfo = showInfoDbl(infoType, infoItem, "AIScan max");
         infoText.append(devInfo  + "</tr><tr>");
@@ -902,6 +910,8 @@ void subWidget::readInfo()
         infoItem = AO_INFO_MIN_SCAN_RATE;
         devInfo = showInfoDbl(infoType, infoItem, "AOScan min");
         infoText.append(devInfo  + "</tr><tr>");
+        if (devInfo.startsWith("Error:"))
+            break;
         infoItem = AO_INFO_MAX_SCAN_RATE;
         devInfo = showInfoDbl(infoType, infoItem, "AOScan max");
         infoText.append(devInfo  + "</tr><tr>");
@@ -946,6 +956,8 @@ void subWidget::readInfo()
         infoItem = DIO_INFO_MIN_SCAN_RATE;
         devInfo = showInfoDbl(infoType, infoItem, "DioScan min");
         infoText.append(devInfo  + "</tr><tr>");
+        if (devInfo.startsWith("Error:"))
+            break;
         infoItem = DIO_INFO_MAX_SCAN_RATE;
         devInfo = showInfoDbl(infoType, infoItem, "DioScan max");
         infoText.append(devInfo  + "</tr><tr>");
@@ -986,6 +998,8 @@ void subWidget::readInfo()
         infoItem = CTR_INFO_MIN_SCAN_RATE;
         devInfo = showInfoDbl(infoType, infoItem, "CtrScan min");
         infoText.append(devInfo  + "</tr><tr>");
+        if (devInfo.startsWith("Error:"))
+            break;
         infoItem = CTR_INFO_MAX_SCAN_RATE;
         devInfo = showInfoDbl(infoType, infoItem, "CtrScan max");
         infoText.append(devInfo  + "</tr><tr>");
@@ -1028,6 +1042,8 @@ void subWidget::readInfo()
         infoItem = TMR_INFO_MIN_FREQ;
         devInfo = showInfoDbl(infoType, infoItem, "Tmr min frequency");
         infoText.append(devInfo  + "</tr><tr>");
+        if (devInfo.startsWith("Error:"))
+            break;
         infoItem = TMR_INFO_MAX_FREQ;
         devInfo = showInfoDbl(infoType, infoItem, "Tmr max frequency");
         infoText.append(devInfo  + "</tr><tr>");
@@ -1046,6 +1062,8 @@ void subWidget::readInfo()
         infoItem = DAQI_INFO_MIN_SCAN_RATE;
         devInfo = showInfoDbl(infoType, infoItem, "DaqIScan min");
         infoText.append(devInfo  + "</tr><tr>");
+        if (devInfo.startsWith("Error:"))
+            break;
         infoItem = DAQI_INFO_MAX_SCAN_RATE;
         devInfo = showInfoDbl(infoType, infoItem, "DaqIScan max");
         infoText.append(devInfo  + "</tr><tr>");
@@ -1071,6 +1089,8 @@ void subWidget::readInfo()
         infoItem = DAQO_INFO_MIN_SCAN_RATE;
         devInfo = showInfoDbl(infoType, infoItem, "DaqOScan min");
         infoText.append(devInfo  + "</tr><tr>");
+        if (devInfo.startsWith("Error:"))
+            break;
         infoItem = DAQO_INFO_MAX_SCAN_RATE;
         devInfo = showInfoDbl(infoType, infoItem, "DaqOScan max");
         infoText.append(devInfo  + "</tr><tr>");
@@ -1142,7 +1162,8 @@ void subWidget::readConfig()
         showIndex = false;
         devConfig = showConfig(configType, configItem, "AiExp32 connected");
         configText.append(devConfig + "</tr><tr>");
-        //ui->teShowValues->setHtml(configText);
+        if (devConfig.startsWith("Error:"))
+            break;
         configItem = DEV_CFG_IP_ADDR_STR;
         devConfig = showConfigStr(configType, configItem, "IP Address");
         configText.append(devConfig + "</tr><tr>");
@@ -1165,6 +1186,8 @@ void subWidget::readConfig()
         showIndex = true;
         devConfig = showConfig(configType, configItem, "AI Chan Type");
         configText.append(devConfig + "</tr><tr>");
+        if (devConfig.startsWith("Error:"))
+            break;
         configItem = AI_CFG_CHAN_TC_TYPE;
         devConfig = showConfig(configType, configItem, "AI Chan TC Type");
         configText.append(devConfig + "</tr><tr>");
@@ -1248,6 +1271,8 @@ void subWidget::readConfig()
         showIndex = true;
         devConfig = showConfig(configType, configItem, "DIO Port Direction Mask");
         configText.append(devConfig + "</tr><tr>");
+        if (devConfig.startsWith("Error:"))
+            break;
         configItem = DIO_CFG_PORT_INITIAL_OUTPUT_VAL;
         showIndex = true;
         devConfig = showConfig(configType, configItem, "DIO Port Output Val");
@@ -1676,6 +1701,7 @@ QString subWidget::showConfigStr(int configType, int configItem, QString showIte
         } else {
             errStr = funcStr + "\n(ConfigItem = " + showItem + ")";
             mMainWindow->setError(err, sStartTime + funcStr);
+            textToAdd = QString("Error: %1").arg(err);
         }
     } else {
         QString strIndex = "<td></td>";
@@ -1832,6 +1858,7 @@ QString subWidget::showInfo(int infoType, int infoItem, QString showItem)
         } else {
             //errStr = funcStr + "\n(InfoItem = " + showItem + ")";
             mMainWindow->setError(err, sStartTime + funcStr);
+            textToAdd = QString("Error: %1").arg(err);
         }
     } else {
         QString strIndex = "<td></td>";
@@ -2501,16 +2528,17 @@ void subWidget::setMemParams()
     ui->cmbNumBytes->clear();
     memRegion = (MemRegion)ui->cmbInfoType->currentData(Qt::UserRole).toInt();
     err = ulMemGetInfo(mDaqDeviceHandle, memRegion, &memDescriptor);
-    unsigned int minValue;
     if (err != ERR_NO_ERROR) {
-        minValue = 0;
+        mMinValue = 0;
+        mMemSize = 0;
         ui->cmbNumBytes->addItem("0");
     } else {
-        ui->cmbNumBytes->addItem(QString("%1").arg(memDescriptor.size));
-        minValue = memDescriptor.address;
+        mMemSize = memDescriptor.size;
+        ui->cmbNumBytes->addItem(QString("%1").arg(mMemSize));
+        mMinValue = memDescriptor.address;
     }
-    ui->spnIndex->setMinimum(minValue);
-    ui->spnIndex->setValue(minValue);
+    ui->spnIndex->setMinimum(mMinValue);
+    ui->spnIndex->setValue(mMinValue);
     QCoreApplication::processEvents(QEventLoop::AllEvents);
 }
 

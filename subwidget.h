@@ -44,7 +44,7 @@ private slots:
     void setCmdClicked();
     void infoTypeSelected(int curIndex);
     void cfgItemSelected();
-    void spinChanged();
+    void spinChanged(int newVal);
 
 private:
     Ui::subWidget *ui;
@@ -71,6 +71,7 @@ private:
     int mCurGroup = 0;
     bool mSetCmdSignal = false;
     bool memEnabled = false;
+    unsigned int mMinValue, mMemSize;
 
     int mPrintResolution = 3;
     int mHexResolution = 4;
