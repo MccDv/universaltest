@@ -569,7 +569,6 @@ void subWidget::memRead()
     QString sStartTime, funcStr;
     QString result = "";
     MemRegion memRegion;
-    MemDescriptor memDescriptor;
     unsigned int address;
     unsigned int maxMemLen;
     bool userCmd, regionValid;
@@ -578,6 +577,8 @@ void subWidget::memRead()
     if (!memEnabled)
         return;
     regionValid = false;
+    maxMemLen = ui->cmbNumBytes->currentText().toUInt();
+
     nameOfFunc = "ulDevGetInfo";
     funcArgs = "(mDaqDeviceHandle, devInfoItem, index, infoValue)\n";
     err = ulDevGetInfo(mDaqDeviceHandle, DEV_INFO_MEM_REGIONS, 0, &validRegions);
@@ -595,7 +596,7 @@ void subWidget::memRead()
         return;
     if (validRegions & memRegion)
         regionValid = true;
-    if (!regionValid)
+    if ((!regionValid) | (maxMemLen == 0))
         if (!userCmd)
             return;
 
@@ -629,7 +630,6 @@ void subWidget::memRead()
         address = memDescriptor.address;
     */
 
-    maxMemLen = ui->cmbNumBytes->currentText().toUInt();
     address = (unsigned int)ui->spnIndex->value();
     unsigned char memValue[maxMemLen];
     unsigned char *pMemValue = memValue;
@@ -2501,13 +2501,17 @@ void subWidget::setMemParams()
     ui->cmbNumBytes->clear();
     memRegion = (MemRegion)ui->cmbInfoType->currentData(Qt::UserRole).toInt();
     err = ulMemGetInfo(mDaqDeviceHandle, memRegion, &memDescriptor);
+    unsigned int minValue;
     if (err != ERR_NO_ERROR) {
+        minValue = 0;
         ui->cmbNumBytes->addItem("0");
-        ui->spnIndex->setMinimum(0);
     } else {
         ui->cmbNumBytes->addItem(QString("%1").arg(memDescriptor.size));
-        ui->spnIndex->setMinimum(memDescriptor.address);
+        minValue = memDescriptor.address;
     }
+    ui->spnIndex->setMinimum(minValue);
+    ui->spnIndex->setValue(minValue);
+    QCoreApplication::processEvents(QEventLoop::AllEvents);
 }
 
 #ifdef UL_1_20
