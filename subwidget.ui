@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>458</width>
+    <width>563</width>
     <height>299</height>
    </rect>
   </property>
@@ -186,6 +186,18 @@
          <enum>QFrame::Raised</enum>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout">
+         <property name="leftMargin">
+          <number>2</number>
+         </property>
+         <property name="topMargin">
+          <number>2</number>
+         </property>
+         <property name="rightMargin">
+          <number>2</number>
+         </property>
+         <property name="bottomMargin">
+          <number>2</number>
+         </property>
          <item>
           <widget class="QPushButton" name="cmdSet">
            <property name="sizePolicy">
@@ -249,6 +261,16 @@
            </property>
            <property name="clearButtonEnabled">
             <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="cmbNumBytes">
+           <property name="toolTip">
+            <string>Number of bytes</string>
+           </property>
+           <property name="editable">
+            <bool>true</bool>
            </property>
           </widget>
          </item>

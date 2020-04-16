@@ -70,6 +70,7 @@ private:
     bool showIndex = false;
     int mCurGroup = 0;
     bool mSetCmdSignal = false;
+    bool memEnabled = false;
 
     int mPrintResolution = 3;
     int mHexResolution = 4;
@@ -89,6 +90,7 @@ private:
     void setUiForGroup();
     void setUiForFunction();
     void getErrorMessage();
+    void setMemParams();
     UlError ctrGetConfig(DaqDeviceHandle daqDeviceHandle, CtrConfigItem configItem, unsigned int index, long long &configValue);
     UlError ctrSetConfig(DaqDeviceHandle daqDeviceHandle, CtrConfigItem configItem, unsigned int index, long long configValue);
 };
