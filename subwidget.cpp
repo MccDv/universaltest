@@ -422,7 +422,7 @@ void subWidget::cfgItemSelected()
 
 void subWidget::spinChanged(int newVal)
 {
-    int curSize;
+    unsigned int curSize;
 
     switch (mCurGroup) {
     case FUNC_GROUP_MISC:
