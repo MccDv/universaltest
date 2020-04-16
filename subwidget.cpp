@@ -349,6 +349,7 @@ void subWidget::setConfigItemsForType()
         ui->cmbConfigItem->addItem("IEPE Mode", AI_CFG_CHAN_IEPE_MODE);
         ui->cmbConfigItem->addItem("Chan Coupling Mode", AI_CFG_CHAN_COUPLING_MODE);
         ui->cmbConfigItem->addItem("Chan Snsr Connection", AI_CFG_CHAN_SENSOR_CONNECTION_TYPE);
+        ui->cmbConfigItem->addItem("OTD Mode", AI_CFG_OTD_MODE);
         ui->cmbConfigItem->addItem("Chan OTD Mode", AI_CFG_CHAN_OTD_MODE);
         ui->cmbConfigItem->addItem("Cal Table Types", AI_CFG_CAL_TABLE_TYPE);
         ui->cmbConfigItem->addItem("Reject Frequency", AI_CFG_REJECT_FREQ_TYPE);
@@ -1249,10 +1250,10 @@ void subWidget::readConfig()
         configText.append(devConfig + "</tr><tr>");
         showIndex = false;
         configItem = AI_CFG_EXP_CAL_DATE;
-        devConfig = showConfig(configType, configItem, "AI Cal Table");
+        devConfig = showConfig(configType, configItem, "Exp Cal Date");
         configText.append(devConfig + "</tr><tr>");
         configItem = AI_CFG_EXP_CAL_DATE_STR;
-        devConfig = showConfigStr(configType, configItem, "AI Cal Date");
+        devConfig = showConfigStr(configType, configItem, "Exp Cal Date");
         configText.append(devConfig + "</tr><tr>");
         ui->teShowValues->setHtml(configText);
         break;
@@ -1371,7 +1372,7 @@ QString subWidget::showConfig(int configType, int configItem, QString showItem)
         aiConfigItem = (AiConfigItem)configItem;
         nameOfFunc = "ulAIGetConfig";
         err = ulAIGetConfig(mDaqDeviceHandle, aiConfigItem, index, &configValue);
-        if (aiConfigItem == AI_CFG_CAL_DATE) {
+        if ((aiConfigItem == AI_CFG_CAL_DATE) | (aiConfigItem == AI_CFG_EXP_CAL_DATE)) {
             mSec = (qint64)(configValue * 1000);
             QDateTime calTime = QDateTime::fromMSecsSinceEpoch(mSec);
             errDesc = " (" + calTime.toString() + ")";
@@ -1389,6 +1390,8 @@ QString subWidget::showConfig(int configType, int configItem, QString showItem)
             errDesc = " (" + getChanCouplingModeName((CouplingMode)configValue) + ")";
         if (aiConfigItem == AI_CFG_CHAN_SENSOR_CONNECTION_TYPE)
             errDesc = " (" + getSensorConnectNames((SensorConnectionType)configValue) + ")";
+        if (aiConfigItem == AI_CFG_OTD_MODE)
+            errDesc = " (" + getEnableDisableName((int)configValue) + ")";
         if (aiConfigItem == AI_CFG_CHAN_OTD_MODE)
             errDesc = " (" + getEnableDisableName((int)configValue) + ")";
         if (aiConfigItem == AI_CFG_CAL_TABLE_TYPE)
