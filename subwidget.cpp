@@ -1649,7 +1649,7 @@ QString subWidget::showConfigStr(int configType, int configItem, QString showIte
     if(err != ERR_NO_ERROR)
         returnStr = "";
     else
-        returnStr = QString::fromLocal8Bit(pConfigValue, (int)maxConfigLen);
+        returnStr = QString::fromLocal8Bit(pConfigValue, (int)maxConfigLen - 1);
     if(configType == TYPE_UL_INFO) {
         funcArgs = "(configItem, index, &configValue, maxConfigLen)\n";
         argVals = QStringLiteral("Arg vals: (%1, %2, {%3}, %4)")
@@ -2081,7 +2081,7 @@ QString subWidget::showInfoStr(int infoType, int infoItem, QString showItem)
     if(err != ERR_NO_ERROR)
         returnStr = "";
     else
-        returnStr = QString::fromLocal8Bit(pInfoValue, (int)maxConfigLen);
+        returnStr = QString::fromLocal8Bit(pInfoValue, (int)maxConfigLen - 1);
     //if (infoType == TYPE_UL_INFO) {
     funcArgs = "(ulInfoItemStr, index, pInfoString, &maxConfigLen)\n";
     argVals = QStringLiteral("(%1, %2, %3, %4)")
