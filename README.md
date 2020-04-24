@@ -26,7 +26,7 @@ The following describes how these prerequisites can be installed.
 May also need:
 ```sh
      $ sudo apt install mesa-common-dev
-...
+```
 
   - Arch-based Linux distributions such as Manjaro
   
