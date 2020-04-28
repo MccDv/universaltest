@@ -23,6 +23,11 @@ The following describes how these prerequisites can be installed.
      $ sudo apt install qtbase5-dev
      $ sudo apt install qt5-default
 ```
+May also need:
+```sh
+     $ sudo apt install mesa-common-dev
+```
+
   - Arch-based Linux distributions such as Manjaro
   
 ```sh
