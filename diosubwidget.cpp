@@ -603,7 +603,7 @@ void DioSubWidget::initDeviceParams()
     }
     portList = validPorts;
     ui->cmdGo->setFocus();
-    if (!mHasAiExp32)
+    if ((mDevName.contains("EXP")) & (!mHasAiExp32))
         disableExpDigital(false);
 }
 
