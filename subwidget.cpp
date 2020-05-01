@@ -429,7 +429,10 @@ void subWidget::spinChanged(int newVal)
     case FUNC_GROUP_MISC:
         switch (mUtFunction) {
         case UL_GET_ERR_MSG:
+            runSelectedFunc();
+            break;
         case UL_GET_STATUS:
+            break;
         case UL_MEM_READ:
             curSize = ui->cmbNumBytes->currentText().toInt();
             if ((newVal + curSize) < mMemSize)
