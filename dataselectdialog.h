@@ -4,6 +4,10 @@
 #include <QDialog>
 #include "datamanager.h"
 
+typedef QHash<int, int> twoIntType;
+typedef QHash<int, double> intDblType;
+typedef QHash<int, bool> intBoolType;
+
 namespace Ui {
 class DataSelectDialog;
 }
@@ -11,14 +15,14 @@ class DataSelectDialog;
 class DataSelectDialog : public QDialog
 {
     Q_OBJECT
-    Q_PROPERTY(QHash<int, int> waveType READ waveType WRITE setWaveType NOTIFY waveTypeChanged)
-    Q_PROPERTY(QHash<int, int> numCycles READ numCycles WRITE setNumCycles NOTIFY numCyclesChanged)
-    Q_PROPERTY(QHash<int, double> offset READ offset WRITE setOffset NOTIFY offsetChanged)
-    Q_PROPERTY(QHash<int, double> amplitude READ amplitude WRITE setAmplitude NOTIFY amplitudeChanged)
-    Q_PROPERTY(QHash<int, int> resolution READ resolution WRITE setResolution NOTIFY resolutionChanged)
-    Q_PROPERTY(QHash<int, int> dataScale READ dataScale WRITE setDataScale NOTIFY dataScaleChanged)
-    Q_PROPERTY(QHash<int, double> fsRange READ fsRange WRITE setFsRange NOTIFY fsRangeChanged)
-    Q_PROPERTY(QHash<int, bool> bipolar READ bipolar WRITE setBipolar NOTIFY bipolarChanged)
+    Q_PROPERTY(twoIntType waveType READ waveType WRITE setWaveType NOTIFY waveTypeChanged)
+    Q_PROPERTY(twoIntType numCycles READ numCycles WRITE setNumCycles NOTIFY numCyclesChanged)
+    Q_PROPERTY(intDblType offset READ offset WRITE setOffset NOTIFY offsetChanged)
+    Q_PROPERTY(intDblType amplitude READ amplitude WRITE setAmplitude NOTIFY amplitudeChanged)
+    Q_PROPERTY(twoIntType resolution READ resolution WRITE setResolution NOTIFY resolutionChanged)
+    Q_PROPERTY(twoIntType dataScale READ dataScale WRITE setDataScale NOTIFY dataScaleChanged)
+    Q_PROPERTY(intDblType fsRange READ fsRange WRITE setFsRange NOTIFY fsRangeChanged)
+    Q_PROPERTY(intBoolType bipolar READ bipolar WRITE setBipolar NOTIFY bipolarChanged)
 
 public:
     explicit DataSelectDialog(QWidget *parent = 0);

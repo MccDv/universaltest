@@ -336,7 +336,7 @@ void CtrSubWidget::setupPlot(QCustomPlot *dataPlot, int chanCount)
     int chanCycle;
     int curChanCount;
     dataPlot->clearGraphs();
-    dataPlot->setBackground(brushColor.background());
+    dataPlot->setBackground(brushColor.window());
     dataPlot->axisRect()->setBackground(Qt::white);
     chanCycle = -1;
 

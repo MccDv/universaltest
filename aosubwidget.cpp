@@ -218,6 +218,7 @@ void AoSubWidget::setUiForFunction()
         mFuncName = "ulAOutScan";
         mPlot = true;
         configWaves();
+        break;
     case UL_DAQ_OUTSCAN:
         if (mUtFunction == UL_DAQ_OUTSCAN) {
             mFuncName = "ulDaqOutScan";
@@ -278,7 +279,7 @@ void AoSubWidget::setupPlot(QCustomPlot *dataPlot, int chanCount)
     int chanCycle;
     int curChanCount;
     dataPlot->clearGraphs();
-    dataPlot->setBackground(brushColor.background());
+    dataPlot->setBackground(brushColor.window());
     dataPlot->axisRect()->setBackground(Qt::white);
     chanCycle = -1;
 
@@ -401,7 +402,7 @@ void AoSubWidget::queueDialogResponse()
 
 void AoSubWidget::showDataGen()
 {
-    dataSelectDlg = new DataSelectDialog(this);
+    dataSelectDlg = new DataSelectDialog();
     configWaves();
     if (mWaves.count()) {
         dataSelectDlg->setAmplitude(mAmplitude);
