@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
     QString appVer;
 
     textColor = "royalblue";
-    a.setApplicationName("version");
+    a.setApplicationName("Universal Test");
     a.setApplicationVersion(VERSION_STRING);
     parser.addVersionOption();
     parser.process(a);
