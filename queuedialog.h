@@ -5,6 +5,11 @@
 #include "uldaq.h"
 #include "testutilities.h"
 
+typedef QHash<int, int> chanListType;
+typedef QHash<int, AiInputMode> modeListType;
+typedef QHash<int, Range> rangeListType;
+typedef QHash<int, DaqOutChanType> daqOutChanListType;
+
 namespace Ui {
 class QueueDialog;
 }
@@ -12,11 +17,11 @@ class QueueDialog;
 class QueueDialog : public QDialog
 {
     Q_OBJECT
-    Q_PROPERTY(QHash<int, int> chanList READ chanList WRITE setChanList NOTIFY chanListChanged)
-    Q_PROPERTY(QHash<int, AiInputMode> modeList READ modeList WRITE setModeList NOTIFY modeListChanged)
-    Q_PROPERTY(QHash<int, Range> rangeList READ rangeList WRITE setRangeList NOTIFY rangeListChanged)
+    Q_PROPERTY(chanListType chanList READ chanList WRITE setChanList NOTIFY chanListChanged)
+    Q_PROPERTY(modeListType modeList READ modeList WRITE setModeList NOTIFY modeListChanged)
+    Q_PROPERTY(rangeListType rangeList READ rangeList WRITE setRangeList NOTIFY rangeListChanged)
     Q_PROPERTY(int numQueueElements READ numQueueElements WRITE setNumQueueElements NOTIFY numQueueElementsChanged)
-    Q_PROPERTY(QHash<int, DaqOutChanType> chanOutTypeList READ chanOutTypeList WRITE setChanOutTypeList NOTIFY chanOutTypeListChanged)
+    Q_PROPERTY(daqOutChanListType chanOutTypeList READ chanOutTypeList WRITE setChanOutTypeList NOTIFY chanOutTypeListChanged)
 
 public:
     explicit QueueDialog(QWidget *parent = 0, UtFunctionGroup utFuncGroup = FUNC_GROUP_AIN);

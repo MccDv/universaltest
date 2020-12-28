@@ -42,7 +42,7 @@ DiscoverSubWidget::DiscoverSubWidget(QWidget *parent) :
     connect(ui->cmdDescriptor, SIGNAL(clicked(bool)), this, SLOT(getDescriptor()));
     connect(ui->cmdIsConnected, SIGNAL(clicked(bool)), this, SLOT(checkConnection()));
     connect(ui->cmdSetCode, SIGNAL(clicked(bool)), this, SLOT(on_cmdCode_clicked()));
-    ui->textEdit->setTabStopWidth(50);
+    //ui->textEdit->setTabStopWidth(50);
     mMainWindow = getMainWindow();
 
 }

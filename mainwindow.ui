@@ -18,6 +18,10 @@
   <property name="windowTitle">
    <string>Universal Test for Linux</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>UtLnxSplash.png</normaloff>UtLnxSplash.png</iconset>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <property name="spacing">
@@ -204,7 +208,7 @@
      <x>0</x>
      <y>0</y>
      <width>1091</width>
-     <height>19</height>
+     <height>21</height>
     </rect>
    </property>
    <property name="nativeMenuBar">

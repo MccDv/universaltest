@@ -397,7 +397,7 @@ void DioSubWidget::setupPlot(QCustomPlot *dataPlot, int chanCount)
     int chanCycle;
     int curChanCount;
     dataPlot->clearGraphs();
-    dataPlot->setBackground(brushColor.background());
+    dataPlot->setBackground(brushColor.window());
     dataPlot->axisRect()->setBackground(Qt::white);
     chanCycle = -1;
 
@@ -603,7 +603,7 @@ void DioSubWidget::initDeviceParams()
     }
     portList = validPorts;
     ui->cmdGo->setFocus();
-    if (!mHasAiExp32)
+    if ((mDevName.contains("EXP")) & (!mHasAiExp32))
         disableExpDigital(false);
 }
 
