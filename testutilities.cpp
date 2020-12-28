@@ -1398,6 +1398,115 @@ QString getRangeName(Range rangeVal)
     }
 }
 
+QString getRangeNomo(Range rangeVal)
+{
+    double curRangeVolts;
+
+    switch (rangeVal) {
+    case BIP60VOLTS:
+        curRangeVolts = 60;
+        break;
+    case BIP30VOLTS:
+        curRangeVolts = 30;
+        break;
+    case BIP15VOLTS:
+        curRangeVolts = 15;
+        break;
+    case BIP20VOLTS:
+        curRangeVolts = 20;
+        break;
+    case BIP10VOLTS:
+        curRangeVolts = 10;
+        break;
+    case BIP5VOLTS:
+        curRangeVolts = 5;
+        break;
+    case BIP4VOLTS:
+        curRangeVolts = 4;
+        break;
+    case BIP3VOLTS:
+        curRangeVolts = 3;
+        break;
+    case BIP2PT5VOLTS:
+        curRangeVolts = 2.5;
+        break;
+    case BIP2VOLTS:
+        curRangeVolts = 2;
+        break;
+    case BIP1PT25VOLTS:
+        curRangeVolts = 1.25;
+        break;
+    case BIP1VOLTS:
+        curRangeVolts = 1;
+        break;
+    case BIPPT625VOLTS:
+        curRangeVolts = 0.625;
+        break;
+    case BIPPT5VOLTS:
+        curRangeVolts = 0.5;
+        break;
+    case BIPPT312VOLTS:
+        curRangeVolts = 0.312;
+        break;
+    case BIPPT25VOLTS:
+        curRangeVolts = 0.25;
+        break;
+    case BIPPT125VOLTS:
+        curRangeVolts = 0.125;
+        break;
+    case BIPPT2VOLTS:
+        curRangeVolts = 0.2;
+        break;
+    case BIPPT156VOLTS:
+        curRangeVolts = 0.156;
+        break;
+    case BIPPT1VOLTS:
+        curRangeVolts = 0.1;
+        break;
+    case BIPPT078VOLTS:
+        curRangeVolts = 0.078;
+        break;
+    case BIPPT05VOLTS:
+        curRangeVolts = 0.05;
+        break;
+    case BIPPT01VOLTS:
+        curRangeVolts = 0.01;
+        break;
+    case BIPPT005VOLTS:
+        curRangeVolts = 0.005;
+        break;
+    case UNI60VOLTS:
+        curRangeVolts = 60;
+        break;
+    case UNI30VOLTS:
+        curRangeVolts = 30;
+        break;
+    case UNI15VOLTS:
+        curRangeVolts = 15;
+        break;
+    case UNI20VOLTS:
+        curRangeVolts = 20;
+        break;
+    case UNI10VOLTS:
+        curRangeVolts = 10;
+        break;
+    case UNI5VOLTS:
+        curRangeVolts = 5;
+        break;
+    case MA0TO20:
+        curRangeVolts = 0.02;
+        break;
+    default:
+        curRangeVolts = 0;
+        break;
+    }
+    const QChar plusMinus = 0x00B1;
+    if (rangeVal < 100)
+        return QString("%1%2V").arg(plusMinus).arg(curRangeVolts);
+    else
+        return QString("%1V").arg(curRangeVolts);
+}
+
 QString getAccessTypes(MemAccessType memAccess)
 {
     QString accessDesc;

@@ -2,4 +2,23 @@
     <qresource prefix="/images">
         <file>UtLnxSplash.png</file>
     </qresource>
+    <qresource prefix="/radiobuttons">
+        <file>resource/radio_unchecked_7.png</file>
+        <file>resource/radio_unchecked_6.png</file>
+        <file>resource/radio_unchecked_5.png</file>
+        <file>resource/radio_unchecked_4.png</file>
+        <file>resource/radio_unchecked_3.png</file>
+        <file>resource/radio_unchecked_2.png</file>
+        <file>resource/radio_unchecked_1.png</file>
+        <file>resource/radio_unchecked_0.png</file>
+        <file>resource/radio_checked_7.png</file>
+        <file>resource/radio_checked_6.png</file>
+        <file>resource/radio_checked_5.png</file>
+        <file>resource/radio_checked_4.png</file>
+        <file>resource/radio_checked_3.png</file>
+        <file>resource/radio_checked_2.png</file>
+        <file>resource/radio_checked_1.png</file>
+        <file>resource/radio_checked_0.png</file>
+        <file>resource/Base.png</file>
+    </qresource>
 </RCC>

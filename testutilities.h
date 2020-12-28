@@ -59,6 +59,7 @@ QString getTrigTypeNames(TriggerType typeNum);
 QString getQueueTypeNames(AiQueueType typeNum);
 QString getQueueLimitNames(AiChanQueueLimitation typeNum);
 QString getRangeName(Range rangeVal);
+QString getRangeNomo(Range rangeVal);
 QString getAccessTypes(MemAccessType memAccess);
 QString getRegionNames(MemRegion memRegion);
 QString getEnableDisableName(int value);

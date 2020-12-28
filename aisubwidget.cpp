@@ -47,20 +47,6 @@ AiSubWidget::AiSubWidget(QWidget *parent) :
             ui->AiPlot->xAxis2, SLOT(setRange(QCPRange)));
     connect(ui->AiPlot->yAxis, SIGNAL(rangeChanged(QCPRange)),
             ui->AiPlot->yAxis2, SLOT(setRange(QCPRange)));
-    connect(ui->rbAutoScale, SIGNAL(clicked(bool)), this, SLOT(replot()));
-    connect(ui->rbFullScale, SIGNAL(clicked(bool)), this, SLOT(replot()));
-    rbPlotSel[0] = ui->rbPlot0;
-    rbPlotSel[1] = ui->rbPlot1;
-    rbPlotSel[2] = ui->rbPlot2;
-    rbPlotSel[3] = ui->rbPlot3;
-    rbPlotSel[4] = ui->rbPlot4;
-    rbPlotSel[5] = ui->rbPlot5;
-    rbPlotSel[6] = ui->rbPlot6;
-    rbPlotSel[7] = ui->rbPlot7;
-    for (int i = 0; i<8; i++) {
-        connect(rbPlotSel[i], SIGNAL(clicked(bool)), this, SLOT(plotSelect()));
-        rbPlotSel[i]->setVisible(false);
-    }
     /*connect(ui->rbPlot0, SIGNAL(clicked(bool)), this, SLOT(plotSelect()));
     connect(ui->rbPlot1, SIGNAL(clicked(bool)), this, SLOT(plotSelect()));
     connect(ui->rbPlot2, SIGNAL(clicked(bool)), this, SLOT(plotSelect()));
@@ -84,8 +70,9 @@ AiSubWidget::AiSubWidget(QWidget *parent) :
     mRunning = false;
     mPrintResolution = 5;
     ui->cmdStop->setEnabled(false);
-    setupPlot(ui->AiPlot, 1);
-    ui->AiPlot->replot();
+    //setupPlot(ui->AiPlot, 1);
+    initializePlotControls();
+    //ui->AiPlot->replot();
     mMainWindow = getMainWindow();
     for (int i = 0; i < 8; i++)
         mPlotList[i] = true;
@@ -243,76 +230,6 @@ void AiSubWidget::functionChanged(int utFunction)
     this->setUiForFunction();
 }
 
-void AiSubWidget::setupPlot(QCustomPlot *dataPlot, int chanCount)
-{
-    QColor penColor;
-    QPalette brushColor;
-
-    //brushColor = QPalette::background();
-    int chanCycle;
-    int curChanCount;
-    dataPlot->clearGraphs();
-    dataPlot->setBackground(brushColor.background());
-    dataPlot->axisRect()->setBackground(Qt::white);
-    chanCycle = -1;
-
-    if(mPlotChan == -1)
-        curChanCount = chanCount;
-    else
-        curChanCount = 1;
-
-    for(int chan=0; chan<curChanCount; chan++)
-    {
-        if(mPlotChan == -1)
-            chanCycle += 1;
-        else
-            chanCycle = mPlotChan;
-        if(chanCycle>7)
-            chanCycle = chanCycle % 8;
-        switch(chanCycle)
-        {
-        case 0:
-            penColor = Qt::blue;
-            break;
-        case 1:
-            penColor = Qt::red;
-            break;
-        case 2:
-            penColor = Qt::green;
-            break;
-        case 3:
-            penColor = Qt::cyan;
-            break;
-        case 4:
-            penColor = Qt::darkCyan;
-            break;
-        case 5:
-            penColor = Qt::magenta;
-            break;
-        case 6:
-            penColor = Qt::gray;
-            break;
-        default:
-            penColor = Qt::black;
-            break;
-        }
-        dataPlot->addGraph();
-        dataPlot->addGraph();
-        dataPlot->graph(chan)->setPen(penColor);
-    }
-    dataPlot->xAxis2->setVisible(true);
-    dataPlot->xAxis2->setTickLabels(false);
-    dataPlot->axisRect(0)->setAutoMargins(QCP::msLeft|QCP::msBottom);
-    dataPlot->axisRect(0)->setMargins(QMargins(0,2,2,0));
-    dataPlot->yAxis2->setVisible(true);
-    dataPlot->yAxis2->setTickLabels(false);
-    dataPlot->xAxis->setTickLabelFont(QFont(QFont().family(), 8));
-    dataPlot->yAxis->setTickLabelFont(QFont(QFont().family(), 8));
-    dataPlot->xAxis->setTickLabelColor(Qt::blue);
-    dataPlot->yAxis->setTickLabelColor(Qt::blue);
-    dataPlot->xAxis->setAutoTickCount(3);
-}
-
 void AiSubWidget::showPlotWindow(bool showIt)
 {
     QFrame::Shape frameShape;
@@ -323,9 +240,13 @@ void AiSubWidget::showPlotWindow(bool showIt)
         mInitPlot = mPlot;
     frameShape = QFrame::Box;
 
+    ui->rbAutoScale->setVisible(mPlot);
+    ui->rbFullScale->setVisible(mPlot);
+    ui->fraPlotSel->setVisible(mPlot);
     if (showIt) {
         curIndex = 1;
         frameShape = QFrame::NoFrame;
+        setupPlot(ui->AiPlot, mChanCount);
     } else {
         mTextIndex = 0;
         updateData();
@@ -402,8 +323,12 @@ void AiSubWidget::setupQueue()
         mMainWindow->addFunction(sStartTime + funcStr);
     }
     int chanAdjust = 0;
-    if (numElements)
+    if (numElements == 0) {
+        mQueueInUse = false;
+    } else {
         chanAdjust = 1;
+        mQueueInUse = true;
+    }
     ui->spnLowChan->setValue(0);
     ui->spnHighChan->setValue(numElements - chanAdjust);
 }
@@ -490,6 +415,7 @@ void AiSubWidget::onClickCmdGo()
     ui->lblRateReturned->clear();
     ui->lblStatus->clear();
     ui->lblInfo->clear();
+    mFirstChan = ui->spnLowChan->value();
     runSelectedFunc();
 #ifdef Q_OS_MAC
     this->setWindowState(Qt::WindowMaximized);
@@ -859,13 +785,36 @@ void AiSubWidget::runAInFunc()
     QString errDesc = "";
     QString errNumStr;
     QString sStartTime;
+    QString curRangeVolts;
+    int key;
+    Range curRange;
 
     aInChan = ui->spnLowChan->value();
     aInLastChan = ui->spnHighChan->value();
+    mBlockSize = ui->leBlockSize->text().toInt();
     //numAinChans = (aInLastChan - aInChan) + 1;
     //numSamples = ui->leNumSamples->text().toLong();
     mChanCount = (aInLastChan - aInChan) + 1;
     mSamplesPerChan = ui->leNumSamples->text().toLong();
+
+    if (!mQueueInUse) {
+        key = 0;
+        mChanList.clear();
+        for (int chan = 0; chan <= mChanCount; chan++) {
+            mChanList.insert(key, chan + aInChan);
+            mRangeList.insert(key, mRange);
+            key++;
+        }
+        curRangeVolts = getRangeNomo(mRange);
+        ui->lblRange0->setText(curRangeVolts);
+    } else {
+        mChanCount = mChanList.count();
+        for (int chan = 0; chan < mChanCount; chan++) {
+            curRange = mRangeList.value(chan);
+            curRangeVolts = getRangeNomo(curRange);
+            rbRangeLabels[chan]->setText(curRangeVolts);
+        }
+    }
 
     samplesToRead = mSamplesPerChan;
     curIndex = 0;
@@ -942,6 +891,8 @@ void AiSubWidget::runAInFunc()
         mTotalRead += 1;
     }
 
+    mPlotCount = 0;
+    mPlotIndex = 0;
     if(mPlot)
         plotScan(0, 0, mTotalRead);
     else {
@@ -1231,7 +1182,9 @@ void AiSubWidget::runAInScanFunc()
     QString nameOfFunc, funcArgs, argVals, funcStr;
     QTime t;
     QString sStartTime, blockStyle;
-    QString fsString, warnColor;
+    QString fsString, warnColor, curRangeVolts;
+    int key;
+    Range curRange;
 
     fsString = "font-size: 8pt; ";
     if (mFontSize == 12)
@@ -1254,6 +1207,24 @@ void AiSubWidget::runAInScanFunc()
     blockStyle = "QLineEdit {" + warnColor + fsString + "}";
     ui->leBlockSize->setStyleSheet(blockStyle);
 
+    if (!mQueueInUse) {
+        key = 0;
+        mChanList.clear();
+        for (int chan = lowChan; chan <= highChan; chan++) {
+            mChanList.insert(key, chan);
+            mRangeList.insert(key, mRange);
+            key++;
+        }
+        curRangeVolts = getRangeNomo(mRange);
+        ui->lblRange0->setText(curRangeVolts);
+    } else {
+        mChanCount = mChanList.count();
+        for (int chan = 0; chan < mChanCount; chan++) {
+            curRange = mRangeList.value(chan);
+            curRangeVolts = getRangeNomo(curRange);
+            rbRangeLabels[chan]->setText(curRangeVolts);
+        }
+    }
     long long bufSize = mChanCount * mSamplesPerChan;
     if(mPlot)
         setupPlot(ui->AiPlot, mChanCount);
@@ -1636,6 +1607,142 @@ void AiSubWidget::swStopScan()
     onClickCmdStop();
 }
 
+void AiSubWidget::initializePlotControls()
+{
+    //connect(ui->rbAutoScale, SIGNAL(clicked(bool)), this, SLOT(setAutoScale()));
+    //connect(ui->rbFullScale, SIGNAL(clicked(bool)), this, SLOT(setAutoScale()));
+    connect(ui->rbAutoScale, SIGNAL(clicked(bool)), this, SLOT(replot()));
+    connect(ui->rbFullScale, SIGNAL(clicked(bool)), this, SLOT(replot()));
+
+    rbPlotSel[0] = ui->rbPlot0;
+    rbPlotSel[1] = ui->rbPlot1;
+    rbPlotSel[2] = ui->rbPlot2;
+    rbPlotSel[3] = ui->rbPlot3;
+    rbPlotSel[4] = ui->rbPlot4;
+    rbPlotSel[5] = ui->rbPlot5;
+    rbPlotSel[6] = ui->rbPlot6;
+    rbPlotSel[7] = ui->rbPlot7;
+    rbPlotLabels[0] = ui->lblRb0;
+    rbPlotLabels[1] = ui->lblRb1;
+    rbPlotLabels[2] = ui->lblRb2;
+    rbPlotLabels[3] = ui->lblRb3;
+    rbPlotLabels[4] = ui->lblRb4;
+    rbPlotLabels[5] = ui->lblRb5;
+    rbPlotLabels[6] = ui->lblRb6;
+    rbPlotLabels[7] = ui->lblRb7;
+    rbRangeLabels[0] = ui->lblRange0;
+    rbRangeLabels[1] = ui->lblRange1;
+    rbRangeLabels[2] = ui->lblRange2;
+    rbRangeLabels[3] = ui->lblRange3;
+    rbRangeLabels[4] = ui->lblRange4;
+    rbRangeLabels[5] = ui->lblRange5;
+    rbRangeLabels[6] = ui->lblRange6;
+    rbRangeLabels[7] = ui->lblRange7;
+
+    initPlotCtlProps();
+
+    mPlot = false;
+    mPlotChan = -1;
+    mPlotCount = 0;
+    ui->rbAutoScale->setVisible(false);
+    ui->rbFullScale->setVisible(false);
+    ui->fraPlotSel->setVisible(false);
+    ui->AiPlot->replot();
+}
+
+void AiSubWidget::initPlotCtlProps()
+{
+    mFontHTML[0] = " <font color=blue>";
+    mFontHTML[1] = " <font color=red>";
+    mFontHTML[2] = " <font color=green>";
+    mFontHTML[3] = " <font color=cyan>";
+    mFontHTML[4] = " <font color=darkCyan>";
+    mFontHTML[5] = " <font color=magenta>";
+    mFontHTML[6] = " <font color=gray>";
+    mFontHTML[7] = " <font color=black>";
+
+    for (int i = 0; i < 8; i++) {
+        connect(rbPlotSel[i], SIGNAL(clicked(bool)), this, SLOT(plotSelect()));
+        rbPlotSel[i]->setVisible(false);
+        rbPlotLabels[i]->setVisible(false);
+    }
+}
+
+void AiSubWidget::setupPlot(QCustomPlot *dataPlot, int chanCount)
+{
+    QColor penColor;
+    QPalette brushColor;
+    int ctlIndex;
+
+    //brushColor = QPalette::background();
+    int chanCycle;
+    int curChanCount;
+    dataPlot->clearGraphs();
+    dataPlot->setBackground(brushColor.background());
+    dataPlot->axisRect()->setBackground(Qt::white);
+    chanCycle = -1;
+
+    if(mPlotChan == -1)
+        curChanCount = chanCount;
+    else
+        curChanCount = 1;
+
+    for(int chan=0; chan<curChanCount; chan++)
+    {
+        if(mPlotChan == -1)
+            chanCycle += 1;
+        else
+            chanCycle = mPlotChan;
+        if(chanCycle>7)
+            chanCycle = chanCycle % 8;
+        switch(chanCycle)
+        {
+        case 0:
+            penColor = Qt::blue;
+            break;
+        case 1:
+            penColor = Qt::red;
+            break;
+        case 2:
+            penColor = Qt::green;
+            break;
+        case 3:
+            penColor = Qt::cyan;
+            break;
+        case 4:
+            penColor = Qt::darkCyan;
+            break;
+        case 5:
+            penColor = Qt::magenta;
+            break;
+        case 6:
+            penColor = Qt::gray;
+            break;
+        default:
+            penColor = Qt::black;
+            break;
+        }
+        dataPlot->addGraph();
+        dataPlot->addGraph();
+        ctlIndex = chan % 8;
+        rbPlotSel[ctlIndex]->setVisible(true);
+        rbPlotLabels[ctlIndex]->setVisible(true);
+        rbPlotLabels[ctlIndex]->setText(QString("%1").arg(mFirstChan + chan));
+        dataPlot->graph(chan)->setPen(penColor);
+    }
+    dataPlot->xAxis2->setVisible(true);
+    dataPlot->xAxis2->setTickLabels(false);
+    dataPlot->axisRect(0)->setAutoMargins(QCP::msLeft|QCP::msBottom);
+    dataPlot->axisRect(0)->setMargins(QMargins(0,2,2,0));
+    dataPlot->yAxis2->setVisible(true);
+    dataPlot->yAxis2->setTickLabels(false);
+    dataPlot->xAxis->setTickLabelFont(QFont(QFont().family(), 8));
+    dataPlot->yAxis->setTickLabelFont(QFont(QFont().family(), 8));
+    dataPlot->xAxis->setTickLabelColor(Qt::blue);
+    dataPlot->yAxis->setTickLabelColor(Qt::blue);
+    dataPlot->xAxis->setAutoTickCount(3);
+}
+
 void AiSubWidget::updateData()
 {
     QString dataText, str, val;
@@ -1956,11 +2063,16 @@ void AiSubWidget::replot()
 
 void AiSubWidget::plotSelect()
 {
+    int plotCount;
+
     for (int i = 0; i<8; i++)
         mPlotList[i] = rbPlotSel[i]->isChecked();
 
+    plotCount = mBlockSize;
+    if (mUtFunction == UL_AIN)
+        plotCount = mTotalRead;
     if (!mRunning)
-        plotScan(mPlotCount, mPlotIndex, mBlockSize);
+        plotScan(mPlotCount, mPlotIndex, plotCount);
 }
 
 //stub slots for childwindow signals

@@ -55,14 +55,18 @@ private slots:
     void showData(unsigned long long curTotalCount, unsigned long long curIndex, int blockSize);
 
 private:
-    Ui::AiSubWidget *ui;
-    MainWindow* getMainWindow();
-    MainWindow *mMainWindow;
-    QTimer *tmrCheckStatus;
-    QRadioButton *rbPlotSel[8]={};
-    QueueDialog *queueSetup;
-    ErrorDialog mErrorDlg;
-    UlError err;
+    Ui::AiSubWidget     *ui;
+    MainWindow*         getMainWindow();
+    MainWindow          *mMainWindow;
+    QTimer              *tmrCheckStatus;
+    QRadioButton        *rbPlotSel[8]={};
+    QLabel              *rbPlotLabels[8]={};
+    QLabel              *rbRangeLabels[8]={};
+    QString             mFontHTML[8];
+
+    QueueDialog         *queueSetup;
+    ErrorDialog         mErrorDlg;
+    UlError             err;
 
     int mFontSize;
     QString mFuncName = "";
@@ -75,6 +79,8 @@ private:
     QString mDevUID;
     QString mDevName = "";
 
+    int mFirstChan;
+    bool mQueueInUse;
     int mSamplesPerChan;
     long mTotalRead;
     AiInputMode mInputMode;
@@ -163,7 +169,8 @@ private:
     void printData(unsigned long long currentCount, long long currentIndex, int blockSize);
     void plotScan(unsigned long long currentCount, long long currentIndex, int blockSize);
     void updatePlot();
-
+    void initializePlotControls();
+    void initPlotCtlProps();
     void setupQueue();
 
 signals:
